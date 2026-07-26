@@ -11,7 +11,10 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class PostResource extends Resource
 {
@@ -87,7 +90,16 @@ class PostResource extends Resource
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->maxSize(4096)
                                 ->nullable()
-                                ->helperText('Recommended: 1200 × 675 px (16:9). JPG / PNG / WebP — max 4 MB.'),
+                                ->saveUploadedFileUsing(function ($file) {
+                                    $disk = app()->environment('production') ? 'r2' : 'public';
+                                    $image = (new ImageManager(new Driver()))
+                                        ->read($file->getRealPath())
+                                        ->cover(1200, 675);
+                                    $path = 'post-thumbnails/' . Str::uuid() . '.jpg';
+                                    Storage::disk($disk)->put($path, (string) $image->toJpeg(85));
+                                    return $path;
+                                })
+                                ->helperText('Automatically cropped and resized to 1200 × 675 px (16:9). JPG / PNG / WebP — max 4 MB.'),
 
                             Forms\Components\TextInput::make('thumbnail_url')
                                 ->label('— or paste an external URL')
