@@ -23,12 +23,15 @@ return [
         'http://localhost:3000',
         'https://tensai.vercel.app',
         'https://tensai-kappa.vercel.app',
+        'https://tensaiconsultancy.com',
+        'https://www.tensaiconsultancy.com',
         env('FRONTEND_URL', 'http://localhost:3000'),
     ],
 
     'allowed_origins_patterns' => [
         '#^https://tensai[a-z0-9\-]*\.vercel\.app$#',
         '#^https://[a-z0-9\-]*\.vercel\.app$#',
+        '#^https://([a-z0-9\-]+\.)?tensaiconsultancy\.com$#',
     ],
 
     'allowed_headers' => ['*'],
