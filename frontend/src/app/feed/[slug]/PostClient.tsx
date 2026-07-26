@@ -597,46 +597,87 @@ function PostInner() {
           </div>
         ) : (
           <div className="rounded-2xl overflow-hidden shadow-[0_1px_4px_rgba(15,23,42,0.06)] border border-slate-100">
-            <div className="h-[3px] bg-gradient-to-r from-amber-500 to-yellow-400" />
+            <div className="h-[3px] bg-gradient-to-r from-amber-500 via-orange-400 to-amber-500" />
             <div className="bg-white px-5 sm:px-9 pt-7 sm:pt-9 pb-5">
               <p className="text-slate-700 leading-[1.9] text-base">{post.excerpt}</p>
             </div>
+
+            {/* Fading locked-text teaser with floating lock badge */}
             <div className="relative bg-white px-5 sm:px-9 pb-2 select-none pointer-events-none overflow-hidden">
-              <div className="space-y-3 opacity-[0.15] blur-[5px]">
+              <div className="space-y-3 opacity-[0.18] blur-[3px]">
                 {[100, 94, 87, 100, 76, 91, 58].map((w, i) => (
                   <div key={i} className="h-3.5 bg-slate-600 rounded-full" style={{ width: `${w}%` }} />
                 ))}
               </div>
-              <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-white/70 to-white" />
-            </div>
-            <div className="relative overflow-hidden">
-              <div className="absolute inset-0 bg-[#1a1200]" />
-              <div className="absolute inset-0 opacity-[0.035]"
-                style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
-              <div className="relative px-5 sm:px-10 py-9 sm:py-11 text-center">
-                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center mx-auto mb-5">
-                  <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              <div className="absolute inset-0 bg-gradient-to-b from-white/0 via-white/60 to-white" />
+              <div className="absolute inset-x-0 bottom-2 flex items-center justify-center">
+                <span className="inline-flex items-center gap-1.5 bg-white shadow-[0_2px_10px_rgba(15,23,42,0.12)] ring-1 ring-slate-100 text-slate-500 text-[11px] font-bold px-3 py-1.5 rounded-full">
+                  <svg className="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd"/>
                   </svg>
-                </div>
-                <span className="inline-flex items-center gap-1.5 bg-amber-500/20 border border-amber-400/30 text-amber-300 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full mb-4">
-                  {t('Premium Content','プレミアムコンテンツ','প্রিমিয়াম কনটেন্ট')}
+                  {t('Rest of this article is locked','この続きはロックされています','এই আর্টিকেলের বাকি অংশ লক করা')}
                 </span>
-                <p className="font-black text-white text-xl sm:text-2xl mb-2.5 tracking-tight">
-                  {t('Create an account to get this content','アカウントを作成してコンテンツを入手','এই কনটেন্ট পেতে অ্যাকাউন্ট তৈরি করুন')}
+              </div>
+            </div>
+
+            {/* Aggressive conversion panel */}
+            <div className="relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1a1200] via-[#231600] to-[#0f0a00]" />
+              <div className="absolute inset-0 opacity-[0.04]"
+                style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '22px 22px' }} />
+              {/* Glow accent */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-amber-500/20 rounded-full blur-[60px] pointer-events-none" />
+
+              <div className="relative px-5 sm:px-10 pt-9 sm:pt-11 pb-8 sm:pb-10 text-center">
+                {/* Pulsing lock icon */}
+                <div className="relative w-14 h-14 mx-auto mb-5">
+                  <div className="absolute inset-0 rounded-2xl bg-amber-500/25 animate-ping" style={{ animationDuration: '2s' }} />
+                  <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-[0_4px_20px_rgba(245,158,11,0.4)]">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <span className="inline-flex items-center gap-1.5 bg-amber-500/15 border border-amber-400/30 text-amber-300 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full mb-4">
+                  ★ {t('Premium Content','プレミアムコンテンツ','প্রিমিয়াম কনটেন্ট')}
+                </span>
+
+                <p className="font-black text-white text-[1.4rem] sm:text-[1.7rem] leading-tight mb-2.5 tracking-tight">
+                  {t("You're one step away from reading this",
+                    'あと一歩でこの記事が読めます',
+                    'এই আর্টিকেল পড়তে আপনি মাত্র এক ধাপ দূরে')}
                 </p>
-                <p className="text-slate-400 text-sm mb-7 max-w-sm mx-auto leading-relaxed">
-                  {t('Free to join. Unlock all premium articles and videos instantly.',
-                    '無料登録でプレミアム記事・動画を即時解放。',
-                    'যোগ দেওয়া বিনামূল্যে। সব প্রিমিয়াম কনটেন্ট তাৎক্ষণিক আনলক।')}
+                <p className="text-slate-400 text-sm mb-2 max-w-sm mx-auto leading-relaxed">
+                  {t('Create your free account now to unlock the full article instantly — no waiting, no payment.',
+                    '今すぐ無料アカウントを作成すれば、この記事をすぐに全文読めます。支払い不要。',
+                    'এখনই ফ্রি অ্যাকাউন্ট তৈরি করুন এবং সাথে সাথে পুরো আর্টিকেল পড়ুন — কোনো অপেক্ষা নেই, কোনো পেমেন্ট নেই।')}
                 </p>
+
+                {/* Trust row — kills signup friction/anxiety */}
+                <div className="flex items-center justify-center flex-wrap gap-x-4 gap-y-1 mb-7 mt-4">
+                  {[
+                    t('Takes 30 seconds', '30秒で完了', '৩০ সেকেন্ডে')  ,
+                    t('No credit card', 'クレジットカード不要', 'কার্ড লাগবে না'),
+                    t('Free forever', '永久無料', 'চিরকাল ফ্রি'),
+                  ].map((label, i) => (
+                    <span key={i} className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400/90">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
+                      {label}
+                    </span>
+                  ))}
+                </div>
+
                 <div className="flex flex-col sm:flex-row justify-center gap-2.5">
                   <a href="/auth/register"
-                    className="h-12 sm:h-11 px-8 bg-amber-500 text-white font-black rounded-xl text-sm hover:bg-amber-400 transition-colors flex items-center justify-center">
-                    {t('Join Free','無料で登録','ফ্রি যোগ দিন')}
+                    className="group h-13 sm:h-12 px-9 bg-gradient-to-r from-amber-400 to-amber-500 text-[#1a1200] font-black rounded-xl text-sm
+                      hover:from-amber-300 hover:to-amber-400 transition-all shadow-[0_4px_20px_rgba(245,158,11,0.35)]
+                      hover:shadow-[0_6px_28px_rgba(245,158,11,0.5)] hover:-translate-y-0.5 flex items-center justify-center gap-1.5">
+                    {t('Unlock This Article — Free','この記事を無料で解放','এই আর্টিকেল আনলক করুন — ফ্রি')}
+                    <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7"/></svg>
                   </a>
                   <a href="/auth/login"
-                    className="h-12 sm:h-11 px-8 bg-white/8 text-white font-semibold rounded-xl text-sm border border-white/12 hover:bg-white/12 transition-colors flex items-center justify-center">
+                    className="h-12 sm:h-12 px-8 bg-white/8 text-white font-semibold rounded-xl text-sm border border-white/12 hover:bg-white/12 transition-colors flex items-center justify-center">
                     {t('Sign In','サインイン','সাইন ইন')}
                   </a>
                 </div>
