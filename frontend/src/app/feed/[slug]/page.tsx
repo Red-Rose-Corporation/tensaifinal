@@ -2,9 +2,9 @@ import { Metadata } from 'next';
 import PostClient from './PostClient';
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://tensai.study';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.tensaiconsultancy.com';
 const SITE_NAME = 'Tensai — Study Abroad Guide';
-const FALLBACK_IMAGE = `${SITE_URL}/og-default.jpg`;
+const FALLBACK_IMAGE = `${SITE_URL}/tensai-logo.png`;
 
 async function fetchPost(slug: string) {
   try {
