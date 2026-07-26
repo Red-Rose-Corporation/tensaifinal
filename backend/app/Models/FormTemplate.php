@@ -12,13 +12,34 @@ class FormTemplate extends Model
         'student_name', 'passport_no', 'educations',
         'is_active', 'status', 'notes',
         'admission_manager_name', 'admission_manager_phone', 'admission_manager_whatsapp',
+        'direct_fee', 'agency_fee', 'fee_currency',
+        'affiliate_commission_type', 'affiliate_commission_value',
     ];
 
     protected $casts = [
-        'intake_options' => 'array',
-        'educations'     => 'array',
-        'is_active'      => 'boolean',
+        'intake_options'             => 'array',
+        'educations'                 => 'array',
+        'is_active'                  => 'boolean',
+        'direct_fee'                 => 'decimal:2',
+        'agency_fee'                 => 'decimal:2',
+        'affiliate_commission_value' => 'decimal:2',
     ];
+
+    /** Fee that applies for a given submitter role ('agency' vs everything else). */
+    public function feeFor(string $submittedByRole): ?string
+    {
+        return $submittedByRole === 'agency' ? $this->agency_fee : $this->direct_fee;
+    }
+
+    /** Affiliate commission amount computed against the direct fee (agency submissions never carry an affiliate). */
+    public function affiliateCommissionAmount(): ?float
+    {
+        if ($this->affiliate_commission_value === null || $this->direct_fee === null) return null;
+
+        return $this->affiliate_commission_type === 'flat'
+            ? (float) $this->affiliate_commission_value
+            : round((float) $this->direct_fee * (float) $this->affiliate_commission_value / 100, 2);
+    }
 
     public function isPublished(): bool
     {

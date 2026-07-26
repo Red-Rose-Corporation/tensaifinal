@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\AffiliateManagedEntity;
 use App\Models\AffiliateProfile;
+use App\Models\Application;
 use App\Models\Commission;
+use App\Models\FormTemplate;
 use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -307,6 +309,54 @@ class AffiliateController extends Controller
             'commissions' => $commissions,
             'summary'     => $summary,
         ]);
+    }
+
+    // ── Per-service earnings (applications referred by this affiliate) ────────
+
+    public function serviceEarnings(Request $request): JsonResponse
+    {
+        $affiliateId = $request->user()->id;
+
+        // Students who registered via this affiliate's referral link
+        $referredStudentIds = User::where('referred_by', $affiliateId)->pluck('id');
+
+        if ($referredStudentIds->isEmpty()) {
+            return response()->json(['data' => []]);
+        }
+
+        $applications = Application::whereIn('user_id', $referredStudentIds)
+            ->where('submitted_by_role', '!=', 'agency') // agency submissions never carry an affiliate cut
+            ->with('formTemplate')
+            ->get()
+            ->filter(fn (Application $app) => $app->formTemplate !== null);
+
+        $rows = $applications
+            ->groupBy('form_template_id')
+            ->map(function ($group) {
+                /** @var FormTemplate $template */
+                $template = $group->first()->formTemplate;
+                $perApplicationCommission = $template->affiliateCommissionAmount() ?? 0;
+
+                $converted = $group->where('live_to_school', true)->count();
+                $pending   = $group->count() - $converted;
+
+                return [
+                    'form_template_id'   => $template->id,
+                    'service_name'       => $template->name,
+                    'country'            => $template->country,
+                    'visa_type'          => $template->visa_type,
+                    'referred_count'     => $group->count(),
+                    'converted_count'    => $converted,
+                    'pending_count'      => $pending,
+                    'commission_per_app' => $perApplicationCommission,
+                    'currency'           => $template->fee_currency,
+                    'earned_total'       => round($perApplicationCommission * $converted, 2),
+                    'pending_total'      => round($perApplicationCommission * $pending, 2),
+                ];
+            })
+            ->values();
+
+        return response()->json(['data' => $rows]);
     }
 
     // ── Upgrade request (local → global) ──────────────────────────────────────

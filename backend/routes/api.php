@@ -191,6 +191,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/entities/{id}',   [AffiliateController::class, 'updateEntity']);
         Route::delete('/entities/{id}',[AffiliateController::class, 'deleteEntity']);
         Route::get('/commissions',     [AffiliateController::class, 'commissions']);
+        Route::get('/service-earnings',[AffiliateController::class, 'serviceEarnings']);
         Route::post('/upgrade-request',[AffiliateController::class, 'upgradeRequest']);
     });
 

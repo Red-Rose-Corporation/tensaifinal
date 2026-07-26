@@ -24,6 +24,20 @@ interface Summary {
   count: number;
 }
 
+interface ServiceEarning {
+  form_template_id: number;
+  service_name: string;
+  country: string;
+  visa_type: string;
+  referred_count: number;
+  converted_count: number;
+  pending_count: number;
+  commission_per_app: number;
+  currency: string;
+  earned_total: number;
+  pending_total: number;
+}
+
 const STATUS_COLOR: Record<string, string> = {
   pending:  'bg-amber-100 text-amber-700',
   due:      'bg-blue-100 text-blue-700',
@@ -50,8 +64,15 @@ export default function CommissionsPage() {
     queryFn: () => api.get(`/affiliate/commissions${statusFilter ? `?status=${statusFilter}` : ''}`).then(r => r.data),
   });
 
+  const { data: serviceData, isLoading: serviceLoading } = useQuery({
+    queryKey: ['affiliate-service-earnings'],
+    queryFn: () => api.get('/affiliate/service-earnings').then(r => r.data),
+    staleTime: 60_000,
+  });
+
   const commissions: Commission[] = Array.isArray(data?.commissions?.data) ? data.commissions.data : [];
   const summary: Record<string, Summary> = data?.summary ?? {};
+  const serviceEarnings: ServiceEarning[] = serviceData?.data ?? [];
 
   const totalEarned = Object.values(summary).reduce((s, v) => s + parseFloat(v.total ?? '0'), 0);
   const paidAmount  = parseFloat(summary.paid?.total ?? '0');
@@ -169,6 +190,62 @@ export default function CommissionsPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Per-service breakdown */}
+      <div className="bg-white rounded-2xl border border-slate-100 mt-5">
+        <div className="px-5 py-4 border-b border-slate-100">
+          <h2 className="font-bold text-slate-900 text-sm">
+            {ja ? 'サービス別の収益内訳' : bn ? 'সার্ভিস অনুযায়ী আয়ের বিস্তারিত' : 'Earnings by Service'}
+          </h2>
+          <p className="text-xs text-slate-400 mt-0.5">
+            {ja ? 'あなたの紹介リンクから提出された申請ごとの内訳です。' : bn ? 'আপনার লিংক থেকে জমা হওয়া প্রতিটি আবেদনের ব্রেকডাউন।' : 'Broken down by every application submitted through your referral link.'}
+          </p>
+        </div>
+        <div className="p-5">
+          {serviceLoading ? (
+            <div className="space-y-3">{[1, 2].map(i => <div key={i} className="h-16 bg-slate-100 rounded-xl animate-pulse" />)}</div>
+          ) : serviceEarnings.length === 0 ? (
+            <div className="text-center py-10">
+              <div className="text-3xl mb-2">📋</div>
+              <p className="text-sm text-slate-500">
+                {ja ? 'まだ紹介された申請はありません。' : bn ? 'এখনো কোনো রেফার করা আবেদন নেই।' : 'No referred applications yet.'}
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wide">
+                    <th className="pb-2 pr-3">{ja ? 'サービス' : bn ? 'সার্ভিস' : 'Service'}</th>
+                    <th className="pb-2 pr-3 text-center">{ja ? '紹介数' : bn ? 'রেফার' : 'Referred'}</th>
+                    <th className="pb-2 pr-3 text-center">{ja ? '成約' : bn ? 'কনভার্টেড' : 'Converted'}</th>
+                    <th className="pb-2 pr-3 text-right">{ja ? '獲得済み' : bn ? 'অর্জিত' : 'Earned'}</th>
+                    <th className="pb-2 text-right">{ja ? '保留中' : bn ? 'বাকি' : 'Pending'}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {serviceEarnings.map(s => (
+                    <tr key={s.form_template_id}>
+                      <td className="py-3 pr-3">
+                        <p className="font-semibold text-slate-800">{s.service_name}</p>
+                        <p className="text-xs text-slate-400">{s.country} · {s.visa_type}</p>
+                      </td>
+                      <td className="py-3 pr-3 text-center font-semibold text-slate-600">{s.referred_count}</td>
+                      <td className="py-3 pr-3 text-center font-semibold text-emerald-600">{s.converted_count}</td>
+                      <td className="py-3 pr-3 text-right font-bold text-emerald-700">
+                        {s.currency} {Number(s.earned_total).toLocaleString()}
+                      </td>
+                      <td className="py-3 text-right font-semibold text-amber-600">
+                        {s.currency} {Number(s.pending_total).toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
