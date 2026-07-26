@@ -84,6 +84,53 @@ class PostResource extends Resource
                         ->helperText('Tip: use the " (Quote) button to insert a highlighted info box — it renders as a green callout with an info icon on the site.')
                         ->nullable(),
 
+                    Forms\Components\Section::make('Comparison Table (optional)')
+                        ->description('Build a comparison table like "Staying home vs. Going abroad" — appears below the article body on the site.')
+                        ->collapsed(fn (Get $get) => blank($get('comparison_table.headers')))
+                        ->schema([
+                            Forms\Components\TextInput::make('comparison_table.title')
+                                ->label('Table Title')
+                                ->placeholder('দেশে থাকা বনাম আন্তর্জাতিক ক্যারিয়ার: বাস্তব তুলনা')
+                                ->maxLength(255),
+
+                            Forms\Components\Repeater::make('comparison_table.headers')
+                                ->label('Columns (first column is the row-label column, e.g. "বিষয়")')
+                                ->simple(
+                                    Forms\Components\TextInput::make('label')
+                                        ->required()
+                                        ->placeholder('e.g. জাপান (SSW Kaigo)')
+                                )
+                                ->addActionLabel('Add column')
+                                ->reorderable()
+                                ->minItems(2)
+                                ->maxItems(5)
+                                ->columnSpanFull(),
+
+                            Forms\Components\Repeater::make('comparison_table.rows')
+                                ->label('Rows')
+                                ->schema([
+                                    Forms\Components\TextInput::make('label')
+                                        ->label('Row label')
+                                        ->required()
+                                        ->placeholder('e.g. মাসিক আয় (প্রায়)'),
+                                    Forms\Components\Repeater::make('values')
+                                        ->label('Values (one per column, in the same order as the columns above)')
+                                        ->simple(
+                                            Forms\Components\TextInput::make('value')
+                                                ->required()
+                                                ->placeholder('e.g. ১,২০,০০০–১,৭০,০০০ টাকা')
+                                        )
+                                        ->addActionLabel('Add value')
+                                        ->reorderable()
+                                        ->minItems(1)
+                                        ->maxItems(4),
+                                ])
+                                ->addActionLabel('Add row')
+                                ->reorderable()
+                                ->columnSpanFull(),
+                        ])
+                        ->columns(1),
+
                     Forms\Components\Section::make('Feature Image')
                         ->schema([
                             Forms\Components\FileUpload::make('thumbnail_file')

@@ -115,8 +115,9 @@ class PostController extends Controller
         ];
 
         if ($full && !$locked) {
-            $base['body']      = $post->body;
-            $base['video_url'] = $post->video_url;
+            $base['body']             = $post->body;
+            $base['video_url']        = $post->video_url;
+            $base['comparison_table'] = $post->comparison_table;
         }
 
         return $base;

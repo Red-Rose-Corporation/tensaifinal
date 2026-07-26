@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Post extends Model
 {
     protected $fillable = [
-        'title', 'slug', 'excerpt', 'body', 'type',
+        'title', 'slug', 'excerpt', 'body', 'comparison_table', 'type',
         'video_url', 'thumbnail_url', 'thumbnail_file', 'status', 'is_premium', 'published_at', 'created_by',
     ];
 
     protected $casts = [
-        'published_at' => 'datetime',
-        'is_premium'   => 'boolean',
+        'published_at'     => 'datetime',
+        'is_premium'       => 'boolean',
+        'comparison_table' => 'array',
     ];
 
     public function categories(): BelongsToMany

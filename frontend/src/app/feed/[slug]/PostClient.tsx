@@ -59,11 +59,58 @@ function BackToTop() {
 }
 
 interface Category { name: string; slug: string; type: string; flag: string; color: string; }
+interface ComparisonTable {
+  title?: string;
+  headers?: string[];
+  rows?: { label: string; values: string[] }[];
+}
 interface Post {
   id: number; title: string; slug: string; type: string;
   excerpt: string; body?: string; thumbnail: string | null;
   youtube_id: string | null; published_at: string; categories: Category[];
   locked: boolean; is_premium: boolean;
+  comparison_table?: ComparisonTable | null;
+}
+
+/* ── Comparison table ────────────────────────────────────────── */
+function ComparisonTableBlock({ table }: { table: ComparisonTable }) {
+  const headers = table.headers ?? [];
+  const rows = table.rows ?? [];
+  if (headers.length === 0 || rows.length === 0) return null;
+
+  return (
+    <div className="mt-7 rounded-2xl border border-slate-100 shadow-[0_1px_4px_rgba(15,23,42,0.06)] overflow-hidden bg-white">
+      {table.title && (
+        <div className="px-5 sm:px-6 py-3.5 bg-green-50 border-b border-green-100">
+          <p className="font-black text-green-800 text-sm sm:text-base leading-snug">{table.title}</p>
+        </div>
+      )}
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm border-collapse">
+          <thead>
+            <tr className="bg-slate-50 border-b-2 border-slate-200">
+              {headers.map((h, i) => (
+                <th key={i}
+                  className={`px-4 py-3 font-black whitespace-nowrap ${i === 0 ? 'text-left text-slate-500 text-xs uppercase tracking-wide' : 'text-center text-green-800'}`}>
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, ri) => (
+              <tr key={ri} className={`border-b border-slate-100 ${ri % 2 === 1 ? 'bg-slate-50/60' : ''}`}>
+                <td className="px-4 py-3 font-bold text-slate-700 whitespace-nowrap">{row.label}</td>
+                {row.values.map((v, vi) => (
+                  <td key={vi} className="px-4 py-3 text-center text-slate-600">{v}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
 
 function catChip(c: Category) {
@@ -595,7 +642,11 @@ function PostInner() {
               }
             </div>
           </div>
-        ) : (
+        ) : null}
+
+        {!isLocked && post.comparison_table && <ComparisonTableBlock table={post.comparison_table} />}
+
+        {isLocked && (
           <div className="rounded-2xl overflow-hidden shadow-[0_1px_4px_rgba(15,23,42,0.06)] border border-slate-100">
             <div className="h-[3px] bg-gradient-to-r from-amber-500 via-orange-400 to-amber-500" />
             <div className="bg-white px-5 sm:px-9 pt-7 sm:pt-9 pb-5">
