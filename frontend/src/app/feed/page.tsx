@@ -151,14 +151,33 @@ function FeedInner() {
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-5 sm:py-7">
 
         {/* ── Filter panel ─────────────────────────────────────── */}
-        <div className="bg-white rounded-2xl shadow-[0_1px_6px_rgba(15,23,42,0.06)] ring-1 ring-slate-100/80 mb-6 px-4 sm:px-5 py-4 space-y-3">
+        <div className="bg-white rounded-2xl shadow-[0_1px_6px_rgba(15,23,42,0.06)] ring-1 ring-slate-100/80 mb-6 px-4 sm:px-5 py-4 sm:py-4.5">
+
+          {/* Header row: title + clear */}
+          <div className="flex items-center justify-between mb-3.5">
+            <div className="flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h18M6 8h12M9 12h6m-4 4h2"/>
+              </svg>
+              <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                {t('Filter Articles','記事を絞り込む','ফিল্টার')}
+              </span>
+            </div>
+            {hasFilter && (
+              <button onClick={clearAll}
+                className="inline-flex items-center gap-1 h-7 px-2.5 text-[0.72rem] font-bold text-slate-400 hover:text-red-500
+                  rounded-full hover:bg-red-50 transition-all duration-150">
+                ✕ {t('Clear filters','フィルターをクリア','ফিল্টার মুছুন')}
+              </button>
+            )}
+          </div>
 
           {/* Country row */}
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest shrink-0 w-16 sm:w-20">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3 mb-3">
+            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest shrink-0 sm:w-20">
               {t('Country','国','দেশ')}
             </span>
-            <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
+            <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-0.5 -mx-0.5 px-0.5">
               {countries.map(c => (
                 <button key={c.slug}
                   onClick={() => setCountry(country === c.slug ? '' : c.slug)}
@@ -172,14 +191,14 @@ function FeedInner() {
             </div>
           </div>
 
-          <div className="border-t border-slate-50" />
+          <div className="border-t border-slate-50 mb-3" />
 
           {/* Category / purpose row */}
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest shrink-0 w-16 sm:w-20">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3">
+            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest shrink-0 sm:w-20">
               {t('Category','カテゴリ','ক্যাটাগরি')}
             </span>
-            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5 flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5 -mx-0.5 px-0.5 flex-1 min-w-0">
               {purposes.map(p => (
                 <button key={p.slug}
                   onClick={() => setPurpose(purpose === p.slug ? '' : p.slug)}
@@ -190,13 +209,6 @@ function FeedInner() {
                   {p.flag} {p.name}
                 </button>
               ))}
-              {hasFilter && (
-                <button onClick={clearAll}
-                  className="shrink-0 ml-1 h-8 px-3 text-[0.75rem] font-bold text-slate-300 hover:text-red-400
-                    ring-1 ring-slate-200/80 rounded-full hover:ring-red-200 hover:bg-red-50 transition-all duration-150">
-                  ✕ {t('Clear','クリア','মুছুন')}
-                </button>
-              )}
             </div>
           </div>
 
