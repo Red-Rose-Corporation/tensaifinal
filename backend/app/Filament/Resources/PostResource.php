@@ -84,7 +84,6 @@ class PostResource extends Resource
                                 ->image()
                                 ->disk(app()->environment('production') ? 'r2' : 'public')
                                 ->directory('post-thumbnails')
-                                ->visibility('public')
                                 ->imageResizeMode('cover')
                                 ->imageCropAspectRatio('16:9')
                                 ->imageResizeTargetWidth('1200')
