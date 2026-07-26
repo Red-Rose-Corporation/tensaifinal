@@ -30,7 +30,7 @@ class AllServicesFee extends Page implements HasTable
     {
         return $table
             ->query(FormTemplate::query()->orderBy('country')->orderBy('name'))
-            ->heading('Every application form is a service — set what a direct candidate pays, what an agency pays, and the affiliate cut.')
+            ->heading('Every application form is a service — set what a direct candidate pays, what an agency pays, and the affiliate cut. Draft/inactive forms are hidden by default (turn off "Live services only" below to see them).')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Service')
@@ -83,9 +83,13 @@ class AllServicesFee extends Page implements HasTable
                     ->color(fn (string $state) => $state === 'published' ? 'success' : 'gray'),
             ])
             ->filters([
+                Tables\Filters\Filter::make('live_only')
+                    ->label('Live services only')
+                    ->default(true)
+                    ->query(fn (Builder $query) => $query->where('status', 'published')->where('is_active', true))
+                    ->toggle(),
                 Tables\Filters\SelectFilter::make('country')
                     ->options(fn () => FormTemplate::query()->distinct()->pluck('country', 'country')->filter()->toArray()),
-                Tables\Filters\TernaryFilter::make('is_active')->label('Active only'),
             ])
             ->paginated([25, 50, 100]);
     }
