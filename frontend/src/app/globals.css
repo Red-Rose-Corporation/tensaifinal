@@ -286,17 +286,37 @@ body {
   font-size: 0.97em;
 }
 
-/* Blockquote */
+/* Blockquote — used as the "info box" callout in the post editor */
 .rich-body blockquote {
+  position: relative;
   border-left: 3px solid #15803d;
   background: #f0fdf4;
-  padding: 1rem 1.25rem;
+  padding: 1rem 1.25rem 1rem 2.75rem;
   color: #374151;
   margin: 1.75em 0;
   border-radius: 0 0.75rem 0.75rem 0;
   font-style: normal;
   font-size: 1.02rem;
+  box-shadow: 0 1px 3px rgba(21,128,61,0.06);
 }
+.rich-body blockquote::before {
+  content: "ℹ";
+  position: absolute;
+  left: 0.9rem;
+  top: 0.95rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 9999px;
+  background: #15803d;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.15rem;
+  text-align: center;
+}
+.rich-body blockquote p { margin: 0.4em 0; }
+.rich-body blockquote p:first-child { margin-top: 0; }
+.rich-body blockquote p:last-child { margin-bottom: 0; }
 
 /* Callout — table used as info card */
 .rich-body table {

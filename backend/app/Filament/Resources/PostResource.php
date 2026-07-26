@@ -77,7 +77,11 @@ class PostResource extends Resource
 
                     Forms\Components\RichEditor::make('body')
                         ->label('Full Content')
-                        ->toolbarButtons(['bold', 'italic', 'bulletList', 'orderedList', 'link', 'blockquote'])
+                        ->toolbarButtons([
+                            'bold', 'italic', 'underline', 'strike',
+                            'bulletList', 'orderedList', 'link', 'blockquote', 'h2', 'h3',
+                        ])
+                        ->helperText('Tip: use the " (Quote) button to insert a highlighted info box — it renders as a green callout with an info icon on the site.')
                         ->nullable(),
 
                     Forms\Components\Section::make('Feature Image')
