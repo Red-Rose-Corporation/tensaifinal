@@ -84,14 +84,10 @@ class PostResource extends Resource
                                 ->image()
                                 ->disk(app()->environment('production') ? 'r2' : 'public')
                                 ->directory('post-thumbnails')
-                                ->imageResizeMode('cover')
-                                ->imageCropAspectRatio('16:9')
-                                ->imageResizeTargetWidth('1200')
-                                ->imageResizeTargetHeight('675')
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->maxSize(4096)
                                 ->nullable()
-                                ->helperText('Recommended: 1200 × 675 px (16:9). JPG / PNG / WebP — max 4 MB. Portrait photos also work — they will be auto-cropped to 16:9.'),
+                                ->helperText('Recommended: 1200 × 675 px (16:9). JPG / PNG / WebP — max 4 MB.'),
 
                             Forms\Components\TextInput::make('thumbnail_url')
                                 ->label('— or paste an external URL')
