@@ -46,6 +46,15 @@ export default function GalleryPage() {
   const [active, setActive]     = useState('all');
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [lightbox, setLightbox] = useState<GalleryItem | null>(null);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setLightbox(null); };
+    window.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+  }, [lightbox]);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 20);
@@ -197,9 +206,10 @@ export default function GalleryPage() {
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {filtered.map((item) => (
-                  <div
+                  <button
                     key={item.id}
-                    className="group relative aspect-square rounded-2xl overflow-hidden border border-white/[0.08] hover:border-green-500/30 transition-all"
+                    onClick={() => setLightbox(item)}
+                    className="group relative aspect-square rounded-2xl overflow-hidden border border-white/[0.08] hover:border-green-500/30 transition-all text-left cursor-zoom-in"
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -218,7 +228,7 @@ export default function GalleryPage() {
                         {item.category}
                       </span>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             )}
@@ -322,6 +332,42 @@ export default function GalleryPage() {
           <p className="text-xs text-white/30">{l.footer}</p>
         </div>
       </footer>
+
+      {/* ── Lightbox ───────────────────────────────────────── */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 animate-fade-up"
+          onClick={() => setLightbox(null)}
+        >
+          <button
+            onClick={() => setLightbox(null)}
+            aria-label="Close"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+          <div
+            className="max-w-4xl w-full max-h-[90vh] flex flex-col sm:flex-row bg-[#0d1117] rounded-2xl overflow-hidden border border-white/[0.1]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={lightbox.image_url}
+              alt={lightbox.title}
+              className="w-full sm:w-2/3 max-h-[50vh] sm:max-h-[90vh] object-contain bg-black shrink-0"
+            />
+            <div className="p-5 sm:p-6 flex flex-col overflow-y-auto">
+              <span className="self-start text-[9px] font-bold text-green-400 bg-green-400/15 border border-green-400/25 px-2 py-0.5 rounded-full uppercase tracking-wider mb-3">
+                {lightbox.category}
+              </span>
+              <h3 className="text-white font-bold text-lg leading-tight mb-2">{lightbox.title}</h3>
+              {lightbox.description && (
+                <p className="text-white/55 text-sm leading-relaxed">{lightbox.description}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
