@@ -230,7 +230,7 @@ function ShareBar({ title, excerpt, thumbnail, t }: {
           </div>
         )}
         <div className="flex flex-col justify-center px-4 py-3 min-w-0">
-          <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1">tensai.study</p>
+          <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1">tensaiconsultancy.com</p>
           <p className="text-sm font-black text-slate-800 leading-snug line-clamp-2 mb-1">{title}</p>
           <p className="text-[11px] text-slate-400 leading-relaxed line-clamp-2 hidden sm:block">
             {excerpt.slice(0, 100)}{excerpt.length > 100 ? '…' : ''}

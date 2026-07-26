@@ -205,7 +205,7 @@ class AuthController extends Controller
         Password::sendResetLink(
             $request->only('email'),
             function (User $user, string $token) {
-                $frontend = rtrim(config('app.frontend_url', 'https://frontend-three-azure-99.vercel.app'), '/');
+                $frontend = rtrim(config('app.frontend_url', 'https://www.tensaiconsultancy.com'), '/');
                 $url = $frontend . '/auth/reset-password?token=' . $token . '&email=' . urlencode($user->email);
                 try {
                     $user->notify(new ResetPasswordNotification($url));
