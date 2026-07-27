@@ -142,6 +142,7 @@ class PostResource extends Resource
                                 ->maxSize(4096)
                                 ->nullable()
                                 ->fetchFileInformation(false)
+                                ->previewable(false)
                                 ->saveUploadedFileUsing(function ($file) {
                                     $disk = app()->environment('production') ? 'r2' : 'public';
                                     $image = (new ImageManager(new Driver()))
