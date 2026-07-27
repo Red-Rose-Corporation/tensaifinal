@@ -133,16 +133,48 @@ class PostResource extends Resource
 
                     Forms\Components\Section::make('Feature Image')
                         ->schema([
+                            Forms\Components\Placeholder::make('thumbnail_preview')
+                                ->label('Current image')
+                                ->content(function ($record) {
+                                    if (!$record?->thumbnail_file) {
+                                        return 'No image uploaded yet.';
+                                    }
+                                    $disk = app()->environment('production') ? 'r2' : 'public';
+                                    $url  = Storage::disk($disk)->url($record->thumbnail_file);
+                                    return new \Illuminate\Support\HtmlString(
+                                        '<img src="' . e($url) . '" style="max-width:320px;border-radius:0.75rem;" />'
+                                    );
+                                })
+                                ->visible(fn ($record) => filled($record?->thumbnail_file)),
+
+                            Forms\Components\Actions::make([
+                                Forms\Components\Actions\Action::make('delete_thumbnail')
+                                    ->label('Delete current image')
+                                    ->icon('heroicon-o-trash')
+                                    ->color('danger')
+                                    ->requiresConfirmation()
+                                    ->visible(fn ($record) => filled($record?->thumbnail_file))
+                                    ->action(function ($record, $livewire) {
+                                        $record->update(['thumbnail_file' => null]);
+                                        $livewire->refreshFormData(['thumbnail_file']);
+                                        Notification::make()->title('Image deleted')->success()->send();
+                                    }),
+                            ]),
+
                             Forms\Components\FileUpload::make('thumbnail_file')
-                                ->label('Upload from your computer')
+                                ->label('Upload a new image (replaces the current one)')
                                 ->image()
                                 ->disk(app()->environment('production') ? 'r2' : 'public')
                                 ->directory('post-thumbnails')
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->maxSize(4096)
                                 ->nullable()
-                                ->fetchFileInformation(false)
-                                ->previewable(false)
+                                // The existing file is shown via the Placeholder above instead of being
+                                // restored into this field - restoring it here hung forever waiting on
+                                // R2 for file info on every page load. This field is write-only: it
+                                // starts empty and only ever creates a *new* thumbnail.
+                                ->afterStateHydrated(fn (Forms\Components\FileUpload $component) => $component->state(null))
+                                ->dehydrated(fn ($state) => filled($state))
                                 ->saveUploadedFileUsing(function ($file) {
                                     $disk = app()->environment('production') ? 'r2' : 'public';
                                     $image = (new ImageManager(new Driver()))
