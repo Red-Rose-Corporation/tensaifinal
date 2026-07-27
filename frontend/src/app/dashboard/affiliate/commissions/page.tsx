@@ -204,6 +204,9 @@ export default function CommissionsPage() {
           <p className="text-xs text-slate-400 mt-0.5">
             {ja ? 'あなたの紹介リンクから提出された申請ごとの内訳です。' : bn ? 'আপনার লিংক থেকে জমা হওয়া প্রতিটি আবেদনের ব্রেকডাউন।' : 'Broken down by every application submitted through your referral link.'}
           </p>
+          <p className="text-xs text-amber-600 mt-1">
+            {ja ? '⚠ 予測額です。上記の合計収益には含まれておらず、まだ支払い可能な額ではありません。' : bn ? '⚠ এগুলো আনুমানিক পরিমাণ — উপরের মোট আয়ের মধ্যে অন্তর্ভুক্ত নয় এবং এখনও পরিশোধযোগ্য নয়।' : "⚠ Projected amounts — not included in Total Earned above and not yet a payable commission."}
+          </p>
         </div>
         <div className="p-5">
           {serviceLoading ? (
@@ -223,8 +226,8 @@ export default function CommissionsPage() {
                     <th className="pb-2 pr-3">{ja ? 'サービス' : bn ? 'সার্ভিস' : 'Service'}</th>
                     <th className="pb-2 pr-3 text-center">{ja ? '紹介数' : bn ? 'রেফার' : 'Referred'}</th>
                     <th className="pb-2 pr-3 text-center">{ja ? '成約' : bn ? 'কনভার্টেড' : 'Converted'}</th>
-                    <th className="pb-2 pr-3 text-right">{ja ? '獲得済み' : bn ? 'অর্জিত' : 'Earned'}</th>
-                    <th className="pb-2 text-right">{ja ? '保留中' : bn ? 'বাকি' : 'Pending'}</th>
+                    <th className="pb-2 pr-3 text-right">{ja ? '見込み収益' : bn ? 'আনুমানিক আয়' : 'Est. Earnings'}</th>
+                    <th className="pb-2 text-right">{ja ? '見込み保留中' : bn ? 'আনুমানিক বাকি' : 'Est. Pending'}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">

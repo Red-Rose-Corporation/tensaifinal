@@ -30,7 +30,7 @@ class AllServicesFee extends Page implements HasTable
     {
         return $table
             ->query(FormTemplate::query()->orderBy('country')->orderBy('name'))
-            ->heading('Every application form is a service — set what a direct candidate pays, what an agency pays, and the affiliate cut. Draft/inactive forms are hidden by default (turn off "Live services only" below to see them).')
+            ->heading('Every application form is a service — set what a direct candidate pays, what an agency pays, and the affiliate cut. Draft/inactive forms are hidden by default (turn off "Live services only" below to see them). Note: the "≈ Affiliate Earns" figure is a projection shown on affiliate dashboards — it is not yet wired to real payable commissions (see the Commissions resource for those).')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Service')
@@ -70,11 +70,12 @@ class AllServicesFee extends Page implements HasTable
                     ->placeholder('0.00'),
 
                 Tables\Columns\TextColumn::make('computed_commission')
-                    ->label('≈ Affiliate Earns')
+                    ->label('≈ Affiliate Earns (estimate)')
                     ->getStateUsing(function (FormTemplate $record) {
                         $amount = $record->affiliateCommissionAmount();
                         return $amount === null ? '—' : number_format($amount, 2) . ' ' . $record->fee_currency;
                     })
+                    ->tooltip('Projection only — shown on affiliate dashboards but not yet linked to a real payable commission.')
                     ->color('success')
                     ->weight('bold'),
 
