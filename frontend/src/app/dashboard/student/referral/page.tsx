@@ -226,12 +226,12 @@ export default function StudentReferralPage() {
                       {
                         num: '2',
                         title: ja ? '友人が登録' : bn ? 'বন্ধু নিবন্ধন করেন' : 'Friend registers',
-                        desc:  ja ? 'Tensaiに登録しエージェンシーとマッチング' : bn ? 'বন্ধু Tensai-এ যোগ দেন' : 'Your friend signs up and gets matched with an agency',
+                        desc:  ja ? '紹介リンクを使って友人が登録します' : bn ? 'আপনার রেফারেল লিংক ব্যবহার করে আপনার বন্ধু নিবন্ধন করেন' : 'Your friend signs up using your referral link',
                       },
                       {
                         num: '3',
                         title: ja ? 'コミッション獲得' : bn ? 'কমিশন পান' : 'You earn commission',
-                        desc:  ja ? '入学完了後にコミッションが支払われます' : bn ? 'ভর্তি সম্পন্ন হলে কমিশন পাবেন' : 'Paid out after enrollment completes',
+                        desc:  ja ? '友人がサービスを購入し入学が完了すると、規定に従いコミッションを獲得します' : bn ? 'আপনার বন্ধু কোনো সার্ভিস কিনে ভর্তি সম্পন্ন করলে, প্ল্যাটফর্ম নীতি অনুযায়ী আপনি কমিশন পাবেন' : 'If your friend buys any service and completes enrollment, you get a commission according to platform policy',
                       },
                     ].map(step => (
                       <div key={step.num} className="flex gap-4 items-start">
