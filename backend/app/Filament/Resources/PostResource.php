@@ -141,6 +141,7 @@ class PostResource extends Resource
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->maxSize(4096)
                                 ->nullable()
+                                ->fetchFileInformation(false)
                                 ->saveUploadedFileUsing(function ($file) {
                                     $disk = app()->environment('production') ? 'r2' : 'public';
                                     $image = (new ImageManager(new Driver()))
