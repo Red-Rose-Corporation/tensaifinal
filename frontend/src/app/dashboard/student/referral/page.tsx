@@ -13,6 +13,8 @@ interface Referral {
   target_country: string | null;
   status: 'pending' | 'enrolled' | 'processing' | string;
   created_at: string;
+  commission_amount: number | null;
+  commission_status: 'due' | 'paid' | string | null;
 }
 
 const STATUS_BADGE: Record<string, string> = {
@@ -63,18 +65,18 @@ export default function StudentReferralPage() {
   const referrals: Referral[] = referralsData?.data ?? [];
   const fees: Record<string, number> = settingsData?.referral_fees ?? {};
 
+  // Real, locked-at-enrollment commission amounts (not a live re-guess from current fee settings).
   const earned = referrals
-    .filter(r => r.status === 'enrolled')
-    .reduce((sum, r) => sum + (r.target_country ? (fees[r.target_country] ?? 0) : 0), 0);
+    .filter(r => r.commission_amount != null)
+    .reduce((sum, r) => sum + Number(r.commission_amount), 0);
 
   const pendingAmt = referrals
-    .filter(r => r.status !== 'enrolled')
-    .reduce((sum, r) => sum + (r.target_country ? (fees[r.target_country] ?? 0) : 0), 0);
+    .filter(r => r.commission_status === 'due')
+    .reduce((sum, r) => sum + Number(r.commission_amount), 0);
 
-  function fmtFee(country: string | null) {
-    if (!country) return '—';
-    const f = fees[country];
-    return f ? `৳${f.toLocaleString()}` : '—';
+  function fmtFee(r: Referral) {
+    if (r.commission_amount == null) return '—';
+    return `৳${Number(r.commission_amount).toLocaleString()}`;
   }
 
   function statusLabel(status: string) {
@@ -345,9 +347,9 @@ export default function StudentReferralPage() {
                               </span>
                             </td>
                             <td className="px-4 py-3.5 text-right font-bold text-sm">
-                              {r.status === 'enrolled'
-                                ? <span className="text-green-700">{fmtFee(r.target_country)}</span>
-                                : <span className="text-slate-400">{fmtFee(r.target_country)}</span>}
+                              {r.commission_status === 'paid'
+                                ? <span className="text-green-700">{fmtFee(r)}</span>
+                                : <span className="text-slate-400">{fmtFee(r)}</span>}
                             </td>
                             <td className="px-5 py-3.5 text-right text-xs text-slate-400 whitespace-nowrap">
                               {new Date(r.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
@@ -387,8 +389,8 @@ export default function StudentReferralPage() {
                         </div>
                         <div className="flex items-center justify-between text-xs text-slate-500">
                           <span>{r.target_country ?? '—'}</span>
-                          <span className={r.status === 'enrolled' ? 'font-bold text-green-700' : 'text-slate-400'}>
-                            {fmtFee(r.target_country)}
+                          <span className={r.commission_status === 'paid' ? 'font-bold text-green-700' : 'text-slate-400'}>
+                            {fmtFee(r)}
                           </span>
                         </div>
                         <p className="text-[11px] text-slate-400 mt-1">

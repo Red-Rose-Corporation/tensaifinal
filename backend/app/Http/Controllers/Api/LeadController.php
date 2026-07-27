@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AffiliateProfile;
 use App\Models\Commission;
 use App\Models\Lead;
+use App\Models\Setting;
 use App\Models\StudentProfile;
 use App\Models\TensaiNotification;
 use App\Models\User;
@@ -362,8 +363,9 @@ class LeadController extends Controller
         if ($validated['status'] === 'enrolled' && $previousStatus !== 'enrolled') {
             $student = $lead->student ?? User::find($lead->student_id);
             if ($student?->referred_by) {
-                $affiliate = User::find($student->referred_by);
-                if ($affiliate?->isAffiliate()) {
+                $referrer = User::find($student->referred_by);
+                if ($referrer?->isAffiliate()) {
+                    $affiliate = $referrer;
                     $affiliateProfile = AffiliateProfile::firstWhere('user_id', $affiliate->id);
                     $amount = $affiliateProfile?->local_commission_fixed ?? 0;
 
@@ -391,6 +393,32 @@ class LeadController extends Controller
                             'body'       => "A student you referred has enrolled. ৳{$amount} commission is now due.",
                             'data'       => ['lead_id' => $lead->id, 'amount' => $amount],
                             'action_url' => '/dashboard/affiliate/commissions',
+                        ]);
+                    }
+                } elseif ($referrer) {
+                    // Plain student (or other non-affiliate) referrer: pay out the
+                    // admin-configured flat fee for the referred lead's target country.
+                    $fees   = json_decode(Setting::get('referral_fees', '{}'), true) ?: [];
+                    $amount = (float) ($fees[$lead->target_country] ?? 0);
+
+                    if ($amount > 0) {
+                        Commission::create([
+                            'lead_id'   => $lead->id,
+                            'type'      => 'student_referral',
+                            'payer_id'  => (int) config('app.platform_admin_id', 1),
+                            'payee_id'  => $referrer->id,
+                            'amount'    => $amount,
+                            'currency'  => 'BDT',
+                            'status'    => 'due',
+                        ]);
+
+                        TensaiNotification::create([
+                            'user_id'    => $referrer->id,
+                            'type'       => 'commission_due',
+                            'title'      => 'Referral Commission Earned',
+                            'body'       => "A friend you referred has enrolled. ৳{$amount} commission is now due.",
+                            'data'       => ['lead_id' => $lead->id, 'amount' => $amount],
+                            'action_url' => '/dashboard/student/referral',
                         ]);
                     }
                 }

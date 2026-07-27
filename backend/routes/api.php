@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\InterviewController;
 use App\Http\Controllers\Api\CommissionController;
 use App\Http\Controllers\Api\AffiliateProfileController;
 use App\Http\Controllers\Api\AffiliateController;
+use App\Http\Controllers\Api\StudentReferralController;
 use App\Http\Controllers\Api\GalleryController;
 use App\Http\Controllers\Api\AdminGalleryController;
 use App\Models\Setting;
@@ -116,7 +117,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/profile', [StudentProfileController::class, 'update']);
         Route::patch('/account',        [AccountController::class, 'update']);
         Route::post('/account/avatar',  [AccountController::class, 'avatar']);
-        Route::get('/referrals',        [AffiliateController::class, 'referredStudents']);
+        Route::get('/referrals',        [StudentReferralController::class, 'index']);
         Route::post('/ocr/upload', [OcrController::class, 'upload']);
         Route::post('/ocr/review-request', [OcrController::class, 'requestReview']);
         Route::post('/help-request', [HelpRequestController::class, 'store']);
