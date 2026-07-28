@@ -69,7 +69,7 @@ class CommissionController extends Controller
     public function earnings(Request $request): JsonResponse
     {
         $commissions = Commission::where('payee_id', $request->user()->id)
-            ->with(['lead:id,lead_code,student_id', 'lead.student:id,name'])
+            ->with(['lead:id,lead_code,student_id', 'lead.student:id,name', 'application:id,form_template_id,user_id', 'application.formTemplate:id,name,country', 'application.user:id,name'])
             ->latest()
             ->paginate(20);
 
@@ -80,6 +80,8 @@ class CommissionController extends Controller
     {
         $commissions = Commission::with([
             'lead:id,lead_code',
+            'application:id,form_template_id',
+            'application.formTemplate:id,name,country',
             'payer:id,name,gateway_type',
             'payee:id,name,gateway_type',
         ])

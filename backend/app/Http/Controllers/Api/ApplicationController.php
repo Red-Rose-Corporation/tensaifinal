@@ -3,9 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AffiliateProfile;
 use App\Models\Application;
 use App\Models\ApplicationDocument;
+use App\Models\Commission;
 use App\Models\FormTemplate;
+use App\Models\Setting;
+use App\Models\TensaiNotification;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -137,11 +142,95 @@ class ApplicationController extends Controller
     public function liveToSchool(Request $request, int $id): JsonResponse
     {
         $app = $this->findOwned($request, $id);
+        $turningOn = !$app->live_to_school;
+
         $app->update([
-            'live_to_school'    => !$app->live_to_school,
-            'live_to_school_at' => $app->live_to_school ? null : now(),
+            'live_to_school'    => $turningOn,
+            'live_to_school_at' => $turningOn ? now() : null,
         ]);
+
+        if ($turningOn) {
+            $this->createReferralCommission($app->fresh());
+        }
+
         return response()->json($this->format($app->fresh()));
+    }
+
+    /**
+     * A referred student's application just went live_to_school (service purchased/delivered).
+     * Pay the referrer a real, locked commission — mirrors LeadController's enrolled-status hook,
+     * but keyed off the specific service (FormTemplate) instead of a flat per-country fee.
+     */
+    private function createReferralCommission(Application $app): void
+    {
+        $buyer = $app->user ?? User::find($app->user_id);
+        if (!$buyer?->referred_by) return;
+
+        // Guard against duplicate commissions if toggled off and back on
+        if (Commission::where('application_id', $app->id)->exists()) return;
+
+        $referrer = User::find($buyer->referred_by);
+        if (!$referrer) return;
+
+        // Re-fetch full record — $app->formTemplate may be eager-loaded with a
+        // restricted column list (see findOwned) that excludes the fee fields.
+        $template = FormTemplate::find($app->form_template_id);
+        $platformAdminId = (int) config('app.platform_admin_id', 1);
+
+        if ($referrer->isAffiliate()) {
+            $amount = $template?->affiliateCommissionAmount();
+            if ($amount === null || $amount <= 0) return;
+
+            Commission::create([
+                'application_id' => $app->id,
+                'type'           => 'affiliate_associate',
+                'payer_id'       => $platformAdminId,
+                'payee_id'       => $referrer->id,
+                'amount'         => $amount,
+                'currency'       => $template->fee_currency ?? 'BDT',
+                'status'         => 'due',
+            ]);
+
+            $profile = AffiliateProfile::firstWhere('user_id', $referrer->id);
+            if ($profile) {
+                $profile->increment('pending_payout', $amount);
+                $profile->increment('converted_referrals');
+            }
+
+            TensaiNotification::create([
+                'user_id'    => $referrer->id,
+                'type'       => 'commission_due',
+                'title'      => 'Commission Earned',
+                'body'       => "A student you referred purchased {$template->name}. ".number_format($amount, 2)." {$template->fee_currency} commission is now due.",
+                'data'       => ['application_id' => $app->id, 'amount' => $amount],
+                'action_url' => '/dashboard/affiliate/commissions',
+            ]);
+        } else {
+            // Plain student (or other non-affiliate) referrer: flat fee for the
+            // service's country, same admin-configured schedule used for enrollments.
+            $fees   = json_decode(Setting::get('referral_fees', '{}'), true) ?: [];
+            $amount = (float) ($fees[$template?->country] ?? 0);
+            if ($amount <= 0) return;
+
+            Commission::create([
+                'application_id' => $app->id,
+                'type'           => 'student_referral',
+                'payer_id'       => $platformAdminId,
+                'payee_id'       => $referrer->id,
+                'amount'         => $amount,
+                'currency'       => 'BDT',
+                'status'         => 'due',
+            ]);
+
+            TensaiNotification::create([
+                'user_id'    => $referrer->id,
+                'type'       => 'commission_due',
+                'title'      => 'Referral Commission Earned',
+                'body'       => "A friend you referred purchased a service. ৳{$amount} commission is now due.",
+                'data'       => ['application_id' => $app->id, 'amount' => $amount],
+                'action_url' => '/dashboard/student/referral',
+            ]);
+        }
     }
 
     public function updateStatus(Request $request, int $id): JsonResponse

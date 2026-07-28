@@ -17,6 +17,7 @@ interface Commission {
   notes: string | null;
   created_at: string;
   lead?: { lead_code: string; student?: { name: string } } | null;
+  application?: { form_template?: { name: string; country: string } | null; user?: { name: string } | null } | null;
 }
 
 interface Summary {
@@ -170,6 +171,8 @@ export default function CommissionsPage() {
                       {c.type.replace(/_/g, ' ')}
                       {c.lead?.lead_code ? ` · ${c.lead.lead_code}` : ''}
                       {c.lead?.student?.name ? ` · ${c.lead.student.name}` : ''}
+                      {c.application?.form_template?.name ? ` · ${c.application.form_template.name}` : ''}
+                      {c.application?.user?.name ? ` · ${c.application.user.name}` : ''}
                     </p>
                     {c.notes && <p className="text-xs text-slate-400 mt-0.5 line-clamp-1">📝 {c.notes}</p>}
                   </div>

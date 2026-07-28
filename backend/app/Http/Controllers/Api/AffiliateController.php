@@ -294,7 +294,7 @@ class AffiliateController extends Controller
     public function commissions(Request $request): JsonResponse
     {
         $commissions = Commission::where('payee_id', $request->user()->id)
-            ->with(['lead:id,lead_code,student_id', 'lead.student:id,name'])
+            ->with(['lead:id,lead_code,student_id', 'lead.student:id,name', 'application:id,form_template_id,user_id', 'application.formTemplate:id,name,country', 'application.user:id,name'])
             ->when($request->status, fn ($q) => $q->where('status', $request->status))
             ->latest()
             ->paginate(20);

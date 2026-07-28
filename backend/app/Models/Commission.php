@@ -10,7 +10,7 @@ class Commission extends Model
     use HasFactory;
 
     protected $fillable = [
-        'lead_id', 'type', 'payer_id', 'payee_id',
+        'lead_id', 'application_id', 'type', 'payer_id', 'payee_id',
         'amount', 'currency', 'percent', 'status',
         'due_at', 'paid_at', 'payment_reference', 'notes',
     ];
@@ -23,6 +23,7 @@ class Commission extends Model
     ];
 
     public function lead() { return $this->belongsTo(Lead::class); }
+    public function application() { return $this->belongsTo(Application::class); }
     public function payer() { return $this->belongsTo(User::class, 'payer_id'); }
     public function payee() { return $this->belongsTo(User::class, 'payee_id'); }
 

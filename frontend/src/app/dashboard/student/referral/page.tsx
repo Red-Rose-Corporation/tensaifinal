@@ -11,6 +11,7 @@ interface Referral {
   name: string;
   email: string;
   target_country: string | null;
+  service_name: string | null;
   status: 'pending' | 'enrolled' | 'processing' | string;
   created_at: string;
   commission_amount: number | null;
@@ -326,6 +327,7 @@ export default function StudentReferralPage() {
                       <thead>
                         <tr className="bg-slate-50 border-b border-slate-100">
                           <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">{ja ? '名前' : bn ? 'নাম' : 'Name'}</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">{ja ? 'サービス' : bn ? 'সার্ভিস' : 'Service'}</th>
                           <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">{ja ? '国' : bn ? 'দেশ' : 'Country'}</th>
                           <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">{ja ? 'ステータス' : bn ? 'স্ট্যাটাস' : 'Status'}</th>
                           <th className="px-4 py-3 text-right text-xs font-semibold text-slate-500">{ja ? 'コミッション' : bn ? 'কমিশন' : 'Commission'}</th>
@@ -338,6 +340,11 @@ export default function StudentReferralPage() {
                             <td className="px-5 py-3.5">
                               <p className="font-semibold text-slate-800 text-sm">{r.name}</p>
                               <p className="text-xs text-slate-400 truncate max-w-[160px]">{r.email}</p>
+                            </td>
+                            <td className="px-4 py-3.5 text-sm text-slate-600">
+                              {r.service_name
+                                ? <span className="font-medium text-slate-700">{r.service_name}</span>
+                                : <span className="text-slate-300">—</span>}
                             </td>
                             <td className="px-4 py-3.5 text-sm text-slate-600">{r.target_country ?? '—'}</td>
                             <td className="px-4 py-3.5">
@@ -360,7 +367,7 @@ export default function StudentReferralPage() {
                       {earned > 0 && (
                         <tfoot>
                           <tr className="border-t-2 border-slate-200 bg-green-50/50">
-                            <td colSpan={3} className="px-5 py-3 text-xs font-bold text-slate-500 uppercase tracking-wide">
+                            <td colSpan={4} className="px-5 py-3 text-xs font-bold text-slate-500 uppercase tracking-wide">
                               {ja ? '合計獲得済み' : bn ? 'মোট অর্জিত' : 'Total Earned'}
                             </td>
                             <td className="px-4 py-3 text-right font-black text-green-700 text-sm">
@@ -387,6 +394,9 @@ export default function StudentReferralPage() {
                             {statusLabel(r.status)}
                           </span>
                         </div>
+                        {r.service_name && (
+                          <p className="text-xs font-medium text-slate-600 mb-1">{r.service_name}</p>
+                        )}
                         <div className="flex items-center justify-between text-xs text-slate-500">
                           <span>{r.target_country ?? '—'}</span>
                           <span className={r.commission_status === 'paid' ? 'font-bold text-green-700' : 'text-slate-400'}>
