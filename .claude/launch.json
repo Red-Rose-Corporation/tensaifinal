@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "frontend",
-      "runtimeExecutable": "cmd",
-      "runtimeArgs": ["/c", "npm", "run", "dev"],
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-Command", "cd frontend; npm run dev"],
       "port": 3000
     }
   ]

@@ -64,12 +64,17 @@ interface ComparisonTable {
   headers?: string[];
   rows?: { label: string; values: string[] }[];
 }
+interface ContentBox {
+  title?: string;
+  content?: string;
+}
 interface Post {
   id: number; title: string; slug: string; type: string;
   excerpt: string; body?: string; thumbnail: string | null;
   youtube_id: string | null; published_at: string; categories: Category[];
   locked: boolean; is_premium: boolean;
   comparison_table?: ComparisonTable | null;
+  content_box?: ContentBox | null;
 }
 
 /* ── Comparison table ────────────────────────────────────────── */
@@ -108,6 +113,24 @@ function ComparisonTableBlock({ table }: { table: ComparisonTable }) {
             ))}
           </tbody>
         </table>
+      </div>
+    </div>
+  );
+}
+
+/* ── Content box ─────────────────────────────────────────────── */
+function ContentBoxBlock({ box }: { box: ContentBox }) {
+  if (!box.content) return null;
+
+  return (
+    <div className="mt-7 rounded-2xl border border-slate-100 shadow-[0_1px_4px_rgba(15,23,42,0.06)] overflow-hidden bg-white">
+      {box.title && (
+        <div className="px-5 sm:px-6 py-3.5 bg-green-50 border-b border-green-100">
+          <p className="font-black text-green-800 text-sm sm:text-base leading-snug">{box.title}</p>
+        </div>
+      )}
+      <div className="p-5 sm:p-6">
+        <div className="rich-body" dangerouslySetInnerHTML={{ __html: box.content }} />
       </div>
     </div>
   );
@@ -645,6 +668,8 @@ function PostInner() {
         ) : null}
 
         {!isLocked && post.comparison_table && <ComparisonTableBlock table={post.comparison_table} />}
+
+        {!isLocked && post.content_box && <ContentBoxBlock box={post.content_box} />}
 
         {isLocked && (
           <div className="rounded-2xl overflow-hidden shadow-[0_1px_4px_rgba(15,23,42,0.06)] border border-slate-100">

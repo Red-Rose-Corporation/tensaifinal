@@ -118,6 +118,7 @@ class PostController extends Controller
             $base['body']             = $post->body;
             $base['video_url']        = $post->video_url;
             $base['comparison_table'] = $post->comparison_table;
+            $base['content_box']      = $post->content_box;
         }
 
         return $base;

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Forms\Components\PasteBox;
 use App\Filament\Resources\PostResource\Pages;
 use App\Models\Post;
 use Filament\Forms;
@@ -128,6 +129,21 @@ class PostResource extends Resource
                                 ->addActionLabel('Add row')
                                 ->reorderable()
                                 ->columnSpanFull(),
+                        ])
+                        ->columns(1),
+
+                    Forms\Components\Section::make('Box (optional)')
+                        ->description('A simple highlighted box shown below the article body — for a quick note, list, or a table pasted from Word/Excel/Sheets. Leave empty to skip it entirely.')
+                        ->collapsed(fn (Get $get) => blank($get('content_box.content')))
+                        ->schema([
+                            Forms\Components\TextInput::make('content_box.title')
+                                ->label('Box Title (optional)')
+                                ->maxLength(255),
+
+                            PasteBox::make('content_box.content')
+                                ->label('Box Content')
+                                ->helperText('Type normally, or paste text/a table copied from Word, Excel, or Google Sheets — tables keep their rows and columns.')
+                                ->nullable(),
                         ])
                         ->columns(1),
 
