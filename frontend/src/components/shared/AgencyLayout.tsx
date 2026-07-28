@@ -34,6 +34,11 @@ const NAV = [
     icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
   },
   {
+    label: 'Guide',
+    href: '/feed',
+    icon: 'M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25',
+  },
+  {
     label: 'Profile',
     href: '/dashboard/agency/profile',
     icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
@@ -104,7 +109,7 @@ export default function AgencyLayout({ children, title }: Props) {
     <div className="flex flex-col h-full">
       {/* Brand */}
       <div className="px-5 py-5 border-b border-slate-100">
-        <Link href="/dashboard/agency" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3">
           <Image src="/tensai-logo.png" alt="Tensai" width={30} height={30} className="rounded-full object-contain shrink-0" />
           <div>
             <div className="text-sm font-bold text-slate-900 leading-tight">Tensai</div>

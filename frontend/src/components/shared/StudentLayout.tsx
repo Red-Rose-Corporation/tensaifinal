@@ -65,6 +65,17 @@ const NAV = [
     ),
   },
   {
+    label: { en: 'Guide', ja: 'ガイド', bn: 'গাইড' },
+    shortLabel: { en: 'Guide', ja: 'ガイド', bn: 'গাইড' },
+    href: '/feed',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
+          d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+      </svg>
+    ),
+  },
+  {
     label: { en: 'Settings', ja: '設定', bn: 'সেটিংস' },
     shortLabel: { en: 'More', ja: '設定', bn: 'আরো' },
     href: '/dashboard/student/settings',
@@ -167,7 +178,7 @@ export default function StudentLayout({ children, title }: Props) {
 
       {/* Logo */}
       <Link
-        href="/dashboard/student/leads"
+        href="/"
         className="h-16 px-5 flex items-center gap-3 border-b border-slate-200 hover:bg-slate-50 transition-colors shrink-0"
       >
         <Image src="/tensai-logo.png" alt="Tensai" width={32} height={32} className="rounded-lg object-contain shrink-0" />
@@ -277,7 +288,7 @@ export default function StudentLayout({ children, title }: Props) {
         <header className="bg-white border-b border-slate-200 sticky top-0 z-30 h-14 flex items-center px-4 sm:px-6 gap-3">
 
           {/* Mobile: logo */}
-          <Link href="/dashboard/student/leads" className="md:hidden flex items-center gap-2">
+          <Link href="/" className="md:hidden flex items-center gap-2">
             <Image src="/tensai-logo.png" alt="Tensai" width={26} height={26} className="rounded-lg object-contain" />
             <span className="font-bold text-green-800 text-sm">Tensai</span>
           </Link>
@@ -450,7 +461,7 @@ export default function StudentLayout({ children, title }: Props) {
           })()}
           {/* More */}
           {(() => {
-            const morePages = ['/dashboard/student/cv', '/dashboard/student/interviews', '/dashboard/student/experience', '/dashboard/student/settings'];
+            const morePages = ['/dashboard/student/cv', '/dashboard/student/interviews', '/dashboard/student/experience', '/feed', '/dashboard/student/settings'];
             const active = morePages.some(p => pathname === p || pathname.startsWith(p + '/'));
             return (
               <button onClick={() => setMoreOpen(o => !o)} className={`relative flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors ${active || moreOpen ? 'text-green-700' : 'text-slate-400'}`}>
@@ -471,11 +482,12 @@ export default function StudentLayout({ children, title }: Props) {
           <div className="md:hidden fixed inset-0 z-40 bg-black/30" onClick={() => setMoreOpen(false)} />
           <div className="md:hidden fixed bottom-14 left-0 right-0 z-50 bg-white border-t border-slate-200 rounded-t-2xl shadow-xl px-4 py-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
             <div className="w-10 h-1 bg-slate-200 rounded-full mx-auto mb-4" />
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-5 gap-2">
               {[
                 { href: '/dashboard/student/cv', label: { en: 'My CV', ja: '履歴書', bn: 'সিভি' }, icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg> },
                 { href: '/dashboard/student/interviews', label: { en: 'Interviews', ja: '面接', bn: 'ইন্টারভিউ' }, icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg> },
                 { href: '/dashboard/student/experience', label: { en: 'Experience', ja: '体験', bn: 'অভিজ্ঞতা' }, icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> },
+                { href: '/feed', label: { en: 'Guide', ja: 'ガイド', bn: 'গাইড' }, icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg> },
                 { href: '/dashboard/student/settings', label: { en: 'Settings', ja: '設定', bn: 'সেটিংস' }, icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg> },
               ].map(item => {
                 const active = pathname === item.href || pathname.startsWith(item.href + '/');

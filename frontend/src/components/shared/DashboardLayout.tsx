@@ -80,6 +80,7 @@ export default function DashboardLayout({ children, title }: Props) {
       { label: lang === 'ja' ? 'アフィリエイト' : lang === 'bn' ? 'অ্যাফিলিয়েট' : 'Affiliates', href: '/dashboard/admin/affiliates' },
       { label: lang === 'ja' ? '選択済み' : lang === 'bn' ? 'নির্বাচিত' : 'Selected',       href: '/dashboard/admin/selected' },
       { label: lang === 'ja' ? 'ギャラリー' : lang === 'bn' ? 'গ্যালারি' : 'Gallery',     href: '/dashboard/admin/gallery' },
+      { label: lang === 'ja' ? 'ガイド' : lang === 'bn' ? 'গাইড' : 'Guide',               href: '/feed' },
       { label: lang === 'ja' ? '設定' : lang === 'bn' ? 'সেটিংস' : 'Settings',            href: '/dashboard/admin/settings' },
     ],
     student: [
@@ -98,6 +99,7 @@ export default function DashboardLayout({ children, title }: Props) {
       { label: lang === 'ja' ? '申請プール' : lang === 'bn' ? 'আবেদন ভান্ডার' : 'Application Pool', href: '/dashboard/institution/applications' },
       { label: lang === 'ja' ? '選択済み' : lang === 'bn' ? 'নির্বাচিত' : 'Selected', href: '/dashboard/institution/selected' },
       { label: lang === 'ja' ? 'アカウントマネージャー' : lang === 'bn' ? 'অ্যাকাউন্ট ম্যানেজার' : 'Account Managers', href: '/dashboard/institution/account-managers' },
+      { label: lang === 'ja' ? 'ガイド' : lang === 'bn' ? 'গাইড' : 'Guide', href: '/feed' },
       { label: lang === 'ja' ? '設定' : lang === 'bn' ? 'সেটিংস' : 'Settings', href: '/dashboard/institution/settings' },
     ],
     branch_admin: [
@@ -121,6 +123,7 @@ export default function DashboardLayout({ children, title }: Props) {
       ] : []),
       // Both
       { label: lang === 'ja' ? 'コミッション' : lang === 'bn' ? 'কমিশন' : 'Commissions', href: '/dashboard/affiliate/commissions' },
+      { label: lang === 'ja' ? 'ガイド' : lang === 'bn' ? 'গাইড' : 'Guide', href: '/feed' },
       { label: lang === 'ja' ? '設定' : lang === 'bn' ? 'সেটিংস' : 'Settings', href: '/dashboard/affiliate/settings' },
       // Local upgrade link
       ...(affiliateType === 'local' ? [
@@ -167,7 +170,7 @@ export default function DashboardLayout({ children, title }: Props) {
 
           {/* Left: logo + desktop nav */}
           <div className="flex items-center min-w-0">
-            <Link href={isAdmin ? '/dashboard/admin/applicants' : isBranchAdmin ? '/dashboard/branch' : `/dashboard/${user.gateway_type}`} className="flex items-center gap-2 shrink-0 mr-4">
+            <Link href="/" className="flex items-center gap-2 shrink-0 mr-4">
               <Image src="/tensai-logo.png" alt="Tensai" width={30} height={30} className="rounded-full object-contain" />
               <span className="font-bold text-green-800 tracking-tight">Tensai</span>
             </Link>
