@@ -1,8 +1,9 @@
 FROM php:8.1-apache
 
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev libicu-dev default-mysql-client \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath intl \
+    git curl zip unzip libzip-dev libpng-dev libjpeg62-turbo-dev libwebp-dev libfreetype6-dev libonig-dev libxml2-dev libicu-dev default-mysql-client \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath intl gd \
     && rm -f /etc/apache2/mods-enabled/mpm_event.conf \
              /etc/apache2/mods-enabled/mpm_event.load \
              /etc/apache2/mods-enabled/mpm_worker.conf \
