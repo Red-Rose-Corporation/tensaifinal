@@ -29,9 +29,15 @@ class CommissionResource extends Resource
         return $form->schema([
             Forms\Components\Section::make('Commission Details')->schema([
                 Forms\Components\Select::make('lead_id')
-                    ->label('Applicant')
+                    ->label('Applicant (Lead)')
                     ->relationship('lead', 'lead_code')
-                    ->searchable()->required(),
+                    ->searchable()
+                    ->helperText('Leave empty for a commission tied to an Application instead — see the field below.'),
+                Forms\Components\Select::make('application_id')
+                    ->label('Application')
+                    ->relationship('application', 'application_code')
+                    ->searchable()
+                    ->helperText('Leave empty for a commission tied to a Lead instead.'),
                 Forms\Components\Select::make('type')
                     ->options([
                         'platform_service_fee' => 'Platform Service Fee',
@@ -42,6 +48,7 @@ class CommissionResource extends Resource
                         'affiliate_associate' => 'Affiliate (Associate)',
                         'affiliate_global_partner' => 'Affiliate (Global Partner)',
                         'referral_sourcing_fee' => 'Referral Sourcing Fee',
+                        'student_referral' => 'Student Referral',
                     ])->required(),
                 Forms\Components\Select::make('payer_id')
                     ->label('Payer')
@@ -62,7 +69,8 @@ class CommissionResource extends Resource
                         'pending' => 'Pending',
                         'due' => 'Due',
                         'paid' => 'Paid',
-                        'cancelled' => 'Cancelled',
+                        'disputed' => 'Disputed',
+                        'waived' => 'Waived',
                     ])->required(),
                 Forms\Components\DateTimePicker::make('due_at'),
                 Forms\Components\DateTimePicker::make('paid_at'),
@@ -76,8 +84,14 @@ class CommissionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (\Illuminate\Database\Eloquent\Builder $query) => $query->with(['lead', 'application']))
             ->columns([
-                Tables\Columns\TextColumn::make('lead.lead_code')->label('Applicant')->searchable(),
+                Tables\Columns\TextColumn::make('applicant')
+                    ->label('Applicant')
+                    ->getStateUsing(fn (Commission $r) => $r->lead?->lead_code ?? $r->application?->application_code ?? '—')
+                    ->searchable(query: fn (\Illuminate\Database\Eloquent\Builder $query, string $search) => $query
+                        ->whereHas('lead', fn ($q) => $q->where('lead_code', 'like', "%{$search}%"))
+                        ->orWhereHas('application', fn ($q) => $q->where('application_code', 'like', "%{$search}%"))),
                 Tables\Columns\TextColumn::make('type')
                     ->badge()
                     ->color(fn (string $state) => match($state) {
@@ -97,7 +111,8 @@ class CommissionResource extends Resource
                         'paid' => 'success',
                         'due' => 'warning',
                         'pending' => 'gray',
-                        'cancelled' => 'danger',
+                        'disputed' => 'danger',
+                        'waived' => 'gray',
                         default => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('due_at')->dateTime()->sortable(),
@@ -105,7 +120,7 @@ class CommissionResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('status')
-                    ->options(['pending' => 'Pending', 'due' => 'Due', 'paid' => 'Paid', 'cancelled' => 'Cancelled']),
+                    ->options(['pending' => 'Pending', 'due' => 'Due', 'paid' => 'Paid', 'disputed' => 'Disputed', 'waived' => 'Waived']),
                 SelectFilter::make('type')
                     ->options([
                         'platform_service_fee' => 'Platform Service Fee',
@@ -116,6 +131,7 @@ class CommissionResource extends Resource
                         'affiliate_associate' => 'Affiliate (Associate)',
                         'affiliate_global_partner' => 'Affiliate (Global Partner)',
                         'referral_sourcing_fee' => 'Referral Sourcing Fee',
+                        'student_referral' => 'Student Referral',
                     ]),
             ])
             ->actions([

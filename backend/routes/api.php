@@ -261,6 +261,8 @@ Route::middleware('auth:sanctum')->group(function () {
         // Admin affiliates
         Route::get('/affiliates',                                                    [AdminAffiliateController::class, 'index']);
         Route::patch('/affiliates/{id}/status',                                      [AdminAffiliateController::class, 'updateStatus']);
+        Route::patch('/affiliates/{id}/rates',                                       [AdminAffiliateController::class, 'updateRates']);
+        Route::patch('/affiliates/{affiliateId}/entities/{entityId}/status',         [AdminAffiliateController::class, 'updateEntityStatus']);
         Route::patch('/affiliates/{affiliateId}/commissions/{commissionId}/mark-paid', [AdminAffiliateController::class, 'markCommissionPaid']);
         Route::patch('/affiliates/{affiliateId}/commissions/mark-all-paid',          [AdminAffiliateController::class, 'markAllPaid']);
 

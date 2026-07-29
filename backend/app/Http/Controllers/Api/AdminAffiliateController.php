@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AffiliateManagedEntity;
+use App\Models\AffiliateProfile;
 use App\Models\Commission;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -13,7 +15,7 @@ class AdminAffiliateController extends Controller
     public function index(): JsonResponse
     {
         $affiliates = User::role('affiliate')
-            ->with('affiliateProfile')
+            ->with(['affiliateProfile.managedEntities'])
             ->latest()
             ->get()
             ->map(function ($u) {
@@ -29,7 +31,7 @@ class AdminAffiliateController extends Controller
         $user = User::findOrFail($id);
         $request->validate(['status' => 'required|in:active,suspended,pending']);
         $user->update(['status' => $request->status]);
-        $u = $user->fresh('affiliateProfile');
+        $u = $user->fresh(['affiliateProfile.managedEntities']);
         $u->setRelation('commissions', Commission::where('payee_id', $u->id)->get());
         return response()->json($this->format($u));
     }
@@ -49,8 +51,31 @@ class AdminAffiliateController extends Controller
         return response()->json(['success' => true]);
     }
 
+    /** Admin sets what this affiliate earns per conversion — local (per-student, flat) or global (per-enrollment, %). */
+    public function updateRates(Request $request, int $id): JsonResponse
+    {
+        $profile = AffiliateProfile::where('user_id', $id)->firstOrFail();
+        $data = $request->validate([
+            'local_commission_fixed'    => 'nullable|numeric|min:0',
+            'global_commission_percent' => 'nullable|numeric|min:0|max:100',
+        ]);
+        $profile->update($data);
+        return response()->json(['success' => true, 'profile' => $profile->fresh()]);
+    }
+
+    /** Activate/suspend an institution or employee this Global affiliate declared as managed by them. */
+    public function updateEntityStatus(Request $request, int $affiliateId, int $entityId): JsonResponse
+    {
+        $entity = AffiliateManagedEntity::where('affiliate_user_id', $affiliateId)->findOrFail($entityId);
+        $data = $request->validate(['status' => 'required|in:active,inactive,suspended']);
+        $entity->update($data);
+        return response()->json(['success' => true, 'entity' => $entity->fresh()]);
+    }
+
     private function format(User $u): array
     {
+        // $u->affiliateProfile serializes with its eager-loaded managedEntities
+        // relation included automatically (as `managed_entities`, snake_cased).
         return [
             'id'          => $u->id,
             'name'        => $u->name,

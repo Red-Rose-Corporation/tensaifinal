@@ -7,6 +7,17 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+interface ManagedEntity {
+  id: number;
+  entity_type: 'institution' | 'employee';
+  name: string;
+  contact_email: string | null;
+  contact_phone: string | null;
+  country: string | null;
+  status: 'active' | 'inactive' | 'suspended';
+  commission_percent: number | string | null;
+}
+
 interface AffiliateUser {
   id: number;
   name: string;
@@ -26,6 +37,9 @@ interface AffiliateUser {
     bank_name: string | null;
     bank_account_number: string | null;
     bkash_number: string | null;
+    local_commission_fixed: number | string | null;
+    global_commission_percent: number | string | null;
+    managed_entities?: ManagedEntity[];
   } | null;
   commissions: {
     id: number;
@@ -74,6 +88,7 @@ export default function AdminAffiliatesPage() {
   const [expanded, setExpanded] = useState<number | null>(null);
   const [actionOk, setActionOk] = useState('');
   const [actionErr, setActionErr] = useState('');
+  const [rateDraft, setRateDraft] = useState<Record<number, { local: string; global: string }>>({});
 
   const { data, isLoading } = useQuery<AffiliateUser[] | { data: AffiliateUser[] }>({
     queryKey: ['admin-affiliates'],
@@ -122,6 +137,28 @@ export default function AdminAffiliatesPage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin-affiliates'] });
       setActionOk(ja ? 'すべて支払い済みにしました' : bn ? 'সব পেইড করা হয়েছে' : 'All marked as paid');
+      setTimeout(() => setActionOk(''), 3000);
+    },
+    onError: () => setActionErr(ja ? '操作に失敗しました。' : bn ? 'ব্যর্থ হয়েছে।' : 'Action failed.'),
+  });
+
+  const updateRates = useMutation({
+    mutationFn: ({ id, local_commission_fixed, global_commission_percent }: { id: number; local_commission_fixed?: number; global_commission_percent?: number }) =>
+      api.patch(`/admin/affiliates/${id}/rates`, { local_commission_fixed, global_commission_percent }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-affiliates'] });
+      setActionOk(ja ? '料金を更新しました' : bn ? 'রেট আপডেট হয়েছে' : 'Rate updated');
+      setTimeout(() => setActionOk(''), 3000);
+    },
+    onError: () => setActionErr(ja ? '操作に失敗しました。' : bn ? 'ব্যর্থ হয়েছে।' : 'Action failed.'),
+  });
+
+  const updateEntityStatus = useMutation({
+    mutationFn: ({ affiliateId, entityId, status }: { affiliateId: number; entityId: number; status: string }) =>
+      api.patch(`/admin/affiliates/${affiliateId}/entities/${entityId}/status`, { status }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-affiliates'] });
+      setActionOk(ja ? '更新しました' : bn ? 'আপডেট হয়েছে' : 'Updated');
       setTimeout(() => setActionOk(''), 3000);
     },
     onError: () => setActionErr(ja ? '操作に失敗しました。' : bn ? 'ব্যর্থ হয়েছে।' : 'Action failed.'),
@@ -266,6 +303,55 @@ export default function AdminAffiliatesPage() {
                       ) : null)}
                     </div>
 
+                    {/* Commission rate */}
+                    <div className="px-5 py-4 border-b border-slate-100">
+                      <div className="text-xs font-semibold text-slate-500 mb-2">
+                        {ja ? 'コミッション率' : bn ? 'কমিশন রেট' : 'Commission Rate'}
+                      </div>
+                      <div className="flex flex-wrap items-end gap-3">
+                        {affType !== 'global' && (
+                          <div>
+                            <label className="block text-[10px] text-slate-400 mb-1">
+                              {ja ? '固定額 (BDT)' : bn ? 'ফিক্সড পরিমাণ (BDT)' : 'Fixed amount (BDT) per enrolled student'}
+                            </label>
+                            <input
+                              type="number" min="0"
+                              value={rateDraft[aff.id]?.local ?? String(aff.profile?.local_commission_fixed ?? '')}
+                              onChange={e => setRateDraft(p => ({ ...p, [aff.id]: { local: e.target.value, global: p[aff.id]?.global ?? String(aff.profile?.global_commission_percent ?? '') } }))}
+                              className="w-36 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
+                            />
+                          </div>
+                        )}
+                        {affType === 'global' && (
+                          <div>
+                            <label className="block text-[10px] text-slate-400 mb-1">
+                              {ja ? '割合 (%) — 成約ごと' : bn ? 'শতাংশ (%) — প্রতি enrollment' : 'Percent (%) per enrollment'}
+                            </label>
+                            <input
+                              type="number" min="0" max="100"
+                              value={rateDraft[aff.id]?.global ?? String(aff.profile?.global_commission_percent ?? '')}
+                              onChange={e => setRateDraft(p => ({ ...p, [aff.id]: { global: e.target.value, local: p[aff.id]?.local ?? String(aff.profile?.local_commission_fixed ?? '') } }))}
+                              className="w-28 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-300"
+                            />
+                          </div>
+                        )}
+                        <button
+                          onClick={() => {
+                            const draft = rateDraft[aff.id];
+                            updateRates.mutate({
+                              id: aff.id,
+                              local_commission_fixed: Number(draft?.local ?? aff.profile?.local_commission_fixed ?? 0),
+                              global_commission_percent: Number(draft?.global ?? aff.profile?.global_commission_percent ?? 0),
+                            });
+                          }}
+                          disabled={updateRates.isPending}
+                          className="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors disabled:opacity-50"
+                        >
+                          {ja ? '保存' : bn ? 'সেভ করুন' : 'Save rate'}
+                        </button>
+                      </div>
+                    </div>
+
                     {/* Account actions */}
                     <div className="px-5 py-3 flex flex-wrap gap-2 border-b border-slate-100">
                       {aff.status !== 'active' && (
@@ -302,6 +388,69 @@ export default function AdminAffiliatesPage() {
                         </button>
                       )}
                     </div>
+
+                    {/* Managed institutions / employees (Global affiliates only) */}
+                    {affType === 'global' && (
+                      <div className="px-5 py-3 border-b border-slate-100">
+                        <div className="text-xs font-semibold text-slate-500 mb-2">
+                          {ja ? '管理エンティティ' : bn ? 'ম্যানেজড এনটিটি' : 'Managed Institutions & Employees'}
+                          {(aff.profile?.managed_entities?.length ?? 0) > 0 && (
+                            <span className="ml-1 text-slate-400">({aff.profile?.managed_entities?.length})</span>
+                          )}
+                        </div>
+                        {!aff.profile?.managed_entities?.length ? (
+                          <p className="text-xs text-slate-400 italic">
+                            {ja ? 'エンティティなし' : bn ? 'কোনো এনটিটি নেই' : 'None declared yet'}
+                          </p>
+                        ) : (
+                          <div className="space-y-2">
+                            {aff.profile.managed_entities.map(ent => (
+                              <div key={ent.id} className="flex items-center gap-3 bg-white rounded-xl px-3 py-2.5 border border-slate-100">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <span className="font-bold text-sm text-slate-800">{ent.name}</span>
+                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 capitalize">{ent.entity_type}</span>
+                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                      ent.status === 'active' ? 'bg-emerald-100 text-emerald-700' : ent.status === 'suspended' ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-500'
+                                    }`}>
+                                      {ent.status}
+                                    </span>
+                                  </div>
+                                  <div className="text-xs text-slate-400 mt-0.5 truncate">
+                                    {ent.country ?? '—'}
+                                    {ent.contact_email && ` · ${ent.contact_email}`}
+                                    {ent.commission_percent != null && ` · ${ent.commission_percent}%`}
+                                  </div>
+                                </div>
+                                <div className="flex gap-1.5 shrink-0">
+                                  {ent.status !== 'active' && (
+                                    <button
+                                      onClick={() => updateEntityStatus.mutate({ affiliateId: aff.id, entityId: ent.id, status: 'active' })}
+                                      disabled={updateEntityStatus.isPending}
+                                      className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors disabled:opacity-50"
+                                    >
+                                      {ja ? '有効化' : bn ? 'সক্রিয়' : 'Activate'}
+                                    </button>
+                                  )}
+                                  {ent.status !== 'suspended' && (
+                                    <button
+                                      onClick={() => {
+                                        if (!window.confirm(ja ? `「${ent.name}」を停止しますか？` : bn ? `"${ent.name}" সাসপেন্ড করবেন?` : `Suspend "${ent.name}"?`)) return;
+                                        updateEntityStatus.mutate({ affiliateId: aff.id, entityId: ent.id, status: 'suspended' });
+                                      }}
+                                      disabled={updateEntityStatus.isPending}
+                                      className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-red-100 text-red-600 hover:bg-red-200 transition-colors disabled:opacity-50"
+                                    >
+                                      {ja ? '停止' : bn ? 'সাসপেন্ড' : 'Suspend'}
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     {/* Commissions list */}
                     <div className="px-5 py-3">
