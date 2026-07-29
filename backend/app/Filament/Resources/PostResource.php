@@ -103,7 +103,6 @@ class PostResource extends Resource
                                 )
                                 ->addActionLabel('Add column')
                                 ->reorderable()
-                                ->minItems(2)
                                 ->maxItems(5)
                                 ->columnSpanFull(),
 
@@ -123,7 +122,6 @@ class PostResource extends Resource
                                         )
                                         ->addActionLabel('Add value')
                                         ->reorderable()
-                                        ->minItems(1)
                                         ->maxItems(4),
                                 ])
                                 ->addActionLabel('Add row')
