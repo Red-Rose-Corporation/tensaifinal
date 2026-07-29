@@ -1,10 +1,10 @@
 'use client';
 
 const STEPS = [
-  { n: 1, label: 'Select Country Form' },
-  { n: 2, label: 'Fill Student Info' },
-  { n: 3, label: 'Education & Documents' },
-  { n: 4, label: 'Save & Continue' },
+  { n: 1, label: 'Select Country Form', short: 'Country' },
+  { n: 2, label: 'Fill Student Info', short: 'Student Info' },
+  { n: 3, label: 'Education & Documents', short: 'Education' },
+  { n: 4, label: 'Save & Continue', short: 'Save' },
 ];
 
 export default function NewApplicationHero() {
@@ -51,7 +51,7 @@ export default function NewApplicationHero() {
                   {step.n}
                 </span>
                 <span className="text-[10px] font-semibold whitespace-nowrap" style={{ color: 'rgba(255,255,255,.75)' }}>
-                  {step.label.split(' ')[0]}
+                  {step.short}
                 </span>
               </div>
               {i < STEPS.length - 1 && (

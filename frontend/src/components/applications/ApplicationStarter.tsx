@@ -1,8 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import api from '@/lib/api';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Application, FormTemplateData, isFieldVisible, colSpan, inp, lbl, EDU_LABELS } from './ApplicationFormShared';
+import { Application, FormTemplateData, isFieldVisible, colSpan, inp, lbl, invalidInp, EDU_LABELS, FieldIcon } from './ApplicationFormShared';
 
 interface ListTemplate { id: number; name: string; country: string; visa_type?: string; }
 
@@ -13,6 +13,26 @@ interface Props {
   queryKey: string;
 }
 
+// ── Section header theme (keeps the four sections visually distinct while scanning) ──
+const THEME = {
+  green:  { card: 'bg-green-50/50 border-green-100', head: 'bg-green-100/50 border-green-100', bar: 'bg-green-600',  icon: 'text-green-600' },
+  sky:    { card: 'bg-white border-slate-200',        head: 'bg-sky-50 border-slate-200',       bar: 'bg-sky-500',    icon: 'text-sky-600' },
+  violet: { card: 'bg-white border-slate-200',        head: 'bg-violet-50 border-slate-200',     bar: 'bg-violet-500', icon: 'text-violet-600' },
+  amber:  { card: 'bg-white border-slate-200',        head: 'bg-amber-50 border-slate-200',      bar: 'bg-amber-500',  icon: 'text-amber-600' },
+} as const;
+
+function SectionHeader({ theme, icon, title, hint }: { theme: keyof typeof THEME; icon: React.ReactNode; title: string; hint?: string }) {
+  const t = THEME[theme];
+  return (
+    <div className={`flex items-center gap-3 px-5 py-3.5 border-b ${t.head}`}>
+      <span className={`w-0.5 h-4 rounded-full shrink-0 ${t.bar}`} />
+      <span className={`shrink-0 ${t.icon}`}>{icon}</span>
+      <span className="text-sm font-semibold text-slate-800">{title}</span>
+      {hint && <span className="text-xs text-slate-400 hidden sm:inline">{hint}</span>}
+    </div>
+  );
+}
+
 export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Props) {
   const qc = useQueryClient();
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -20,6 +40,12 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [openEdu, setOpenEdu] = useState<Record<string, boolean>>({});
   const [err, setErr] = useState('');
+  const [attempted, setAttempted] = useState(false);
+
+  const [countryQuery, setCountryQuery] = useState('');
+  const [countryOpen, setCountryOpen] = useState(false);
+  const countryWrapRef = useRef<HTMLDivElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
 
   function set(k: string, v: string) { setFormData(p => ({ ...p, [k]: v })); }
   function si(k: keyof typeof studentInfo, v: string) { setStudentInfo(p => ({ ...p, [k]: v })); setErr(''); }
@@ -37,10 +63,57 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
     staleTime: 300_000,
   });
 
+  const selectedTemplate = templates.find(t => t.id === selectedId) ?? null;
+  const filteredTemplates = templates.filter(t => {
+    const q = countryQuery.trim().toLowerCase();
+    if (!q) return true;
+    return `${t.country} ${t.name} ${t.visa_type ?? ''}`.toLowerCase().includes(q);
+  });
+
+  function selectTemplate(t: ListTemplate) {
+    setSelectedId(t.id);
+    setErr('');
+    setAttempted(false);
+    setCountryOpen(false);
+    setCountryQuery('');
+  }
+
+  // Close the country dropdown on outside click (mousedown, not blur, so option clicks still register)
+  useEffect(() => {
+    function onDocMouseDown(e: MouseEvent) {
+      if (countryWrapRef.current && !countryWrapRef.current.contains(e.target as Node)) {
+        setCountryOpen(false);
+        setCountryQuery('');
+      }
+    }
+    document.addEventListener('mousedown', onDocMouseDown);
+    return () => document.removeEventListener('mousedown', onDocMouseDown);
+  }, []);
+
+  // Move focus straight into Full Name once a country form has finished loading
+  useEffect(() => {
+    if (template && !loadingTemplate) nameInputRef.current?.focus();
+  }, [template, loadingTemplate]);
+
+  function missingRequiredFieldLabels(): string[] {
+    if (!template) return [];
+    const missing: string[] = [];
+    template.groups.forEach(g => g.boxes.forEach(b => b.fields.forEach(f => {
+      if (f.field_type === 'file' || !f.is_required || !isFieldVisible(f, formData)) return;
+      if (!(formData[f.field_key] ?? '').trim()) missing.push(f.label);
+    })));
+    return missing;
+  }
+
   function validate() {
     if (!selectedId) { setErr('Please select a Country Form first.'); return false; }
     if (!studentInfo.student_name.trim()) { setErr('Full Name is required.'); return false; }
     if (!studentInfo.student_phone.trim()) { setErr('Contact Number is required.'); return false; }
+    const missing = missingRequiredFieldLabels();
+    if (missing.length > 0) {
+      setErr(`Please fill required field${missing.length > 1 ? 's' : ''}: ${missing.join(', ')}`);
+      return false;
+    }
     return true;
   }
 
@@ -70,48 +143,60 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
   });
 
   const visibleEdu = (template?.educations ?? []).filter(e => e.requirement !== 'none');
+  const nameInvalid  = attempted && !studentInfo.student_name.trim();
+  const phoneInvalid = attempted && !studentInfo.student_phone.trim();
 
   return (
     <div className="px-4 sm:px-6 py-5 space-y-4">
 
       {/* ── Country / Program selector ── */}
-      <div className="bg-green-50/50 border border-green-100 rounded-xl overflow-hidden shadow-sm">
-        <div className="flex items-center gap-3 px-5 py-3.5 border-b border-green-100 bg-green-100/50">
-          <span className="w-0.5 h-4 bg-green-600 rounded-full shrink-0" />
-          <svg className="w-4 h-4 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span className="text-sm font-semibold text-slate-800">Country &amp; Program</span>
-        </div>
-        <div className="px-5 py-4">
+      <div className={`rounded-xl overflow-hidden shadow-sm border ${THEME.green.card}`}>
+        <SectionHeader theme="green" title="Country & Program" icon={<FieldIcon name="flag" className="w-4 h-4" />} />
+        <div className="px-5 py-4" ref={countryWrapRef}>
           <label className={lbl}>Select Destination <span className="text-rose-400">*</span></label>
           {templatesError ? (
             <div className="flex items-center gap-2.5 bg-rose-50 border border-rose-200 rounded-xl px-4 py-3 mt-1">
-              <svg className="w-4 h-4 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <FieldIcon name="alert" className="w-4 h-4 text-rose-400 shrink-0" strokeWidth={2} />
               <p className="text-xs font-semibold text-rose-700 flex-1">Could not load country forms — check your connection.</p>
               <button onClick={() => retryTemplates()} className="shrink-0 text-xs font-bold text-rose-600 hover:text-rose-800 underline underline-offset-2">Retry</button>
             </div>
           ) : !loadingTemplates && templates.length === 0 ? (
             <div className="flex items-center gap-2.5 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mt-1">
-              <svg className="w-4 h-4 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <FieldIcon name="alert" className="w-4 h-4 text-amber-500 shrink-0" strokeWidth={2} />
               <p className="text-xs font-semibold text-amber-700">No country forms available yet. Please contact your administrator.</p>
             </div>
           ) : (
-            <select
-              className={inp}
-              value={selectedId ?? ''}
-              disabled={loadingTemplates}
-              onChange={e => { const v = Number(e.target.value); setSelectedId(v || null); setErr(''); }}
-            >
-              <option value="">Select country / visa type…</option>
-              {templates.map(t => (
-                <option key={t.id} value={t.id}>
-                  {t.country} — {t.name}{t.visa_type ? ` (${t.visa_type})` : ''}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <input
+                className={inp}
+                placeholder={loadingTemplates ? 'Loading country forms…' : 'Type to search country / visa type…'}
+                disabled={loadingTemplates}
+                value={countryOpen ? countryQuery : (selectedTemplate ? `${selectedTemplate.country} — ${selectedTemplate.name}${selectedTemplate.visa_type ? ` (${selectedTemplate.visa_type})` : ''}` : '')}
+                onFocus={() => { setCountryOpen(true); setCountryQuery(''); }}
+                onChange={e => { setCountryQuery(e.target.value); setCountryOpen(true); }}
+                onKeyDown={e => { if (e.key === 'Escape') { setCountryOpen(false); setCountryQuery(''); } }}
+              />
+              <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                <FieldIcon name="chevronDown" className={`w-4 h-4 text-slate-400 transition-transform ${countryOpen ? 'rotate-180' : ''}`} strokeWidth={2} />
+              </span>
+              {countryOpen && (
+                <div className="absolute z-20 mt-1.5 w-full max-h-64 overflow-y-auto bg-white border border-slate-200 rounded-xl shadow-lg py-1">
+                  {filteredTemplates.length === 0 ? (
+                    <p className="px-4 py-3 text-xs text-slate-400">No match found.</p>
+                  ) : filteredTemplates.map(t => (
+                    <button
+                      type="button"
+                      key={t.id}
+                      onClick={() => selectTemplate(t)}
+                      className={`w-full text-left px-4 py-2.5 text-sm hover:bg-green-50 transition-colors flex items-center justify-between gap-2 min-h-[40px] ${t.id === selectedId ? 'bg-green-50 text-green-700 font-semibold' : 'text-slate-700'}`}
+                    >
+                      <span>{t.country} — {t.name}{t.visa_type ? ` (${t.visa_type})` : ''}</span>
+                      {t.id === selectedId && <FieldIcon name="check" className="w-3.5 h-3.5 shrink-0" strokeWidth={2} />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           )}
           <p className="text-xs text-slate-400 mt-2">After saving, you can fill in all remaining fields on the edit page.</p>
         </div>
@@ -130,23 +215,17 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
 
       {/* ── Personal Information ── */}
       {template && !loadingTemplate && (
-        <div className="bg-green-50/50 border border-green-100 rounded-xl overflow-hidden shadow-sm">
-          <div className="flex items-center gap-3 px-5 py-3.5 border-b border-green-100 bg-green-100/50">
-            <span className="w-0.5 h-4 bg-green-600 rounded-full shrink-0" />
-            <svg className="w-4 h-4 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <span className="text-sm font-semibold text-slate-800">Personal Information</span>
-          </div>
+        <div className={`rounded-xl overflow-hidden shadow-sm border ${THEME.sky.card}`}>
+          <SectionHeader theme="sky" title="Personal Information" icon={<FieldIcon name="user" className="w-4 h-4" />} />
           <div className="px-5 py-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className={lbl}>Full Name <span className="text-rose-400">*</span></label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                    <FieldIcon name="user" className="w-4 h-4 text-slate-400" />
                   </span>
-                  <input className={`${inp} pl-10`} placeholder="Student full name" aria-required="true"
+                  <input ref={nameInputRef} className={`${inp} pl-10 ${nameInvalid ? invalidInp : ''}`} placeholder="Student full name" aria-required="true"
                     value={studentInfo.student_name} onChange={e => si('student_name', e.target.value)} />
                 </div>
               </div>
@@ -154,7 +233,7 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
                 <label className={lbl}>Email Address</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                    <FieldIcon name="mail" className="w-4 h-4 text-slate-400" />
                   </span>
                   <input className={`${inp} pl-10`} type="text" placeholder="email@example.com"
                     value={studentInfo.student_email} onChange={e => si('student_email', e.target.value)} />
@@ -164,9 +243,9 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
                 <label className={lbl}>Contact Number <span className="text-rose-400">*</span></label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                    <FieldIcon name="phone" className="w-4 h-4 text-slate-400" />
                   </span>
-                  <input className={`${inp} pl-10`} type="tel" placeholder="+880..." aria-required="true"
+                  <input className={`${inp} pl-10 ${phoneInvalid ? invalidInp : ''}`} type="tel" placeholder="+880..." aria-required="true"
                     value={studentInfo.student_phone} onChange={e => si('student_phone', e.target.value)} />
                 </div>
               </div>
@@ -174,7 +253,7 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
                 <label className={lbl}>WhatsApp Number</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                    <FieldIcon name="whatsapp" className="w-4 h-4 text-slate-400" />
                   </span>
                   <input className={`${inp} pl-10`} type="tel" placeholder="+880..."
                     value={studentInfo.whatsapp_no} onChange={e => si('whatsapp_no', e.target.value)} />
@@ -184,7 +263,7 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
                 <label className={lbl}>Date of Birth</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    <FieldIcon name="calendar" className="w-4 h-4 text-slate-400" />
                   </span>
                   <input className={`${inp} pl-10`} type="date"
                     value={formData.birth_date ?? ''} onChange={e => set('birth_date', e.target.value)} />
@@ -194,7 +273,7 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
                 <label className={lbl}>Passport Number</label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" /></svg>
+                    <FieldIcon name="passport" className="w-4 h-4 text-slate-400" />
                   </span>
                   <input className={`${inp} pl-10`} placeholder="e.g. AB1234567"
                     value={formData.passport_no ?? ''} onChange={e => set('passport_no', e.target.value)} />
@@ -223,15 +302,8 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
       {template && !loadingTemplate && template.groups.filter(g => g.label !== 'Application Form Info').filter(g =>
         g.boxes.some(b => b.fields.some(f => isFieldVisible(f, formData) && f.field_type !== 'file'))
       ).map(group => (
-        <div key={group.id} className="bg-green-50/50 border border-green-100 rounded-xl overflow-hidden shadow-sm">
-          <div className="flex items-center gap-3 px-5 py-3.5 border-b border-green-100 bg-green-100/50">
-            <span className="w-0.5 h-4 bg-green-600 rounded-full shrink-0" />
-            <svg className="w-4 h-4 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span className="text-sm font-semibold text-slate-800">{group.label}</span>
-            {group.hint && <span className="text-xs text-slate-400 hidden sm:inline">{group.hint}</span>}
-          </div>
+        <div key={group.id} className={`rounded-xl overflow-hidden shadow-sm border ${THEME.violet.card}`}>
+          <SectionHeader theme="violet" title={group.label} hint={group.hint} icon={<FieldIcon name="doc" className="w-4 h-4" />} />
           <div className="px-5 py-5 space-y-4">
             {group.boxes.map(box => {
               const visible = box.fields.filter(f => isFieldVisible(f, formData) && f.field_type !== 'file');
@@ -240,28 +312,32 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
                 <div key={box.id}>
                   {box.name && <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">{box.name}</p>}
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-                    {visible.map(field => (
-                      <div key={field.field_key} className={colSpan(field.box_size)}>
-                        <label className={lbl}>
-                          {field.label}{field.is_required && <span className="text-rose-400 ml-0.5">*</span>}
-                        </label>
-                        {field.field_type === 'select' ? (
-                          <select className={inp} value={formData[field.field_key] ?? ''} onChange={e => set(field.field_key, e.target.value)}>
-                            <option value="">{field.placeholder || 'Select…'}</option>
-                            {(field.options ?? []).map(o => <option key={o} value={o}>{o}</option>)}
-                          </select>
-                        ) : field.field_type === 'textarea' ? (
-                          <textarea className={`${inp} resize-none`} rows={3} value={formData[field.field_key] ?? ''}
-                            placeholder={field.placeholder ?? ''} onChange={e => set(field.field_key, e.target.value)} />
-                        ) : (
-                          <input className={inp}
-                            type={field.field_type === 'number' ? 'number' : field.field_type === 'date' ? 'date' : field.field_type === 'email' ? 'email' : field.field_type === 'tel' ? 'tel' : 'text'}
-                            value={formData[field.field_key] ?? ''} placeholder={field.placeholder ?? ''}
-                            onChange={e => set(field.field_key, e.target.value)} />
-                        )}
-                        {field.helper_text && <p className="text-xs text-slate-400 mt-1">{field.helper_text}</p>}
-                      </div>
-                    ))}
+                    {visible.map(field => {
+                      const val = formData[field.field_key] ?? '';
+                      const invalid = attempted && field.is_required && !val.trim();
+                      return (
+                        <div key={field.field_key} className={colSpan(field.box_size)}>
+                          <label className={lbl}>
+                            {field.label}{field.is_required && <span className="text-rose-400 ml-0.5">*</span>}
+                          </label>
+                          {field.field_type === 'select' ? (
+                            <select className={`${inp} ${invalid ? invalidInp : ''}`} value={val} onChange={e => set(field.field_key, e.target.value)}>
+                              <option value="">{field.placeholder || 'Select…'}</option>
+                              {(field.options ?? []).map(o => <option key={o} value={o}>{o}</option>)}
+                            </select>
+                          ) : field.field_type === 'textarea' ? (
+                            <textarea className={`${inp} resize-none ${invalid ? invalidInp : ''}`} rows={3} value={val}
+                              placeholder={field.placeholder ?? ''} onChange={e => set(field.field_key, e.target.value)} />
+                          ) : (
+                            <input className={`${inp} ${invalid ? invalidInp : ''}`}
+                              type={field.field_type === 'number' ? 'number' : field.field_type === 'date' ? 'date' : field.field_type === 'email' ? 'email' : field.field_type === 'tel' ? 'tel' : 'text'}
+                              value={val} placeholder={field.placeholder ?? ''}
+                              onChange={e => set(field.field_key, e.target.value)} />
+                          )}
+                          {field.helper_text && <p className="text-xs text-slate-400 mt-1">{field.helper_text}</p>}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -272,14 +348,8 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
 
       {/* ── Education Certificates ── */}
       {template && !loadingTemplate && visibleEdu.length > 0 && (
-        <div className="bg-green-50/50 border border-green-100 rounded-xl overflow-hidden shadow-sm">
-          <div className="flex items-center gap-3 px-5 py-3.5 border-b border-green-100 bg-green-100/50">
-            <span className="w-0.5 h-4 bg-green-600 rounded-full shrink-0" />
-            <svg className="w-4 h-4 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-            </svg>
-            <span className="text-sm font-semibold text-slate-800">Education Certificates</span>
-          </div>
+        <div className={`rounded-xl overflow-hidden shadow-sm border ${THEME.amber.card}`}>
+          <SectionHeader theme="amber" title="Education Certificates" icon={<FieldIcon name="cap" className="w-4 h-4" />} />
           <div className="px-5 py-4 space-y-3">
             {visibleEdu.map((edu, i) => {
               const label     = EDU_LABELS[edu.level] ?? edu.level;
@@ -300,9 +370,7 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
                         {mandatory ? 'Required' : 'Optional'}
                       </span>
                     </div>
-                    <svg className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
+                    <FieldIcon name="chevronDown" className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} strokeWidth={2} />
                   </button>
                   {isOpen && (
                     <div className="border-t border-slate-100">
@@ -348,11 +416,11 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-slate-100">
           {err
             ? <p aria-live="assertive" className="text-xs text-rose-500 font-semibold flex items-center gap-1">
-                <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <FieldIcon name="alert" className="w-3.5 h-3.5 shrink-0" strokeWidth={2} />
                 {err}
               </p>
             : <p className="text-xs text-slate-400 flex items-center gap-1.5">
-                <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <FieldIcon name="alert" className="w-3.5 h-3.5 shrink-0" strokeWidth={2} />
                 After saving, you can fill in all remaining fields.
               </p>
           }
@@ -365,13 +433,13 @@ export default function ApplicationStarter({ onCreated, onCancel, queryKey }: Pr
             )}
             <button
               type="button"
-              onClick={() => { if (validate()) createMut.mutate(); }}
+              onClick={() => { setAttempted(true); if (validate()) createMut.mutate(); }}
               disabled={createMut.isPending}
               className="flex-1 sm:flex-none min-h-[44px] flex items-center justify-center gap-2 px-6 py-2.5 bg-green-700 hover:bg-green-800 text-white text-sm font-semibold rounded-xl disabled:opacity-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500/60"
             >
               {createMut.isPending
                 ? <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                : <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>}
+                : <FieldIcon name="check" className="w-4 h-4" strokeWidth={2} />}
               {createMut.isPending ? 'Creating…' : 'Create Application'}
             </button>
           </div>
