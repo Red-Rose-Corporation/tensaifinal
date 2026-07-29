@@ -20,7 +20,16 @@ class ApplicationController extends Controller
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
-        $q    = Application::with(['formTemplate:id,name,country,visa_type,intake_options', 'documents', 'user:id,name,email', 'branch:id,name'])->latest();
+        $with = ['formTemplate:id,name,country,visa_type,intake_options', 'documents', 'branch:id,name'];
+        if ($user->hasRole('super_admin')) {
+            // Affiliate/commission info is super-admin-only — see formatAffiliate().
+            $with[] = 'user:id,name,email,referred_by';
+            $with[] = 'user.referrer:id,name,affiliate_code,gateway_type';
+            $with[] = 'commission';
+        } else {
+            $with[] = 'user:id,name,email';
+        }
+        $q = Application::with($with)->latest();
 
         if ($user->hasRole(['super_admin', 'admin'])) {
             // Show non-agency apps freely; agency apps only when submitted or explicitly marked live
@@ -39,7 +48,7 @@ class ApplicationController extends Controller
         if ($request->query('role'))   $q->where('submitted_by_role', $request->query('role'));
 
         $paginated = $q->paginate(50);
-        $paginated->getCollection()->transform(fn ($app) => $this->format($app));
+        $paginated->getCollection()->transform(fn ($app) => $this->format($app, $user));
         return response()->json($paginated);
     }
 
@@ -85,12 +94,12 @@ class ApplicationController extends Controller
             'status'            => 'draft',
         ]);
 
-        return response()->json(['application' => $this->format($app)], 201);
+        return response()->json(['application' => $this->format($app, $user)], 201);
     }
 
     public function show(Request $request, int $id): JsonResponse
     {
-        return response()->json($this->format($this->findOwned($request, $id)));
+        return response()->json($this->format($this->findOwned($request, $id), $request->user()));
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -120,7 +129,7 @@ class ApplicationController extends Controller
         $app->progress = $app->recalculateProgress();
         $app->save();
 
-        return response()->json($this->format($app));
+        return response()->json($this->format($app, $request->user()));
     }
 
     public function submit(Request $request, int $id): JsonResponse
@@ -136,7 +145,7 @@ class ApplicationController extends Controller
 
         $app->update(['status' => 'submitted', 'submitted_at' => now()]);
 
-        return response()->json($this->format($app));
+        return response()->json($this->format($app, $request->user()));
     }
 
     public function liveToSchool(Request $request, int $id): JsonResponse
@@ -153,7 +162,7 @@ class ApplicationController extends Controller
             $this->createReferralCommission($app->fresh());
         }
 
-        return response()->json($this->format($app->fresh()));
+        return response()->json($this->format($app->fresh(), $request->user()));
     }
 
     /**
@@ -238,7 +247,7 @@ class ApplicationController extends Controller
         $app  = Application::findOrFail($id);
         $data = $request->validate(['status' => 'required|in:draft,submitted,accepted,rejected']);
         $app->update($data);
-        return response()->json($this->format($app));
+        return response()->json($this->format($app, $request->user()));
     }
 
     public function uploadDocument(Request $request, int $id): JsonResponse
@@ -355,9 +364,18 @@ class ApplicationController extends Controller
         return 'student';
     }
 
-    private function format(Application $app): array
+    private function format(Application $app, ?User $viewer = null): array
     {
-        $app->loadMissing(['formTemplate:id,name,country,visa_type,intake_options', 'documents', 'user:id,name,email', 'branch:id,name']);
+        $isSuperAdmin = $viewer?->hasRole('super_admin') ?? false;
+
+        $with = ['formTemplate:id,name,country,visa_type,intake_options', 'documents', 'branch:id,name'];
+        $with[] = $isSuperAdmin ? 'user:id,name,email,referred_by' : 'user:id,name,email';
+        if ($isSuperAdmin) {
+            $with[] = 'user.referrer:id,name,affiliate_code,gateway_type';
+            $with[] = 'commission';
+        }
+        $app->loadMissing($with);
+
         return [
             'id'                => $app->id,
             'application_code'  => $app->application_code,
@@ -373,6 +391,7 @@ class ApplicationController extends Controller
             'submitted_by_role' => $app->submitted_by_role,
             'submitter_name'    => $app->user?->name,
             'submitter_email'   => $app->user?->email,
+            'affiliate'         => $isSuperAdmin ? $this->formatAffiliate($app) : null,
             'branch_id'         => $app->branch_id,
             'branch_name'       => $app->branch?->name,
             'student_name'      => $app->student_name,
@@ -398,6 +417,36 @@ class ApplicationController extends Controller
                 'file_size'     => $d->file_size,
                 'mime_type'     => $d->mime_type,
             ])->values()->toArray(),
+        ];
+    }
+
+    /**
+     * Null when the buyer wasn't referred by anyone. Otherwise who referred them
+     * (affiliate or plain student) plus the commission tied to this application,
+     * if one has been created yet (only happens once the app goes live_to_school).
+     *
+     * Only meaningful for self-service submissions: for agency/branch/admin-submitted
+     * applications, `user_id` is the staff account that filled the form in, not the
+     * student — any referral on that account is unrelated to this specific applicant,
+     * so showing it would misleadingly suggest an affiliate brought in that student.
+     */
+    private function formatAffiliate(Application $app): ?array
+    {
+        if ($app->submitted_by_role !== 'student') return null;
+
+        $referrer = $app->user?->referrer;
+        if (!$referrer) return null;
+
+        $commission = $app->commission;
+
+        return [
+            'referrer_id'         => $referrer->id,
+            'referrer_name'       => $referrer->name,
+            'referrer_code'       => $referrer->affiliate_code,
+            'is_affiliate'        => $referrer->isAffiliate(),
+            'commission_amount'   => $commission?->amount !== null ? (float) $commission->amount : null,
+            'commission_currency' => $commission?->currency,
+            'commission_status'   => $commission?->status,
         ];
     }
 }

@@ -58,6 +58,15 @@ export interface Application {
   submitted_by_role: string;
   submitter_name?: string;
   submitter_email?: string;
+  affiliate?: {
+    referrer_id: number;
+    referrer_name: string;
+    referrer_code?: string | null;
+    is_affiliate: boolean;
+    commission_amount?: number | null;
+    commission_currency?: string | null;
+    commission_status?: string | null;
+  } | null;
   branch_id: number | null;
   branch_name?: string;
   submitted_at: string | null;

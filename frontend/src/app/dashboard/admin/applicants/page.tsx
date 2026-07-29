@@ -104,7 +104,8 @@ export default function AdminApplicantsPage() {
       a.student_name?.toLowerCase().includes(q) ||
       a.student_email?.toLowerCase().includes(q) ||
       a.application_code?.toLowerCase().includes(q) ||
-      a.form_template?.country?.toLowerCase().includes(q)
+      a.form_template?.country?.toLowerCase().includes(q) ||
+      a.affiliate?.referrer_name?.toLowerCase().includes(q)
     );
   }, [apps, search]);
 
@@ -300,6 +301,13 @@ export default function AdminApplicantsPage() {
                             {ROLE_LABEL[roleKey] ?? 'Individual'}
                           </span>
                           <p className="text-[11px] text-slate-400 mt-0.5 truncate max-w-[100px]">{sourceLabel}</p>
+                          {app.affiliate && (
+                            <span
+                              title={`Referred by ${app.affiliate.referrer_name}${app.affiliate.referrer_code ? ` (${app.affiliate.referrer_code})` : ''}${app.affiliate.commission_amount ? ` — ${app.affiliate.commission_amount} ${app.affiliate.commission_currency ?? ''} commission ${app.affiliate.commission_status ?? ''}` : ''}`}
+                              className="inline-flex items-center gap-1 mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-fuchsia-100 text-fuchsia-700 truncate max-w-[120px]">
+                              {app.affiliate.is_affiliate ? 'Affiliate' : 'Referral'} · {app.affiliate.referrer_name}
+                            </span>
+                          )}
                         </td>
                         <td className="px-4 py-3.5">
                           <p className="text-xs font-semibold text-slate-700">{app.form_template?.country ?? '—'}</p>
@@ -374,6 +382,11 @@ export default function AdminApplicantsPage() {
                         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${ROLE_BADGE[roleKey]}`}>
                           {ROLE_LABEL[roleKey] ?? 'Individual'}
                         </span>
+                        {app.affiliate && (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-fuchsia-100 text-fuchsia-700">
+                            {app.affiliate.is_affiliate ? 'Affiliate' : 'Referral'} · {app.affiliate.referrer_name}
+                          </span>
+                        )}
                         {app.live_to_school && (
                           <span className="inline-flex items-center gap-1 text-[10px] font-bold text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full">
                             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 class Application extends Model
@@ -48,6 +49,11 @@ class Application extends Model
     public function documents(): HasMany
     {
         return $this->hasMany(ApplicationDocument::class);
+    }
+
+    public function commission(): HasOne
+    {
+        return $this->hasOne(Commission::class);
     }
 
     public function institutionSelections(): HasMany
