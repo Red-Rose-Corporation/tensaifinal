@@ -19,7 +19,9 @@ class ListFormTemplates extends ListRecords
 
     protected function getTableQuery(): Builder
     {
-        return \App\Models\FormTemplate::query()->where('status', 'published')->orderBy('country');
+        // Show drafts too (e.g. abandoned "New Country Form" clicks) so nothing is
+        // silently invisible — use the Status filter to narrow to published only.
+        return \App\Models\FormTemplate::query()->orderBy('country');
     }
 
     protected function getHeaderActions(): array

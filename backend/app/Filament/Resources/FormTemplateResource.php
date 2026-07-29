@@ -174,14 +174,6 @@ class FormTemplateResource extends Resource
                             ->placeholder('Private notes for super admins only…')
                             ->columnSpanFull(),
 
-                        Forms\Components\Actions::make([
-                            Forms\Components\Actions\Action::make('save_info')
-                                ->label('Save Info')
-                                ->icon('heroicon-o-check-circle')
-                                ->color('success')
-                                ->action(fn ($livewire) => $livewire->saveInfoSection()),
-                        ])->columnSpanFull(),
-
                         Forms\Components\Placeholder::make('add_field_hint')
                             ->label('')
                             ->content(new \Illuminate\Support\HtmlString(
@@ -388,6 +380,7 @@ class FormTemplateResource extends Resource
 
                 Tables\Columns\TextColumn::make('visa_type')
                     ->label('Visa Type')
+                    ->searchable()
                     ->default('—')
                     ->color('gray'),
 
@@ -401,11 +394,13 @@ class FormTemplateResource extends Resource
                     ->getStateUsing(fn (FormTemplate $record) => $record->intake_options ?? [])
                     ->badge()
                     ->color('success')
-                    ->separator(','),
+                    ->separator(',')
+                    ->limitList(2)
+                    ->expandableLimitedList(),
 
-                Tables\Columns\TextColumn::make('field_groups_count_value')
+                Tables\Columns\TextColumn::make('field_groups_count')
                     ->label('Sections')
-                    ->getStateUsing(fn (FormTemplate $record) => $record->fieldGroupsCount()->count())
+                    ->counts('fieldGroups')
                     ->badge()
                     ->color('info'),
 
@@ -429,12 +424,29 @@ class FormTemplateResource extends Resource
             ])
             ->defaultSort('country')
             ->striped()
-            ->emptyStateHeading('No published forms yet')
-            ->emptyStateDescription('Create a new country form, fill in all details, then click "Submit & Publish" to make it live here.')
+            ->emptyStateHeading('No country forms yet')
+            ->emptyStateDescription('Create a new country form, fill in all details, then publish it to make it live to branches.')
             ->emptyStateIcon('heroicon-o-document-plus')
+            ->filters([
+                Tables\Filters\SelectFilter::make('status')
+                    ->options(['draft' => 'Draft', 'published' => 'Published']),
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label('Active'),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Tables\Actions\DeleteAction $action, FormTemplate $record) {
+                        $inUse = \App\Models\Application::where('form_template_id', $record->id)->exists();
+                        if ($inUse) {
+                            Notification::make()
+                                ->title('Cannot delete — applications already use this form')
+                                ->body('Unpublish it instead so no new applications can pick it, while existing ones keep working.')
+                                ->danger()
+                                ->send();
+                            $action->cancel();
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

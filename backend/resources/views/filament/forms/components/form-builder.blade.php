@@ -56,6 +56,7 @@
                                     <div class="flex items-center gap-1.5">
                                         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
                                         <span class="text-xs font-semibold text-gray-500">Document Upload</span>
+                                        <span class="text-[10px] text-gray-400">— applies to this whole box</span>
                                     </div>
                                     <div class="flex gap-1 ml-auto">
                                         <button type="button" @click="section.doc_mode = 'none'; sync()"
@@ -95,10 +96,38 @@
                                 </p>
                             </div>
 
+                            {{-- Fields summary — quick scan of Required/Type across every field, click a row to jump straight to it --}}
+                            <div x-show="section.boxes.length > 1" class="rounded-lg border border-gray-200 overflow-hidden">
+                                <table class="w-full text-[11px]">
+                                    <thead>
+                                        <tr class="bg-gray-50 text-gray-400 uppercase tracking-wide">
+                                            <th class="text-left font-semibold px-2.5 py-1.5">Field</th>
+                                            <th class="text-left font-semibold px-2.5 py-1.5">Type</th>
+                                            <th class="text-left font-semibold px-2.5 py-1.5">Width</th>
+                                            <th class="text-center font-semibold px-2.5 py-1.5">Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template x-for="b in section.boxes" :key="'sum-' + b._key">
+                                            <tr class="border-t border-gray-100 hover:bg-primary-50/50 cursor-pointer transition-colors"
+                                                @click="b.expanded = true; $nextTick(() => document.getElementById('fb-box-' + b._key)?.scrollIntoView({behavior: 'smooth', block: 'center'}))">
+                                                <td class="px-2.5 py-1.5 font-medium text-gray-700" x-text="b.label || '(untitled)'"></td>
+                                                <td class="px-2.5 py-1.5 text-gray-500" x-text="b.field_type"></td>
+                                                <td class="px-2.5 py-1.5 text-gray-500" x-text="b.size === 'small' ? '¼' : (b.size === 'full' ? '↔' : '½')"></td>
+                                                <td class="px-2.5 py-1.5 text-center">
+                                                    <span :class="b.is_required ? 'text-primary-600 font-bold' : 'text-gray-300'" x-text="b.is_required ? '✓' : '—'"></span>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+
                             {{-- Field boxes --}}
                             <div class="flex flex-wrap gap-2">
                                 <template x-for="(box, bi) in section.boxes" :key="box._key">
                                     <div
+                                        :id="'fb-box-' + box._key"
                                         :style="{
                                             width: box.size === 'full'   ? '100%' :
                                                    box.size === 'middle' ? 'calc(50% - 4px)' :
@@ -116,12 +145,13 @@
                                             <div class="flex items-center gap-1.5 mb-1.5">
                                                 <span class="inline-flex items-center justify-center w-5 h-5 rounded text-[9px] font-black shrink-0"
                                                     :class="box.size === 'small' ? 'bg-violet-100 text-violet-500' : box.size === 'full' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-500'"
+                                                    :title="box.size === 'small' ? 'Quarter width' : (box.size === 'full' ? 'Full width' : 'Half width')"
                                                     x-text="box.size === 'small' ? '¼' : (box.size === 'full' ? '↔' : '½')"></span>
 
                                                 {{-- Editable label — becomes the field label --}}
                                                 <input type="text"
                                                     x-model="box.label"
-                                                    @input="sync()"
+                                                    @input="if (!box.field_key) box.field_key = slugify(box.label); sync()"
                                                     @click.stop
                                                     placeholder="Field label…"
                                                     class="flex-1 text-xs font-semibold text-gray-700 bg-transparent border-none outline-none placeholder-gray-300 min-w-0"/>
@@ -189,7 +219,7 @@
                                                     <input type="text" x-model="box.field_key" @input="sync()"
                                                         placeholder="e.g. ssc_gpa"
                                                         class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary-400 bg-white"/>
-                                                    <p class="text-[10px] text-gray-400 mt-1">Use snake_case</p>
+                                                    <p class="text-[10px] text-gray-400 mt-1">Auto-filled from the label — edit if you need a different snake_case key</p>
                                                 </div>
                                                 <div>
                                                     <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">Width</label>
@@ -262,7 +292,7 @@
 
                                             {{-- Per-field document upload --}}
                                             <div class="rounded-lg border border-gray-200 bg-white p-3 space-y-1.5">
-                                                <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide block">📎 Field Document</label>
+                                                <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide block">📎 Field Document <span class="text-gray-400 font-normal normal-case">— applies to just this field</span></label>
                                                 <div class="flex gap-1.5">
                                                     <button type="button"
                                                         @click="box.document_mode = 'none'; sync()"
@@ -286,9 +316,13 @@
                                                     Conditional visibility
                                                 </summary>
                                                 <div class="mt-2 grid grid-cols-3 gap-2">
-                                                    <input type="text" x-model="box.conditional_field_key" @input="sync()"
-                                                        placeholder="field_key"
-                                                        class="border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary-400 font-mono"/>
+                                                    <select x-model="box.conditional_field_key" @change="sync()"
+                                                        class="border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary-400 font-mono">
+                                                        <option value="">— field —</option>
+                                                        <template x-for="opt in allFieldKeys(box.field_key)" :key="opt.key">
+                                                            <option :value="opt.key" x-text="opt.label + ' (' + opt.key + ')'"></option>
+                                                        </template>
+                                                    </select>
                                                     <select x-model="box.conditional_operator" @change="sync()"
                                                         class="border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary-400">
                                                         <option value="">— operator —</option>
@@ -457,6 +491,21 @@ document.addEventListener('alpine:init', () => {
             this.$refs.hiddenInput.value = JSON.stringify(data);
             this.$refs.hiddenInput.dispatchEvent(new Event('input'));
             this.$refs.hiddenInput.dispatchEvent(new Event('change'));
+        },
+
+        slugify(label) {
+            return (label || '')
+                .toString().trim().toLowerCase()
+                .replace(/[^a-z0-9]+/g, '_')
+                .replace(/^_+|_+$/g, '');
+        },
+
+        allFieldKeys(excludeKey = null) {
+            const out = [];
+            this.groups.forEach(g => (g.sections || []).forEach(s => (s.boxes || []).forEach(b => {
+                if (b.field_key && b.field_key !== excludeKey) out.push({ key: b.field_key, label: b.label || b.field_key });
+            })));
+            return out;
         },
 
         addGroup() {

@@ -91,7 +91,12 @@ class EditFormTemplate extends EditRecord
             ->delete();
     }
 
-    // Called by "Save Info" button — saves template AND ensures group exists once
+    // Called by the header "Save Form" button — saves everything (info fields +
+    // the current Add Data & Documents builder state) AND ensures the fixed
+    // "Application Form Info" group exists once. This is the single save entry
+    // point for this page — the default Filament footer Save/Cancel buttons are
+    // intentionally removed below (getFormActions()) so there's only one place
+    // to click "Save".
     public function saveInfoSection(): void
     {
         $this->save();
@@ -102,6 +107,30 @@ class EditFormTemplate extends EditRecord
         );
 
         $this->redirect($this->getResource()::getUrl('edit', ['record' => $this->getRecord()]));
+    }
+
+    // Guard shared by both publish entry points (header action + the inline
+    // "Submit & Publish Form" button in saved-structure.blade.php) so neither
+    // one can put a broken or empty form live.
+    public function publishValidationError(): ?string
+    {
+        $record = $this->getRecord();
+        $groups = $record->fieldGroups()->with('boxes.fields')->get()
+            ->filter(fn ($g) => $g->label !== 'Application Form Info');
+
+        if ($groups->isEmpty()) {
+            return 'Add at least one section under "Add Data & Documents" before publishing.';
+        }
+
+        $hasEmptyLabel = $groups->flatMap(fn ($g) => $g->boxes)
+            ->flatMap(fn ($b) => $b->fields)
+            ->contains(fn ($f) => trim((string) $f->label) === '' || trim((string) $f->field_key) === '');
+
+        if ($hasEmptyLabel) {
+            return 'Some fields are missing a label — open "Add Data & Documents" and fill them in before publishing.';
+        }
+
+        return null;
     }
 
     // Inline group editing state
@@ -295,14 +324,32 @@ class EditFormTemplate extends EditRecord
 
     public function publishTemplate(): void
     {
+        if ($error = $this->publishValidationError()) {
+            Notification::make()->title($error)->danger()->send();
+            return;
+        }
         $this->getRecord()->update(['status' => 'published', 'is_active' => true]);
         Notification::make()->title('Form published — now live to branches')->success()->send();
         $this->redirect($this->getResource()::getUrl('edit', ['record' => $this->getRecord()]));
     }
 
+    // The header "Save Form" action is the single save entry point for this
+    // page — hide Filament's default footer Save/Cancel so there's no second,
+    // functionally-identical button confusing admins.
+    protected function getFormActions(): array
+    {
+        return [];
+    }
+
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('save_form')
+                ->label('Save Form')
+                ->icon('heroicon-o-check-circle')
+                ->color('success')
+                ->action(fn () => $this->saveInfoSection()),
+
             Actions\Action::make('publish')
                 ->label(fn () => $this->getRecord()->status === 'published' ? 'Unpublish' : 'Publish')
                 ->icon(fn () => $this->getRecord()->status === 'published' ? 'heroicon-o-arrow-uturn-left' : 'heroicon-o-rocket-launch')
@@ -314,6 +361,10 @@ class EditFormTemplate extends EditRecord
                         $record->update(['status' => 'draft', 'is_active' => false]);
                         Notification::make()->title('Form unpublished — moved back to draft and hidden from branches')->warning()->send();
                     } else {
+                        if ($error = $this->publishValidationError()) {
+                            Notification::make()->title($error)->danger()->send();
+                            return;
+                        }
                         $record->update(['status' => 'published', 'is_active' => true]);
                         Notification::make()->title('Form published — now live to branches')->success()->send();
                     }
