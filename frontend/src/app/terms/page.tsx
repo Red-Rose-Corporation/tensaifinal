@@ -59,7 +59,7 @@ const SECTIONS_EN = [
   },
   {
     title: '14. Contact',
-    body: 'For questions about these Terms, contact us at: support@tensai.com',
+    body: 'For questions about these Terms, contact us at: hello@tensaiconsultancy.com',
   },
 ];
 
@@ -118,7 +118,7 @@ const SECTIONS_JA = [
   },
   {
     title: '14. お問い合わせ',
-    body: '本規約に関するご質問は support@tensai.com までお問い合わせください。',
+    body: '本規約に関するご質問は hello@tensaiconsultancy.com までお問い合わせください。',
   },
 ];
 
@@ -177,7 +177,7 @@ const SECTIONS_BN = [
   },
   {
     title: '১৪. যোগাযোগ',
-    body: 'এই শর্তাবলী সম্পর্কে প্রশ্নের জন্য: support@tensai.com',
+    body: 'এই শর্তাবলী সম্পর্কে প্রশ্নের জন্য: hello@tensaiconsultancy.com',
   },
 ];
 

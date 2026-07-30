@@ -413,7 +413,7 @@ export default function StudentLayout({ children, title }: Props) {
             <div className="flex items-center gap-5 text-xs text-slate-400">
               <Link href="/privacy" className="hover:text-slate-600 transition-colors">{t.landing.privacy}</Link>
               <Link href="/terms" className="hover:text-slate-600 transition-colors">{t.landing.terms}</Link>
-              <a href="mailto:support@tensaiconsultancy.com" className="hover:text-slate-600 transition-colors">Support</a>
+              <a href="mailto:hello@tensaiconsultancy.com" className="hover:text-slate-600 transition-colors">Support</a>
             </div>
           </div>
         </footer>

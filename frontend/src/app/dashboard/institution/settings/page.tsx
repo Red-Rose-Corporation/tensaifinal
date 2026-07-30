@@ -347,7 +347,7 @@ export default function InstitutionSettingsPage() {
           <p className="text-xs text-slate-500 mb-3">
             {ja ? 'アカウントを削除する場合はサポートにご連絡ください。' : bn ? 'অ্যাকাউন্ট বন্ধ করতে সাপোর্টে যোগাযোগ করুন।' : 'To close your account, please contact our support team.'}
           </p>
-          <a href="mailto:support@tensai.com"
+          <a href="mailto:hello@tensaiconsultancy.com"
             className="inline-flex items-center gap-2 px-4 py-2 border border-red-200 text-red-600 hover:bg-red-50 rounded-xl text-xs font-semibold transition-colors">
             ✉️ {ja ? 'サポートに連絡' : bn ? 'সাপোর্টে যোগাযোগ করুন' : 'Contact Support'}
           </a>

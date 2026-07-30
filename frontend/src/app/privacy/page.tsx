@@ -39,7 +39,7 @@ const SECTIONS_EN = [
   },
   {
     title: '9. Your Rights',
-    body: 'You have the right to: access the personal data we hold about you; request correction of inaccurate data; request deletion of your account and associated data (subject to legal retention obligations); withdraw consent for non-essential data processing. To exercise these rights, contact support@tensai.com.',
+    body: 'You have the right to: access the personal data we hold about you; request correction of inaccurate data; request deletion of your account and associated data (subject to legal retention obligations); withdraw consent for non-essential data processing. To exercise these rights, contact hello@tensaiconsultancy.com.',
   },
   {
     title: '10. Cookies & Tracking',
@@ -55,7 +55,7 @@ const SECTIONS_EN = [
   },
   {
     title: '13. Contact Us',
-    body: 'If you have questions about this Privacy Policy or how your data is handled, contact our team at: support@tensai.com',
+    body: 'If you have questions about this Privacy Policy or how your data is handled, contact our team at: hello@tensaiconsultancy.com',
   },
 ];
 
@@ -94,7 +94,7 @@ const SECTIONS_JA = [
   },
   {
     title: '9. お客様の権利',
-    body: '保有する個人データへのアクセス、不正確なデータの訂正請求、アカウントおよびデータの削除請求、非必須データ処理への同意撤回の権利があります。行使するには support@tensai.com にお問い合わせください。',
+    body: '保有する個人データへのアクセス、不正確なデータの訂正請求、アカウントおよびデータの削除請求、非必須データ処理への同意撤回の権利があります。行使するには hello@tensaiconsultancy.com にお問い合わせください。',
   },
   {
     title: '10. Cookieとトラッキング',
@@ -110,7 +110,7 @@ const SECTIONS_JA = [
   },
   {
     title: '13. お問い合わせ',
-    body: '本プライバシーポリシーに関するご質問は support@tensai.com までお問い合わせください。',
+    body: '本プライバシーポリシーに関するご質問は hello@tensaiconsultancy.com までお問い合わせください。',
   },
 ];
 
@@ -149,7 +149,7 @@ const SECTIONS_BN = [
   },
   {
     title: '৯. আপনার অধিকার',
-    body: 'আপনার কাছে থাকা ব্যক্তিগত ডেটা দেখার অধিকার, ভুল তথ্য সংশোধনের অনুরোধ, অ্যাকাউন্ট ও সংশ্লিষ্ট ডেটা মুছে ফেলার অনুরোধ, এবং অ-প্রয়োজনীয় ডেটা প্রক্রিয়াকরণের সম্মতি প্রত্যাহারের অধিকার আপনার রয়েছে। এই অধিকার প্রয়োগ করতে support@tensai.com-এ যোগাযোগ করুন।',
+    body: 'আপনার কাছে থাকা ব্যক্তিগত ডেটা দেখার অধিকার, ভুল তথ্য সংশোধনের অনুরোধ, অ্যাকাউন্ট ও সংশ্লিষ্ট ডেটা মুছে ফেলার অনুরোধ, এবং অ-প্রয়োজনীয় ডেটা প্রক্রিয়াকরণের সম্মতি প্রত্যাহারের অধিকার আপনার রয়েছে। এই অধিকার প্রয়োগ করতে hello@tensaiconsultancy.com-এ যোগাযোগ করুন।',
   },
   {
     title: '১০. কুকি ও ট্র্যাকিং',
@@ -165,7 +165,7 @@ const SECTIONS_BN = [
   },
   {
     title: '১৩. যোগাযোগ',
-    body: 'এই প্রাইভেসি নীতি সম্পর্কে প্রশ্ন থাকলে: support@tensai.com',
+    body: 'এই প্রাইভেসি নীতি সম্পর্কে প্রশ্ন থাকলে: hello@tensaiconsultancy.com',
   },
 ];
 

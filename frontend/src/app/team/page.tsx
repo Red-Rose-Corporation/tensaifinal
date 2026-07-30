@@ -417,7 +417,7 @@ export default function TeamPage() {
               </div>
               <div className="flex items-center gap-3">
                 <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${r.tagColor}`}>{r.tag}</span>
-                <a href="mailto:support@tensai.com" className="text-xs font-semibold text-green-400 hover:underline transition-colors">
+                <a href="mailto:hello@tensaiconsultancy.com" className="text-xs font-semibold text-green-400 hover:underline transition-colors">
                   {ja ? '応募 →' : bn ? 'আবেদন →' : 'Apply →'}
                 </a>
               </div>
@@ -426,7 +426,7 @@ export default function TeamPage() {
         </div>
         <p className="text-center text-xs text-white/30 mt-6">
           {ja ? '掲載されていない役割に興味がある場合は、' : bn ? 'আপনার পছন্দের পদ না থাকলে, ' : "Don't see your role? "}
-          <a href="mailto:support@tensai.com" className="text-green-400 hover:underline">
+          <a href="mailto:hello@tensaiconsultancy.com" className="text-green-400 hover:underline">
             {ja ? 'メールでご連絡ください。' : bn ? 'আমাদের ইমেইল করুন।' : 'Email us anyway.'}
           </a>
         </p>
@@ -445,7 +445,7 @@ export default function TeamPage() {
             : "Tensai is always looking for passionate people who believe in the mission. If that's you, reach out."}
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a href="mailto:support@tensai.com" className="bg-green-600 hover:bg-green-500 text-white px-8 py-3.5 rounded-full font-bold text-sm transition-all glow-green">
+          <a href="mailto:hello@tensaiconsultancy.com" className="bg-green-600 hover:bg-green-500 text-white px-8 py-3.5 rounded-full font-bold text-sm transition-all glow-green">
             {ja ? 'メールを送る →' : bn ? 'যোগাযোগ করুন →' : 'Get in Touch →'}
           </a>
           <Link href="/about" className="glass-card border border-white/10 hover:border-white/25 text-white/70 hover:text-white px-8 py-3.5 rounded-full font-semibold text-sm transition-all">

@@ -247,7 +247,7 @@ export default function GalleryPage() {
                   : 'If you are a Tensai student or partner, send us your photos and we will feature you here.'}
               </p>
               <a
-                href="mailto:norozzaman996@gmail.com"
+                href="mailto:hello@tensaiconsultancy.com"
                 className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all glow-green"
               >
                 {ja ? '写真を送る →' : bn ? 'ছবি পাঠান →' : 'Send Your Photos →'}
@@ -305,7 +305,7 @@ export default function GalleryPage() {
                   : 'If you are a Tensai student or partner, send us your photos and we will feature you here.'}
               </p>
               <a
-                href="mailto:norozzaman996@gmail.com"
+                href="mailto:hello@tensaiconsultancy.com"
                 className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all glow-green"
               >
                 {ja ? '写真を送る →' : bn ? 'ছবি পাঠান →' : 'Send Your Photos →'}
