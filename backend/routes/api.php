@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public feed (no auth required, but content is limited for guests)
 Route::get('/feed',               [PostController::class, 'index']);
+Route::get('/feed/thumbnail',     [PostController::class, 'serveThumbnail']);
 Route::get('/feed/{slug}',         [PostController::class, 'show']);
 Route::get('/feed/{slug}/related', [PostController::class, 'related']);
 Route::get('/feed-categories',    [PostController::class, 'categories']);

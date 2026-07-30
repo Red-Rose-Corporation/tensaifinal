@@ -153,10 +153,10 @@ class PostResource extends Resource
                                     if (!$record?->thumbnail_file) {
                                         return 'No image uploaded yet.';
                                     }
-                                    try {
-                                        $disk = app()->environment('production') ? 'r2' : 'public';
-                                        $url  = Storage::disk($disk)->url($record->thumbnail_file);
-                                    } catch (\Throwable $e) {
+                                    // Goes through Post::thumbnail, which already falls back to a
+                                    // public-CDN or backend-proxy URL when R2 isn't publicly reachable.
+                                    $url = $record->thumbnail;
+                                    if (!$url) {
                                         return new \Illuminate\Support\HtmlString(
                                             '<span style="color:#b91c1c;">Could not load the current image (stored file: '
                                             . e($record->thumbnail_file)

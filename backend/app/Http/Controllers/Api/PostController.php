@@ -7,9 +7,39 @@ use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
+    /**
+     * Proxy-serve a post thumbnail by its stored path.
+     * Used as fallback when R2 bucket is private (no public CDN URL configured).
+     */
+    public function serveThumbnail(Request $request): Response
+    {
+        $path = (string) $request->query('path', '');
+        if ($path === '' || !str_starts_with($path, 'post-thumbnails/')) {
+            abort(404);
+        }
+
+        $disk = app()->environment('production') ? 'r2' : 'public';
+
+        try {
+            $contents = Storage::disk($disk)->get($path);
+        } catch (\Exception $e) {
+            abort(404);
+        }
+
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $mimeMap = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
+        $mimeType = $mimeMap[$ext] ?? 'image/jpeg';
+
+        return response($contents, 200)
+            ->header('Content-Type', $mimeType)
+            ->header('Cache-Control', 'public, max-age=86400');
+    }
+
     public function index(Request $request): JsonResponse
     {
         $query = Post::with('categories')
