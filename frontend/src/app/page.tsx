@@ -270,15 +270,7 @@ export default function HomePage() {
             <Link href="/gallery"  className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{l.gallery}</Link>
             <Link href="/branches" className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{ja ? '支局' : bn ? 'শাখা' : 'Branches'}</Link>
             <Link href="/feed"     className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{ja ? 'ガイド' : bn ? 'গাইড' : 'Guide'}</Link>
-            <a
-              href="https://wa.me/8801961770211"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="WhatsApp"
-              className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-white/10 text-white/60 hover:text-green-400 hover:border-green-500/40 transition-all"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.48 1.32 4.99L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 1.67c2.24 0 4.35.87 5.93 2.46a8.24 8.24 0 0 1 2.43 5.87c0 4.59-3.74 8.32-8.34 8.32-1.47 0-2.91-.39-4.17-1.12l-.3-.17-3.12.82.83-3.04-.19-.31a8.26 8.26 0 0 1-1.27-4.4c0-4.6 3.74-8.33 8.33-8.33zm-4.32 4.6c-.16 0-.42.06-.64.31-.22.25-.85.83-.85 2.02 0 1.19.87 2.34.99 2.5.12.16 1.7 2.72 4.19 3.71 2.07.83 2.49.66 2.94.62.45-.04 1.45-.59 1.65-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28-.24-.12-1.45-.71-1.67-.79-.22-.08-.39-.12-.55.12-.16.24-.63.79-.77.95-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.43-1.34-1.67-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.42-.55-.42z"/></svg>
-            </a>
+            <Link href="/contact"  className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{ja ? 'お問い合わせ' : bn ? 'যোগাযোগ' : 'Contact'}</Link>
             {dashboardHref ? (
               <Link
                 href={dashboardHref}
@@ -318,16 +310,7 @@ export default function HomePage() {
             <Link href="/gallery"  onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{l.gallery}</Link>
             <Link href="/branches" onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{ja ? '支局' : bn ? 'শাখা' : 'Branches'}</Link>
             <Link href="/feed"     onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{ja ? 'ガイド' : bn ? 'গাইড' : 'Guide'}</Link>
-            <a
-              href="https://wa.me/8801961770211"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.48 1.32 4.99L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 1.67c2.24 0 4.35.87 5.93 2.46a8.24 8.24 0 0 1 2.43 5.87c0 4.59-3.74 8.32-8.34 8.32-1.47 0-2.91-.39-4.17-1.12l-.3-.17-3.12.82.83-3.04-.19-.31a8.26 8.26 0 0 1-1.27-4.4c0-4.6 3.74-8.33 8.33-8.33zm-4.32 4.6c-.16 0-.42.06-.64.31-.22.25-.85.83-.85 2.02 0 1.19.87 2.34.99 2.5.12.16 1.7 2.72 4.19 3.71 2.07.83 2.49.66 2.94.62.45-.04 1.45-.59 1.65-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28-.24-.12-1.45-.71-1.67-.79-.22-.08-.39-.12-.55.12-.16.24-.63.79-.77.95-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.43-1.34-1.67-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.42-.55-.42z"/></svg>
-              WhatsApp
-            </a>
+            <Link href="/contact"  onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{ja ? 'お問い合わせ' : bn ? 'যোগাযোগ' : 'Contact'}</Link>
             <div className="border-t border-white/[0.08] mt-2 pt-3 flex gap-2">
               {dashboardHref ? (
                 <Link href={dashboardHref} onClick={() => setMobileOpen(false)} className="flex-1 text-center text-sm bg-green-600 hover:bg-green-500 text-white px-4 py-2.5 rounded-full font-semibold transition-all">
@@ -967,6 +950,7 @@ export default function HomePage() {
                 <Link href="/team"     className="hover:text-white/65 transition-colors">{navTeam}</Link>
                 <Link href="/gallery"  className="hover:text-white/65 transition-colors">{l.gallery}</Link>
                 <Link href="/branches" className="hover:text-white/65 transition-colors">{ja ? '支局' : bn ? 'শাখা' : 'Branches'}</Link>
+                <Link href="/contact"  className="hover:text-white/65 transition-colors">{ja ? 'お問い合わせ' : bn ? 'যোগাযোগ' : 'Contact'}</Link>
                 <Link href="/auth/register?type=affiliate" className="hover:text-white/65 transition-colors">{l.gateways.affiliateTitle}</Link>
                 <span className="text-white/[0.12]">·</span>
                 <Link href="/auth/register?type=agency"      className="hover:text-white/65 transition-colors">{l.ctaAgency}</Link>
