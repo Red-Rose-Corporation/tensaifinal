@@ -241,6 +241,7 @@ export default function AboutPage() {
             <Link href="/team"     className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{a.navTeam}</Link>
             <Link href="/gallery"  className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{a.navGallery}</Link>
             <Link href="/branches" className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{ja ? '支局' : bn ? 'শাখা' : 'Branches'}</Link>
+            <Link href="/contact"  className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{ja ? 'お問い合わせ' : bn ? 'যোগাযোগ' : 'Contact'}</Link>
             <Link href="/auth/login" className="text-sm text-white/65 hover:text-white transition-colors px-3 py-1.5 hidden sm:inline">{l.login}</Link>
             <Link href="/auth/register" className="text-sm bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-full font-semibold transition-all glow-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-300 hidden sm:inline">
               {l.getStarted}
@@ -263,6 +264,7 @@ export default function AboutPage() {
             <Link href="/team"     onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{a.navTeam}</Link>
             <Link href="/gallery"  onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{a.navGallery}</Link>
             <Link href="/branches" onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{ja ? '支局' : bn ? 'শাখা' : 'Branches'}</Link>
+            <Link href="/contact"  onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{ja ? 'お問い合わせ' : bn ? 'যোগাযোগ' : 'Contact'}</Link>
             <div className="border-t border-white/[0.08] mt-2 pt-3 flex gap-2">
               <Link href="/auth/login"    onClick={() => setMobileOpen(false)} className="flex-1 text-center text-sm text-white/70 hover:text-white border border-white/10 hover:border-white/25 px-4 py-2.5 rounded-full transition-all">{l.login}</Link>
               <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="flex-1 text-center text-sm bg-green-600 hover:bg-green-500 text-white px-4 py-2.5 rounded-full font-semibold transition-all">{l.getStarted}</Link>
@@ -290,6 +292,7 @@ export default function AboutPage() {
               <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shrink-0" aria-hidden="true" />
               {a.badge}
             </div>
+
             <h1 className="text-fluid-hero font-black text-white leading-[1.06] tracking-tight mb-5">
               {a.heroTitle}<br />
               <span className="gradient-text">{a.heroHighlight}</span>
@@ -622,6 +625,9 @@ export default function AboutPage() {
                   </div>
                 )}
               </div>
+              <Link href="/contact" className="inline-block mt-6 text-sm text-green-400 hover:underline">
+                {ja ? '連絡先ページを見る →' : bn ? 'সম্পূর্ণ যোগাযোগ পেজ দেখুন →' : 'View full contact page →'}
+              </Link>
             </div>
           </section>
         )}
