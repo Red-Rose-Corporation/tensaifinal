@@ -815,10 +815,11 @@ export default function HomePage() {
           </div>
 
           {galleryLoading ? (
-            /* Loading skeleton */
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4" role="status" aria-label={ja ? '読み込み中...' : bn ? 'লোড হচ্ছে...' : 'Loading gallery...'}>
+            /* Loading skeleton — mirrors the bento layout below to avoid layout shift */
+            <div className="grid grid-cols-2 sm:grid-cols-4 auto-rows-[140px] sm:auto-rows-[170px] [grid-auto-flow:dense] gap-4" role="status" aria-label={ja ? '読み込み中...' : bn ? 'লোড হচ্ছে...' : 'Loading gallery...'}>
+              <div className="col-span-2 row-span-2 rounded-2xl bg-white/[0.04] animate-pulse" />
               {[0, 1, 2, 3].map((i) => (
-                <div key={i} className="aspect-square rounded-2xl bg-white/[0.04] animate-pulse" />
+                <div key={i} className="rounded-2xl bg-white/[0.04] animate-pulse" />
               ))}
             </div>
           ) : galleryError ? (
@@ -849,27 +850,40 @@ export default function HomePage() {
               ))}
             </div>
           ) : (
-            /* Real gallery images */
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {featured.map((item) => (
-                <Link
-                  key={item.id}
-                  href="/gallery"
-                  aria-label={item.title}
-                  className="group relative aspect-square rounded-2xl overflow-hidden border border-white/[0.08] hover:border-green-500/30 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={item.image_url}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
-                    <p className="text-white font-semibold text-xs leading-tight">{item.title}</p>
-                  </div>
-                </Link>
-              ))}
+            /* Real gallery images — bento layout: first item is the hero tile, rest fill in around it */
+            <div className="grid grid-cols-2 sm:grid-cols-4 auto-rows-[140px] sm:auto-rows-[170px] [grid-auto-flow:dense] gap-4">
+              {featured.map((item, i) => {
+                const isHero = i === 0;
+                return (
+                  <Link
+                    key={item.id}
+                    href="/gallery"
+                    aria-label={item.title}
+                    className={`group relative rounded-2xl overflow-hidden border border-white/[0.08] hover:border-green-500/30 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 ${isHero ? 'col-span-2 row-span-2' : ''}`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent flex flex-col justify-end p-3 sm:p-4 transition-opacity ${isHero ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+                    >
+                      {isHero && item.category && (
+                        <span className="self-start mb-2 text-[9px] font-bold text-green-300 bg-green-400/15 border border-green-400/25 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                          {item.category}
+                        </span>
+                      )}
+                      <p className={`text-white font-semibold leading-tight ${isHero ? 'text-sm sm:text-base' : 'text-xs'}`}>{item.title}</p>
+                      {isHero && item.description && (
+                        <p className="text-white/60 text-xs mt-1 leading-snug line-clamp-2 hidden sm:block">{item.description}</p>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           )}
 
