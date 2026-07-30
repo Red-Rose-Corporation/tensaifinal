@@ -34,8 +34,13 @@ class Post extends Model
     public function getThumbnailAttribute(): ?string
     {
         if ($this->thumbnail_file) {
-            $disk = app()->environment('production') ? 'r2' : 'public';
-            return \Illuminate\Support\Facades\Storage::disk($disk)->url($this->thumbnail_file);
+            try {
+                $disk = app()->environment('production') ? 'r2' : 'public';
+                return \Illuminate\Support\Facades\Storage::disk($disk)->url($this->thumbnail_file);
+            } catch (\Throwable $e) {
+                // Bad/unreachable stored file — fall through to the other thumbnail sources
+                // instead of crashing every page that reads this attribute (list, feed, admin form).
+            }
         }
         if ($this->thumbnail_url) return $this->thumbnail_url;
         if ($this->youtube_id) return "https://img.youtube.com/vi/{$this->youtube_id}/hqdefault.jpg";

@@ -153,8 +153,16 @@ class PostResource extends Resource
                                     if (!$record?->thumbnail_file) {
                                         return 'No image uploaded yet.';
                                     }
-                                    $disk = app()->environment('production') ? 'r2' : 'public';
-                                    $url  = Storage::disk($disk)->url($record->thumbnail_file);
+                                    try {
+                                        $disk = app()->environment('production') ? 'r2' : 'public';
+                                        $url  = Storage::disk($disk)->url($record->thumbnail_file);
+                                    } catch (\Throwable $e) {
+                                        return new \Illuminate\Support\HtmlString(
+                                            '<span style="color:#b91c1c;">Could not load the current image (stored file: '
+                                            . e($record->thumbnail_file)
+                                            . '). Use "Delete current image" below, then upload a new one.</span>'
+                                        );
+                                    }
                                     return new \Illuminate\Support\HtmlString(
                                         '<img src="' . e($url) . '" style="max-width:320px;border-radius:0.75rem;" />'
                                     );
