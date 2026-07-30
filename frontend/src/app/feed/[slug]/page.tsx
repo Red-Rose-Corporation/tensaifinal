@@ -33,9 +33,28 @@ export async function generateMetadata(
   const post = await fetchPost(slug);
 
   if (!post) {
+    // Still return full Open Graph data (using site branding) so a transient API
+    // hiccup or bad link never shows up as a bare, image-less URL when shared.
+    const title = 'Tensai — Study Abroad Guide';
+    const description = 'The Way of Global Career. Verified guides for students moving abroad.';
+    const url = `${SITE_URL}/feed/${slug}`;
     return {
-      title: 'Post not found — Tensai',
-      description: 'This post could not be found.',
+      title,
+      description,
+      openGraph: {
+        type: 'website',
+        url,
+        title,
+        description,
+        siteName: SITE_NAME,
+        images: [{ url: FALLBACK_IMAGE, width: 512, height: 512, alt: title }],
+      },
+      twitter: {
+        card: 'summary',
+        title,
+        description,
+        images: [FALLBACK_IMAGE],
+      },
     };
   }
 
