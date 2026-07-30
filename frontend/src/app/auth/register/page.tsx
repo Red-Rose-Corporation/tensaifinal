@@ -5,10 +5,13 @@ export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.tensaiconsultancy.com';
 
+// Official Bengali tagline — verbatim, do not paraphrase.
+const BN_TAGLINE = 'বিদেশে উচ্চশিক্ষা ও স্বাস্থ্যসেবা খাতে চাকরি খুঁজে পাওয়ার বিশ্বস্ত প্ল্যাটফর্ম';
+
 const COPY: Record<string, { title: string; description: string }> = {
   student: {
-    title: '🎓 Join Tensai — Verified Path to Study & Work Abroad',
-    description: '0 fake profiles. 100% OCR-verified documents. Your transparent bridge to Japan — free to join.',
+    title: '🎓 Join Tensai — The Way of Global Career',
+    description: `${BN_TAGLINE}। 0 fake profiles, 100% OCR-verified documents — free to join.`,
   },
   agency: {
     title: "🤝 Partner with Tensai — Bangladesh's Trusted Recruitment Network",

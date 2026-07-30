@@ -42,13 +42,13 @@ export default async function Image() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: 30, fontWeight: 800, color: 'white', letterSpacing: -0.5 }}>Tensai</span>
-            <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', letterSpacing: 3, textTransform: 'uppercase' }}>
+            <span style={{ fontSize: 18, fontWeight: 700, color: '#4ade80', letterSpacing: 3, textTransform: 'uppercase' }}>
               The Way of Global Career
             </span>
           </div>
         </div>
 
-        <div style={{ display: 'flex', fontSize: 56, fontWeight: 800, color: 'white', lineHeight: 1.15, maxWidth: 940 }}>
+        <div style={{ display: 'flex', fontSize: 52, fontWeight: 800, color: 'white', lineHeight: 1.15, maxWidth: 940 }}>
           Your Verified Path to Study &amp; Work Abroad
         </div>
 
