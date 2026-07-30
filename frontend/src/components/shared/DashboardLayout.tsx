@@ -71,18 +71,6 @@ export default function DashboardLayout({ children, title }: Props) {
   }, []);
 
   const NAV_LINKS: Record<string, { label: string; href: string }[]> = useMemo(() => ({
-    admin: [
-      { label: lang === 'ja' ? '申請者' : lang === 'bn' ? 'আবেদনকারী' : 'Applications', href: '/dashboard/admin/applicants' },
-      { label: lang === 'ja' ? '支局管理' : lang === 'bn' ? 'শাখা' : 'Branches',         href: '/dashboard/admin/branches' },
-      { label: lang === 'ja' ? 'エージェンシー' : lang === 'bn' ? 'এজেন্সি' : 'Agencies', href: '/dashboard/admin/agencies' },
-      { label: lang === 'ja' ? 'ユーザー管理' : lang === 'bn' ? 'ইউজার' : 'Users',        href: '/dashboard/admin/users' },
-      { label: lang === 'ja' ? '機関管理' : lang === 'bn' ? 'ইনস্টিটিউশন' : 'Institutions', href: '/dashboard/admin/institutions' },
-      { label: lang === 'ja' ? 'アフィリエイト' : lang === 'bn' ? 'অ্যাফিলিয়েট' : 'Affiliates', href: '/dashboard/admin/affiliates' },
-      { label: lang === 'ja' ? '選択済み' : lang === 'bn' ? 'নির্বাচিত' : 'Selected',       href: '/dashboard/admin/selected' },
-      { label: lang === 'ja' ? 'ギャラリー' : lang === 'bn' ? 'গ্যালারি' : 'Gallery',     href: '/dashboard/admin/gallery' },
-      { label: lang === 'ja' ? 'ガイド' : lang === 'bn' ? 'গাইড' : 'Guide',               href: '/feed' },
-      { label: lang === 'ja' ? '設定' : lang === 'bn' ? 'সেটিংস' : 'Settings',            href: '/dashboard/admin/settings' },
-    ],
     student: [
       { label: lang === 'ja' ? '申請' : lang === 'bn' ? 'আবেদন' : 'My Application', href: '/dashboard/student/leads' },
       { label: lang === 'ja' ? '紹介' : lang === 'bn' ? 'রেফারেল' : 'Referral',      href: '/dashboard/student/referral' },
@@ -157,9 +145,8 @@ export default function DashboardLayout({ children, title }: Props) {
   }
 
   const userInitial = user.name?.charAt(0).toUpperCase() ?? '?';
-  const isAdmin = user.roles?.some(r => r === 'admin' || r === 'super_admin') ?? false;
   const isBranchAdmin = user.roles?.some(r => r === 'branch_admin' || r === 'branch_manager') ?? false;
-  const links = isAdmin ? NAV_LINKS.admin : isBranchAdmin ? NAV_LINKS.branch_admin : (NAV_LINKS[user.gateway_type] ?? []);
+  const links = isBranchAdmin ? NAV_LINKS.branch_admin : (NAV_LINKS[user.gateway_type] ?? []);
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">

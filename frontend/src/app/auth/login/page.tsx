@@ -31,7 +31,11 @@ export default function LoginPage() {
         return;
       }
       const isAdmin = user?.roles?.some((r: string) => r === 'admin' || r === 'super_admin');
-      router.push(isAdmin ? '/dashboard/admin/gallery' : `/dashboard/${user?.gateway_type}`);
+      if (isAdmin) {
+        window.location.href = 'https://tensai-production-3af6.up.railway.app/admin';
+        return;
+      }
+      router.push(`/dashboard/${user?.gateway_type}`);
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } };
       setError(axiosErr.response?.data?.message || a.invalidCredentials);

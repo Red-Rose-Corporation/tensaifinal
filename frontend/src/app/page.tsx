@@ -39,7 +39,8 @@ export default function HomePage() {
 
   const user = useAuthStore((s) => s.user);
   const isAdmin = user?.roles?.some((r) => r === 'admin' || r === 'super_admin');
-  const dashboardHref = user ? (isAdmin ? '/dashboard/admin/gallery' : `/dashboard/${user.gateway_type}`) : null;
+  const ADMIN_URL = 'https://tensai-production-3af6.up.railway.app/admin';
+  const dashboardHref = user ? (isAdmin ? ADMIN_URL : `/dashboard/${user.gateway_type}`) : null;
 
   const [featured, setFeatured] = useState<GalleryItem[]>([]);
   const [galleryLoading, setGalleryLoading] = useState(true);
@@ -274,6 +275,8 @@ export default function HomePage() {
             {dashboardHref ? (
               <Link
                 href={dashboardHref}
+                target={isAdmin ? '_blank' : undefined}
+                rel={isAdmin ? 'noopener noreferrer' : undefined}
                 className="text-sm bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-full font-semibold transition-all glow-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-300 hidden sm:inline"
               >
                 {ja ? 'ダッシュボード' : bn ? 'ড্যাশবোর্ড' : 'Dashboard'}
@@ -313,7 +316,13 @@ export default function HomePage() {
             <Link href="/contact"  onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{ja ? 'お問い合わせ' : bn ? 'যোগাযোগ' : 'Contact'}</Link>
             <div className="border-t border-white/[0.08] mt-2 pt-3 flex gap-2">
               {dashboardHref ? (
-                <Link href={dashboardHref} onClick={() => setMobileOpen(false)} className="flex-1 text-center text-sm bg-green-600 hover:bg-green-500 text-white px-4 py-2.5 rounded-full font-semibold transition-all">
+                <Link
+                  href={dashboardHref}
+                  target={isAdmin ? '_blank' : undefined}
+                  rel={isAdmin ? 'noopener noreferrer' : undefined}
+                  onClick={() => setMobileOpen(false)}
+                  className="flex-1 text-center text-sm bg-green-600 hover:bg-green-500 text-white px-4 py-2.5 rounded-full font-semibold transition-all"
+                >
                   {ja ? 'ダッシュボード' : bn ? 'ড্যাশবোর্ড' : 'Dashboard'}
                 </Link>
               ) : (
