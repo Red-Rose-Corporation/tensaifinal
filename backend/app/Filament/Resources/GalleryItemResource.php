@@ -56,25 +56,38 @@ class GalleryItemResource extends Resource
                     ->columnSpanFull(),
             ])->columns(2),
 
-            Forms\Components\Section::make('Image')
-                ->description('Upload an image from your computer, OR paste an external URL below. Upload takes priority.')
+            Forms\Components\Section::make('Images')
+                ->description('Upload a cover image from your computer, OR paste an external URL below. Upload takes priority. You can add up to 2 more images below — 3 images total per post.')
                 ->schema([
                     Forms\Components\FileUpload::make('image_path')
-                        ->label('Upload Image from Computer')
+                        ->label('Cover Image')
                         ->image()
                         ->disk(fn () => app()->environment('production') ? 'r2' : 'public')
                         ->directory('gallery')
                         ->visibility('public')
                         ->maxSize(8192)
                         ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                        ->helperText('JPG, PNG, WebP â€” max 8 MB.')
+                        ->helperText('JPG, PNG, WebP â€” max 8 MB. Shown in the gallery grid and as the main image.')
                         ->columnSpanFull(),
 
                     Forms\Components\TextInput::make('image_url')
                         ->label('Or Paste External Image URL')
                         ->url()
                         ->placeholder('https://i.imgur.com/example.jpg')
-                        ->helperText('Used only if no file is uploaded above. Paste from Imgur, Google Drive, etc.')
+                        ->helperText('Used only if no cover image is uploaded above. Paste from Imgur, Google Drive, etc.')
+                        ->columnSpanFull(),
+
+                    Forms\Components\FileUpload::make('extra_images')
+                        ->label('Additional Images (optional)')
+                        ->image()
+                        ->multiple()
+                        ->maxFiles(2)
+                        ->disk(fn () => app()->environment('production') ? 'r2' : 'public')
+                        ->directory('gallery')
+                        ->visibility('public')
+                        ->maxSize(8192)
+                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                        ->helperText('Up to 2 more photos shown alongside the cover image on the post detail view.')
                         ->columnSpanFull(),
                 ]),
 

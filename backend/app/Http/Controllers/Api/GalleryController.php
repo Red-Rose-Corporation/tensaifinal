@@ -20,8 +20,8 @@ class GalleryController extends Controller
         }
 
         return response()->json(
-            $query->get(['id', 'title', 'description', 'content', 'image_url', 'image_path', 'category', 'is_featured'])
-                ->map(fn ($item) => array_merge($item->toArray(), ['image_url' => $item->display_image_url]))
+            $query->get(['id', 'title', 'description', 'content', 'image_url', 'image_path', 'extra_images', 'category', 'is_featured'])
+                ->map(fn ($item) => array_merge($item->toArray(), ['image_url' => $item->display_image_url, 'extra_image_urls' => $item->extra_image_urls]))
         );
     }
 
@@ -30,10 +30,10 @@ class GalleryController extends Controller
         $items = GalleryItem::active()->featured()
             ->orderBy('sort_order')
             ->limit(6)
-            ->get(['id', 'title', 'description', 'image_url', 'image_path', 'category']);
+            ->get(['id', 'title', 'description', 'image_url', 'image_path', 'extra_images', 'category']);
 
         return response()->json(
-            $items->map(fn ($item) => array_merge($item->toArray(), ['image_url' => $item->display_image_url]))
+            $items->map(fn ($item) => array_merge($item->toArray(), ['image_url' => $item->display_image_url, 'extra_image_urls' => $item->extra_image_urls]))
         );
     }
 
@@ -57,6 +57,35 @@ class GalleryController extends Controller
 
         // Detect mime type from file extension (avoids extra S3 API call)
         $ext = strtolower(pathinfo($gallery->image_path, PATHINFO_EXTENSION));
+        $mimeMap = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp', 'gif' => 'image/gif'];
+        $mimeType = $mimeMap[$ext] ?? 'image/jpeg';
+
+        return response($contents, 200)
+            ->header('Content-Type', $mimeType)
+            ->header('Cache-Control', 'public, max-age=86400'); // 24h browser cache
+    }
+
+    /**
+     * Proxy-serve any gallery-uploaded image (cover or extra) by its stored path.
+     * Used as fallback when R2 bucket is private (no public CDN URL configured).
+     */
+    public function serveImagePath(Request $request): Response
+    {
+        $path = (string) $request->query('path', '');
+        // Only ever serve files inside the gallery upload directory — never arbitrary paths.
+        if ($path === '' || !str_starts_with($path, 'gallery/')) {
+            abort(404);
+        }
+
+        $disk = app()->environment('production') ? 'r2' : 'public';
+
+        try {
+            $contents = Storage::disk($disk)->get($path);
+        } catch (\Exception $e) {
+            abort(404);
+        }
+
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
         $mimeMap = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp', 'gif' => 'image/gif'];
         $mimeType = $mimeMap[$ext] ?? 'image/jpeg';
 

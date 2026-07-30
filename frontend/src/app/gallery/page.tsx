@@ -11,6 +11,7 @@ interface GalleryItem {
   title: string;
   description: string | null;
   image_url: string;
+  extra_image_urls?: string[];
   category: string;
 }
 
@@ -47,6 +48,11 @@ export default function GalleryPage() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [lightbox, setLightbox] = useState<GalleryItem | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (lightbox) setLightboxImage(lightbox.image_url);
+  }, [lightbox]);
 
   useEffect(() => {
     if (!lightbox) return;
@@ -350,12 +356,28 @@ export default function GalleryPage() {
             className="max-w-4xl w-full max-h-[90vh] flex flex-col sm:flex-row bg-[#0d1117] rounded-2xl overflow-hidden border border-white/[0.1]"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={lightbox.image_url}
-              alt={lightbox.title}
-              className="w-full sm:w-2/3 max-h-[50vh] sm:max-h-[90vh] object-contain bg-black shrink-0"
-            />
+            <div className="w-full sm:w-2/3 flex flex-col bg-black shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={lightboxImage ?? lightbox.image_url}
+                alt={lightbox.title}
+                className="w-full max-h-[45vh] sm:max-h-[80vh] object-contain bg-black"
+              />
+              {!!lightbox.extra_image_urls?.length && (
+                <div className="flex gap-2 p-2 justify-center bg-black/60">
+                  {[lightbox.image_url, ...lightbox.extra_image_urls].map((url, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      key={i}
+                      src={url}
+                      alt=""
+                      onClick={() => setLightboxImage(url)}
+                      className={`w-14 h-14 object-cover rounded-lg cursor-pointer border-2 transition-all ${(lightboxImage ?? lightbox.image_url) === url ? 'border-green-400' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
             <div className="p-5 sm:p-6 flex flex-col overflow-y-auto">
               <span className="self-start text-[9px] font-bold text-green-400 bg-green-400/15 border border-green-400/25 px-2 py-0.5 rounded-full uppercase tracking-wider mb-3">
                 {lightbox.category}

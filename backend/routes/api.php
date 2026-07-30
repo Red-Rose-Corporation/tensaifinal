@@ -79,6 +79,7 @@ Route::get('/branches/{slug}', [BranchController::class, 'show']);
 Route::get('/gallery', [GalleryController::class, 'index']);
 Route::get('/gallery/featured', [GalleryController::class, 'featured']);
 Route::get('/gallery/image/{gallery}', [GalleryController::class, 'serveImage']);
+Route::get('/gallery/image-path', [GalleryController::class, 'serveImagePath']);
 
 // Public auth
 Route::middleware('throttle:10,1')->group(function () {
