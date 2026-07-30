@@ -51,7 +51,7 @@ class AffiliateController extends Controller
         return response()->json([
             'profile'        => $profile,
             'affiliate_code' => $user->affiliate_code,
-            'affiliate_link' => url('/auth/register?ref=' . $user->affiliate_code),
+            'affiliate_link' => rtrim(config('app.frontend_url'), '/') . '/auth/register?ref=' . $user->affiliate_code,
         ]);
     }
 
