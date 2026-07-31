@@ -11,7 +11,7 @@ const BN_TAGLINE = 'বিদেশে উচ্চশিক্ষা ও স্
 const COPY: Record<string, { title: string; description: string }> = {
   student: {
     title: '🎓 Join Tensai — The Way of Global Career',
-    description: `${BN_TAGLINE}। 0 fake profiles, 100% OCR-verified documents — free to join.`,
+    description: `${BN_TAGLINE}। কোনো ভুয়া প্রতিশ্রুতি নেই — free to join.`,
   },
   agency: {
     title: "🤝 Partner with Tensai — Bangladesh's Trusted Recruitment Network",

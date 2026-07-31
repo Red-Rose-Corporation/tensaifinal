@@ -48,12 +48,7 @@ export default async function Image() {
             height={64}
             style={{ borderRadius: 32 }}
           />
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: 32, fontWeight: 800, color: 'white', letterSpacing: -0.5 }}>Tensai</span>
-            <span style={{ fontSize: 16, fontWeight: 700, color: '#4ade80', letterSpacing: 3, textTransform: 'uppercase' }}>
-              The Way of Global Career
-            </span>
-          </div>
+          <span style={{ fontSize: 32, fontWeight: 800, color: 'white', letterSpacing: -0.5 }}>Tensai</span>
         </div>
 
         <div style={{ display: 'flex', fontSize: 50, fontWeight: 800, color: 'white', lineHeight: 1.2, maxWidth: 920 }}>
@@ -75,7 +70,7 @@ export default async function Image() {
               fontWeight: 700,
             }}
           >
-            🎓 Join Free
+            📖 Free Guide
           </div>
         </div>
       </div>
