@@ -4,7 +4,8 @@ import { useAuthStore } from "@/store/authStore";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { getStoredReferralCode } from "@/lib/referral";
 
 function RegisterForm() {
   const searchParams = useSearchParams();
@@ -27,6 +28,14 @@ function RegisterForm() {
   const [error, setError]               = useState("");
   const { register, isLoading }         = useAuthStore();
   const router                          = useRouter();
+
+  // No ?ref= in this URL (e.g. they read a guide first) — fall back to a code
+  // captured on an earlier visit, within its 30-day attribution window.
+  useEffect(() => {
+    if (refCode) return;
+    const stored = getStoredReferralCode();
+    if (stored) setForm(f => ({ ...f, affiliate_code: stored }));
+  }, [refCode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

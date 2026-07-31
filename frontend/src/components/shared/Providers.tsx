@@ -1,8 +1,9 @@
 'use client';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { useAuthStore } from '@/store/authStore';
+import ReferralCapture from '@/components/shared/ReferralCapture';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
 function AuthHydrator() {
   // Rehydrate synchronously so the store is ready before first paint.
@@ -27,6 +28,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <AuthHydrator />
+        <Suspense fallback={null}>
+          <ReferralCapture />
+        </Suspense>
         {children}
       </LanguageProvider>
     </QueryClientProvider>
