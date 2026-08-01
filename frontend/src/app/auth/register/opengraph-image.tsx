@@ -1,15 +1,21 @@
 import { ImageResponse } from 'next/og';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
-export const runtime = 'edge';
 export const alt = 'Tensai — Your Platform for Global Study, Caregiver & Work Visa';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.tensaiconsultancy.com';
 // Same variable font the site uses everywhere else (see frontend/src/app/layout.tsx).
 const SORA_URL = 'https://github.com/google/fonts/raw/main/ofl/sora/Sora%5Bwght%5D.ttf';
 
 export default async function Image() {
+  // Read the logo from disk instead of fetching our own domain — a self-fetch
+  // from within this route's own server function was silently failing on
+  // Vercel and produced an empty (0-byte) image response for every share.
+  const logoData = await readFile(join(process.cwd(), 'public/tensai-logo.png'), 'base64');
+  const logoSrc = `data:image/png;base64,${logoData}`;
+
   // Fall back to a generic sans-serif if the font fetch ever fails — never let a
   // font-loading hiccup take down the whole share card.
   let fonts: { name: string; data: ArrayBuffer; weight: 400 | 800; style: 'normal' }[] = [];
@@ -43,7 +49,7 @@ export default async function Image() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 18, marginBottom: 50 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`${SITE_URL}/tensai-logo.png`}
+            src={logoSrc}
             width={64}
             height={64}
             style={{ borderRadius: 32 }}

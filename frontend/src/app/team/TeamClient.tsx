@@ -1,0 +1,432 @@
+'use client';
+import { useLang } from '@/context/LanguageContext';
+import Image from 'next/image';
+import Link from 'next/link';
+import SiteHeader from '@/components/shared/SiteHeader';
+
+export default function TeamPage() {
+  const { t, lang } = useLang();
+  const l = t.landing;
+  const a = t.about;
+  const ja = lang === 'ja';
+  const bn = lang === 'bn';
+
+  const termsText = ja ? '利用規約' : bn ? 'শর্তাবলী' : 'Terms';
+  const privText  = ja ? 'プライバシー' : bn ? 'প্রাইভেসি' : 'Privacy';
+
+  const TEAM = [
+    {
+      name: 'Md. Norozzaman',
+      nameJa: 'Md. ノロザマン',
+      photo: 'https://pub-f01f8a3511524b808cb8116aa5d495aa.r2.dev/ceo.webp',
+      initials: 'MN',
+      role: a.role1,
+      badge: a.badge1,
+      avatarBg: 'bg-green-700',
+      badgeColor: 'bg-green-400/10 text-green-400 border border-green-400/20',
+      accentColor: 'green',
+      bio: ja
+        ? 'バングラデシュ生まれの連続起業家。米国登録企業Zonelyも創設。「世界中のプロフェッショナルが正当に評価される場を作る」という信念をTensaiで教育分野に応用。留学業界の腐敗と詐欺を目の当たりにし、テクノロジーで根本から変えることを決意。'
+        : bn
+        ? 'বাংলাদেশের ধারাবাহিক উদ্যোক্তা। মার্কিন কোম্পানি Zonely-রও প্রতিষ্ঠাতা। "বিশ্বের প্রতিটি প্রতিভার সঠিক মূল্যায়ন হোক" — এই বিশ্বাস নিয়ে টেনসাই তৈরি করেছেন। বিদেশ পড়াশোনার শিল্পে প্রতারণা দেখে প্রযুক্তি দিয়ে বদলানোর সিদ্ধান্ত নিয়েছেন।'
+        : 'Serial entrepreneur born in Bangladesh. Also founder of Zonely — a USA-registered platform built on the belief that skilled professionals everywhere deserve to be found. He brings that same philosophy to Tensai: every qualified student deserves a fair, fraud-free shot at a global career.',
+      skills: ja
+        ? ['プロダクトビジョン', 'プラットフォーム設計', '事業戦略', 'フランチャイズ展開']
+        : bn
+        ? ['পণ্য দৃষ্টিভঙ্গি', 'প্ল্যাটফর্ম স্থাপত্য', 'ব্যবসায়িক কৌশল', 'ফ্র্যাঞ্চাইজি সম্প্রসারণ']
+        : ['Product Vision', 'Platform Architecture', 'Business Strategy', 'Franchise Expansion'],
+      linkedin: 'https://linkedin.com/in/md-norozzaman-207418169/',
+      also: ja ? 'ZonelyのファウンダーでもあるCEO' : bn ? 'Zonely (USA)-এরও প্রতিষ্ঠাতা' : 'Also founder of Zonely (USA)',
+      alsoLink: 'https://www.zonelyleads.com',
+      quote: ja
+        ? '「学生がビザを取れるかどうかは、運や人脈ではなく、実力と誠実さで決まるべきだ。」'
+        : bn
+        ? '"একজন শিক্ষার্থী ভিসা পাবে কিনা, সেটা ভাগ্য বা পরিচিতির উপর নির্ভর করা উচিত নয় — মেধা ও সততার উপর নির্ভর করা উচিত।"'
+        : '"Whether a student gets their visa should not depend on luck or connections. It should depend on merit and honesty. That\'s what Tensai is built to guarantee."',
+    },
+    {
+      name: 'Nasir Sarker',
+      photo: 'https://pub-f01f8a3511524b808cb8116aa5d495aa.r2.dev/2.png',
+      nameJa: 'ナシル・サーカー',
+      initials: 'NS',
+      role: a.role2,
+      badge: a.badge2,
+      avatarBg: 'bg-slate-600',
+      badgeColor: 'bg-white/10 text-white/70 border border-white/15',
+      accentColor: 'slate',
+      bio: ja
+        ? 'Tensaiの成長エンジン。エージェンシーネットワークの拡大、パートナーシップの構築、そして全国フランチャイズモデルの展開を牽引。バングラデシュ全土でTensaiを「プラットフォーム」から「ムーブメント」へと転換させる役割を担う。'
+        : bn
+        ? 'টেনসাইয়ের গ্রোথ ইঞ্জিন। এজেন্সি নেটওয়ার্ক সম্প্রসারণ, পার্টনারশিপ উন্নয়ন এবং সারাদেশে ফ্র্যাঞ্চাইজি রোলআউট পরিচালনা করছেন। সারাবাংলাদেশে টেনসাইকে একটি আন্দোলনে পরিণত করাই তার লক্ষ্য।'
+        : 'The growth engine behind Tensai. Nasir drives agency network expansion, partnership development, and the nationwide franchise rollout. His role is to turn Tensai from a platform into a movement — reaching every district in Bangladesh and beyond.',
+      skills: ja
+        ? ['パートナーシップ開発', 'エージェンシーネットワーク', 'フランチャイズ管理', '市場開拓']
+        : bn
+        ? ['পার্টনারশিপ উন্নয়ন', 'এজেন্সি নেটওয়ার্ক', 'ফ্র্যাঞ্চাইজি ব্যবস্থাপনা', 'বাজার সম্প্রসারণ']
+        : ['Partnership Development', 'Agency Network', 'Franchise Management', 'Market Expansion'],
+      linkedin: null,
+      also: null,
+      alsoLink: null,
+      quote: ja
+        ? '「エージェンシーが競争ではなく協力できる仕組みを作れば、誰も損をしない。」'
+        : bn
+        ? '"এজেন্সিগুলো যদি প্রতিযোগিতার বদলে সহযোগিতা করে, তাহলে কেউ হারে না — বিশেষ করে শিক্ষার্থীরা।"'
+        : '"If you build a system where agencies collaborate instead of compete, nobody loses — especially not the students."',
+    },
+    {
+      name: 'Sabbir',
+      photo: 'https://pub-f01f8a3511524b808cb8116aa5d495aa.r2.dev/WhatsApp%20Image%202026-06-06%20at%209.06.32%20PM.jpeg',
+      nameJa: 'サッビル',
+      initials: 'SB',
+      role: a.role3,
+      badge: a.badge3,
+      avatarBg: 'bg-blue-700',
+      badgeColor: 'bg-cyan-400/10 text-cyan-400 border border-cyan-400/20',
+      accentColor: 'cyan',
+      bio: ja
+        ? 'Tensaiと世界中の教育機関をつなぐ架け橋。特に日本の大学・専門学校との直接パートナーシップ構築を担当。学生に「約束」ではなく「本物のチャンス」を届けるため、機関との信頼関係を一つひとつ丁寧に構築している。'
+        : bn
+        ? 'টেনসাই এবং বিশ্বের শিক্ষাপ্রতিষ্ঠানগুলোর মধ্যে সেতু। বিশেষ করে জাপানের বিশ্ববিদ্যালয় ও কলেজের সাথে সরাসরি অংশীদারিত্ব গড়ে তুলছেন। শিক্ষার্থীদের "প্রতিশ্রুতি" নয়, "বাস্তব সুযোগ" দিতে প্রতিটি সম্পর্ক যত্ন নিয়ে তৈরি করছেন।'
+        : 'The bridge between Tensai and institutions around the world. Sabbir specializes in building direct partnerships with universities and vocational schools — especially in Japan. His work ensures students get real opportunities backed by genuine institutional relationships, not empty promises.',
+      skills: ja
+        ? ['日本の教育機関連携', '大学パートナーシップ', '国際関係', '機関認証']
+        : bn
+        ? ['জাপান প্রতিষ্ঠান সম্পর্ক', 'বিশ্ববিদ্যালয় অংশীদারিত্ব', 'আন্তর্জাতিক সম্পর্ক', 'প্রতিষ্ঠান যাচাই']
+        : ['Japan Institute Relations', 'University Partnerships', 'International Relations', 'Institutional Vetting'],
+      linkedin: null,
+      also: null,
+      alsoLink: null,
+      quote: ja
+        ? '「日本の大学は信頼できるパートナーを求めている。私たちはその信頼を一つひとつ積み上げる。」'
+        : bn
+        ? '"জাপানি প্রতিষ্ঠানগুলো বিশ্বস্ত অংশীদার খোঁজে। আমরা সেই বিশ্বাস একটি একটি করে অর্জন করি — কোনো শর্টকাট নেই।"'
+        : '"Japanese institutions are looking for partners they can genuinely trust. We earn that trust one relationship at a time — no shortcuts."',
+    },
+    {
+      name: 'Amir Hossain',
+      nameJa: 'アミル・ホサイン',
+      photo: 'https://pub-f01f8a3511524b808cb8116aa5d495aa.r2.dev/amir%20vai.png',
+      initials: 'AH',
+      role: ja ? 'オフラインマーケティングマネージャー' : bn ? 'অফলাইন মার্কেটিং ম্যানেজার' : 'Offline Marketing Manager',
+      badge: ja ? 'マーケティング' : bn ? 'মার্কেটিং' : 'Marketing',
+      avatarBg: 'bg-orange-700',
+      badgeColor: 'bg-orange-400/10 text-orange-400 border border-orange-400/20',
+      accentColor: 'orange',
+      bio: ja
+        ? 'オフラインマーケティングの専門家として、バングラデシュ各地でTensaiのブランドを広める最前線に立つ。大学キャンパス、教育フェア、地域コミュニティへのアウトリーチを通じ、デジタルでは届かない学生にリーチする。フィールドの声を直接組織へ届ける橋渡し役。'
+        : bn
+        ? 'অফলাইন মার্কেটিংয়ের সামনের সারির মানুষ। সারাদেশে বিশ্ববিদ্যালয় ক্যাম্পাস, শিক্ষামেলা এবং স্থানীয় কমিউনিটিতে টেনসাইয়ের বার্তা পৌঁছে দেন। যেসব শিক্ষার্থীর কাছে ডিজিটাল মাধ্যম সহজলভ্য নয়, তাদের কাছে সরাসরি পৌঁছানোই তার মূল কাজ।'
+        : 'The face of Tensai on the ground. Amir leads offline marketing across Bangladesh — reaching students at university campuses, education fairs, and local communities where digital channels fall short. He is the direct link between the real world and the Tensai platform.',
+      skills: ja
+        ? ['フィールドマーケティング', 'キャンパスアウトリーチ', 'ブランド認知', 'コミュニティ構築']
+        : bn
+        ? ['ফিল্ড মার্কেটিং', 'ক্যাম্পাস আউটরিচ', 'ব্র্যান্ড সচেতনতা', 'কমিউনিটি গঠন']
+        : ['Field Marketing', 'Campus Outreach', 'Brand Awareness', 'Community Building'],
+      linkedin: null,
+      also: null,
+      alsoLink: null,
+      quote: ja
+        ? '「デジタルが届かない場所にこそ、リアルな信頼がある。」'
+        : bn
+        ? '"ডিজিটাল যেখানে পৌঁছায় না, সেখানে আসল বিশ্বাস তৈরি হয়।"'
+        : '"The strongest trust is built in the places the internet hasn\'t reached yet."',
+    },
+  ];
+
+  const VALUES = [
+    { icon: '🎯', title: ja ? '一つのミッション' : bn ? 'একটি লক্ষ্য' : 'One Mission', desc: ja ? '留学をすべての学生にとってクリーンで公平に。' : bn ? 'প্রতিটি শিক্ষার্থীর জন্য বিদেশ পড়াশোনাকে পরিষ্কার ও ন্যায্য করা।' : 'Make study abroad clean and fair for every student.' },
+    { icon: '🛡️', title: ja ? '信頼が最優先' : bn ? 'বিশ্বাস সর্বোচ্চ' : 'Trust First', desc: ja ? '信頼はTensaiのすべての決定の基盤。' : bn ? 'বিশ্বাস টেনসাইয়ের প্রতিটি সিদ্ধান্তের ভিত্তি।' : 'Trust is the foundation of every decision we make.' },
+    { icon: '🌏', title: ja ? 'グローバル思考' : bn ? 'বৈশ্বিক চিন্তা' : 'Global Thinking', desc: ja ? 'バングラデシュから始め、世界へ。' : bn ? 'বাংলাদেশ থেকে শুরু, বিশ্বের জন্য গড়া।' : 'Starting from Bangladesh, building for the world.' },
+  ];
+
+  const TIMELINE = [
+    { date: ja ? '2024年 早期' : bn ? '২০২৪ প্রথমদিকে' : 'Early 2024', title: ja ? '問題を発見' : bn ? 'সমস্যা চিহ্নিত' : 'The Problem Identified', desc: ja ? 'ノロザマンは留学業界で繰り返される詐欺と不透明さを目撃。「テクノロジーで解決できる」と確信。' : bn ? 'নরোজামান বিদেশ পড়াশোনার শিল্পে বারবার প্রতারণা ও অস্বচ্ছতা দেখেন। প্রযুক্তি দিয়ে সমাধান সম্ভব বলে দৃঢ়প্রতিজ্ঞ হন।' : 'Norozzaman witnesses repeated fraud and opacity in the study-abroad industry. Convinced technology can fix it.' },
+    { date: ja ? '2024年 中期' : bn ? '২০২৪ মাঝামাঝি' : 'Mid 2024', title: ja ? 'チームの結成' : bn ? 'দল গঠন' : 'The Team Forms', desc: ja ? 'ナシル（成長担当）とサッビル（日本連携担当）が参加。3人の創業チームが揃う。' : bn ? 'নাসির (গ্রোথ) এবং সাব্বির (জাপান সম্পর্ক) যোগ দেন। তিনজনের প্রতিষ্ঠাতা দল সম্পূর্ণ হয়।' : 'Nasir (growth) and Sabbir (Japan relations) join. The founding trio is complete.' },
+    { date: ja ? '2024年 後期' : bn ? '২০২৪ শেষদিকে' : 'Late 2024', title: ja ? 'プラットフォーム構築開始' : bn ? 'প্ল্যাটফর্ম নির্মাণ' : 'Platform Built', desc: ja ? 'OCR認証システム、4ゲートウェイ構造、コンタクトペーパーシステムを設計・開発。' : bn ? 'OCR যাচাই সিস্টেম, ৪-গেটওয়ে কাঠামো এবং কন্টাক্ট পেপার সিস্টেম ডিজাইন ও তৈরি।' : 'OCR verification, 4-gateway structure, and contact paper system designed and developed.' },
+    { date: ja ? '2026年' : bn ? '২০২৬' : '2026', title: ja ? 'ローンチ & 拡大' : bn ? 'লঞ্চ ও সম্প্রসারণ' : 'Launch & Expand', desc: ja ? 'バングラデシュ→日本ルートでローンチ。フランチャイズ展開を開始し、全国へ拡大中。' : bn ? 'বাংলাদেশ→জাপান করিডোরে লঞ্চ। ফ্র্যাঞ্চাইজি রোলআউট শুরু। সারাদেশে সম্প্রসারণ চলছে।' : 'Launched on the Bangladesh→Japan corridor. Franchise rollout begins. Nationwide expansion in progress.' },
+  ];
+
+  const CULTURE = [
+    { icon: '🚀', title: ja ? '実行が最優先' : bn ? 'বাস্তবায়নই প্রথম' : 'Execution Over Talk', desc: ja ? '会議より実装。計画より出荷。アイデアは動いてから評価する。' : bn ? 'আলোচনার চেয়ে বাস্তবায়ন। পরিকল্পনার চেয়ে শিপিং।' : 'We ship over debate. Ideas earn credibility by working, not by sounding good.' },
+    { icon: '🔒', title: ja ? 'セキュリティは妥協しない' : bn ? 'নিরাপত্তায় আপোস নেই' : 'No Compromise on Security', desc: ja ? '学生のデータとドキュメントは神聖。セキュリティはコスト削減の対象ではない。' : bn ? 'শিক্ষার্থীর তথ্য ও কাগজপত্র পবিত্র। নিরাপত্তা কখনো খরচ কাটার বিষয় নয়।' : "Student data and documents are sacred. Security is never a cost-cutting candidate." },
+    { icon: '🌏', title: ja ? 'グローバルな視点' : bn ? 'বৈশ্বিক দৃষ্টিভঙ্গি' : 'Think Global, Act Local', desc: ja ? 'バングラデシュの現場を理解しながら、世界基準で設計する。' : bn ? 'স্থানীয় বাস্তবতা বুঝে বৈশ্বিক মানে কাজ করা।' : 'Deep local understanding. Global-standard execution.' },
+    { icon: '🤝', title: ja ? '透明なコミュニケーション' : bn ? 'সম্পূর্ণ স্বচ্ছতা' : 'Radical Transparency', desc: ja ? '良いニュースも悪いニュースも同じ速さで共有する。' : bn ? 'ভালো খবর ও খারাপ খবর সমান গতিতে শেয়ার হয়।' : 'Good news and bad news travel at the same speed. No hidden agendas.' },
+    { icon: '📈', title: ja ? 'データで意思決定' : bn ? 'তথ্যভিত্তিক সিদ্ধান্ত' : 'Data-Driven Decisions', desc: ja ? '直感より数字。ただし数字が語れないことは、現場で確認する。' : bn ? 'অনুভূতির চেয়ে তথ্য। তথ্য না বললে মাঠে যাচাই করি।' : "Numbers over gut feelings. What numbers can't explain, we verify on the ground." },
+    { icon: '🎯', title: ja ? 'ミッション中心' : bn ? 'লক্ষ্যকেন্দ্রিক' : 'Mission-Centered', desc: ja ? '私利ではなく学生のため。すべての決定をミッションに照らす。' : bn ? 'নিজের জন্য নয়, শিক্ষার্থীর জন্য।' : "Every decision is checked against the mission — not personal gain." },
+  ];
+
+  const ROLES = [
+    { role: ja ? 'フルスタック開発者' : bn ? 'ফুল-স্ট্যাক ডেভেলপার' : 'Full-Stack Developer', type: ja ? 'フルタイム' : bn ? 'ফুল-টাইম' : 'Full-time', tag: ja ? '採用中' : bn ? 'খোলা' : 'Open', tagColor: 'bg-green-400/10 text-green-400 border border-green-400/20' },
+    { role: ja ? 'エージェンシー担当営業' : bn ? 'এজেন্সি সেলস এক্সিকিউটিভ' : 'Agency Sales Executive', type: ja ? 'フルタイム / バングラデシュ' : bn ? 'ফুল-টাইম · বাংলাদেশ' : 'Full-time · Bangladesh', tag: ja ? '採用中' : bn ? 'খোলা' : 'Open', tagColor: 'bg-green-400/10 text-green-400 border border-green-400/20' },
+    { role: ja ? '日本語通訳・コーディネーター' : bn ? 'জাপানি দোভাষী / সমন্বয়কারী' : 'Japanese Interpreter / Coordinator', type: ja ? 'パートタイム可' : bn ? 'পার্ট-টাইম সম্ভব' : 'Part-time OK', tag: ja ? '採用中' : bn ? 'খোলা' : 'Open', tagColor: 'bg-green-400/10 text-green-400 border border-green-400/20' },
+    { role: ja ? 'フランチャイズパートナー' : bn ? 'ফ্র্যাঞ্চাইজি পার্টনার' : 'Franchise Partner', type: ja ? '全国各地' : bn ? 'সারাদেশ' : 'Nationwide Bangladesh', tag: ja ? '募集中' : bn ? 'আবেদন করুন' : 'Inquire', tagColor: 'bg-cyan-400/10 text-cyan-400 border border-cyan-400/20' },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#0d1117]">
+
+      <SiteHeader active="team" />
+
+      {/* ── Hero ───────────────────────────────────────────── */}
+      <section className="relative overflow-hidden min-h-[60vh] flex items-center justify-center px-4 pt-24 pb-16 text-center bg-[#0d1117]">
+        {/* Ambient orbs */}
+        <div className="absolute top-[10%] left-[10%]  w-[400px] h-[400px] bg-green-600/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[10%] right-[10%] w-[300px] h-[300px] bg-cyan-500/7  rounded-full blur-[100px] pointer-events-none" />
+        <div
+          className="absolute inset-0 opacity-[0.022] pointer-events-none"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
+          }}
+        />
+        <div className="relative z-10 max-w-3xl mx-auto animate-fade-up">
+          <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-semibold px-4 py-1.5 rounded-full mb-7 backdrop-blur-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shrink-0" />
+            {ja ? 'チーム' : bn ? 'আমাদের দল' : 'Our Team'}
+          </div>
+          <h1 className="text-fluid-hero font-black text-white mb-5 leading-[1.06] tracking-tight">
+            {ja ? 'Tensaiを作った' : bn ? 'যাঁরা তৈরি করেছেন' : 'The people'}<br />
+            <span className="gradient-text">{ja ? '4人のチーム' : bn ? 'টেনসাই' : 'behind Tensai'}</span>
+          </h1>
+          <p className="text-fluid-lg text-white/45 max-w-xl mx-auto leading-relaxed">
+            {ja
+              ? 'バングラデシュの留学業界を変えることに情熱を持つ4人のチーム。それぞれの専門性がTensaiを支えている。'
+              : bn
+              ? 'চারজনের দল। একটি ভাঙা শিল্পের প্রতি একই হতাশা। প্রযুক্তি, বিশ্বাস ও অদম্য কার্যক্ষমতা দিয়ে তা ঠিক করার একটি লক্ষ্য।'
+              : 'Four people. One shared frustration with a broken industry. One mission to fix it with technology, trust, and relentless execution.'}
+          </p>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0d1117] to-transparent pointer-events-none" />
+      </section>
+
+      {/* ── Team Cards ─────────────────────────────────────── */}
+      <section className="max-w-5xl mx-auto px-4 py-16">
+        <div className="space-y-6">
+          {TEAM.map((member, i) => (
+            <div
+              key={member.name}
+              className={`glass-card rounded-3xl p-6 sm:p-10 flex flex-col sm:flex-row gap-5 sm:gap-8 transition-all duration-300 card-hover-glow
+                ${i % 2 === 1 ? 'sm:flex-row-reverse' : ''}`}
+            >
+              {/* Avatar side */}
+              <div className="flex flex-col items-center gap-4 shrink-0">
+                <div className="w-28 h-28 sm:w-44 sm:h-44 rounded-2xl overflow-hidden shadow-xl border border-white/10">
+                  {member.photo ? (
+                    <Image src={member.photo} alt={member.name} width={176} height={176} className="w-full h-full object-cover object-top" />
+                  ) : (
+                    <div className={`w-full h-full ${member.avatarBg} flex items-center justify-center text-white text-3xl font-black`}>
+                      {member.initials}
+                    </div>
+                  )}
+                </div>
+                <span className={`text-[11px] font-bold px-3 py-1 rounded-full ${member.badgeColor}`}>{member.badge}</span>
+                {member.linkedin && (
+                  <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-xs text-green-400 font-semibold hover:underline flex items-center gap-1">
+                    LinkedIn →
+                  </a>
+                )}
+              </div>
+
+              {/* Content side */}
+              <div className="flex-1">
+                <div className="mb-4">
+                  <h2 className="text-fluid-3xl font-black text-white leading-tight">{member.name}</h2>
+                  <p className="text-fluid-base text-green-400 font-semibold mt-1">{member.role}</p>
+                  {member.also && member.alsoLink && (
+                    <a href={member.alsoLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-white/35 hover:text-white/60 mt-1 transition-colors">
+                      {'🔗'} {member.also}
+                    </a>
+                  )}
+                </div>
+                <p className="text-fluid-base text-white/60 leading-relaxed mb-5">{member.bio}</p>
+                {member.quote && (
+                  <blockquote className="border-l-2 border-green-500/50 pl-4 mb-5 italic text-white/45 text-fluid-sm leading-relaxed">
+                    {member.quote}
+                  </blockquote>
+                )}
+                <div>
+                  <p className="text-[10px] font-bold text-white/45 uppercase tracking-[0.2em] mb-3">
+                    {ja ? '専門分野' : bn ? 'মূল দক্ষতা' : 'Focus Areas'}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {member.skills.map((s) => (
+                      <span key={s} className="text-xs font-medium bg-white/[0.06] text-white/60 px-3 py-1.5 rounded-full border border-white/[0.08]">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Team Values ────────────────────────────────────── */}
+      <section className="bg-alt-section py-16 sm:py-20 border-t border-white/[0.05]">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
+            {ja ? '価値観' : bn ? 'মূল্যবোধ' : 'Values'}
+          </p>
+          <h2 className="text-fluid-4xl font-bold text-white mb-10">
+            {ja ? 'チームが共有する価値観' : bn ? 'আমাদের মূল মূল্যবোধ' : 'What drives us'}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            {VALUES.map((v) => (
+              <div key={v.title} className="glass-card rounded-2xl p-6 text-left card-hover-glow transition-all">
+                <div className="text-3xl mb-4">{v.icon}</div>
+                <h3 className="font-bold text-white text-sm mb-2">{v.title}</h3>
+                <p className="text-white/50 text-xs leading-relaxed">{v.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Founding Timeline ──────────────────────────────── */}
+      <section className="max-w-3xl mx-auto px-4 py-16 sm:py-20">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
+            {ja ? '創業の歩み' : bn ? 'প্রতিষ্ঠার গল্প' : 'How It Started'}
+          </div>
+          <h2 className="text-fluid-4xl font-bold text-white">
+            {ja ? 'Tensaiの誕生' : bn ? 'টেনসাইয়ের জন্ম' : 'The founding story'}
+          </h2>
+        </div>
+        <div className="relative">
+          {/* Vertical line */}
+          <div className="absolute left-4 sm:left-1/2 top-0 bottom-0 w-px bg-white/[0.08] sm:-translate-x-px" />
+          {TIMELINE.map((item, i) => (
+            <div key={i} className={`relative flex flex-col sm:flex-row gap-4 mb-8 ${i % 2 === 1 ? 'sm:flex-row-reverse' : ''}`}>
+              <div className="sm:w-1/2 sm:px-6 ml-10 sm:ml-0">
+                <div className={`glass-card rounded-2xl p-5 card-hover-glow transition-all ${i % 2 === 1 ? 'sm:text-right' : ''}`}>
+                  <span className="text-[10px] font-bold text-green-400 bg-green-400/10 border border-green-400/20 px-2.5 py-0.5 rounded-full">{item.date}</span>
+                  <h3 className="font-bold text-white mt-2 mb-1 text-sm">{item.title}</h3>
+                  <p className="text-xs text-white/50 leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+              <div className="hidden sm:flex sm:w-1/2" />
+              {/* Dot */}
+              <div className="absolute left-4 sm:left-1/2 top-5 w-3 h-3 rounded-full bg-green-500 border-2 border-[#0d1117] shadow sm:-translate-x-1.5 z-10" />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Culture ────────────────────────────────────────── */}
+      <section className="bg-alt-section py-16 sm:py-20 border-t border-white/[0.05]">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
+              {ja ? '文化' : bn ? 'সংস্কৃতি' : 'Culture'}
+            </p>
+            <h2 className="text-fluid-4xl font-bold text-white mb-3">
+              {ja ? 'チームの文化' : bn ? 'আমরা যেভাবে কাজ করি' : 'How we work'}
+            </h2>
+            <p className="text-white/40 text-fluid-sm max-w-xl mx-auto">
+              {ja ? '私たちが大切にしている働き方。' : bn ? 'প্রতিদিনের কাজ পরিচালনার মূলনীতি।' : 'The principles that guide how we operate day to day.'}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {CULTURE.map((c) => (
+              <div key={c.title} className="glass-card rounded-2xl p-6 flex flex-col gap-3 card-hover-glow transition-all">
+                <div className="text-2xl">{c.icon}</div>
+                <h3 className="font-bold text-white text-sm">{c.title}</h3>
+                <p className="text-xs text-white/55 leading-relaxed">{c.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Open Roles ─────────────────────────────────────── */}
+      <section className="max-w-4xl mx-auto px-4 py-16 sm:py-20">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
+            {ja ? '採用情報' : bn ? 'আমরা নিয়োগ দিচ্ছি' : "We're Hiring"}
+          </div>
+          <h2 className="text-fluid-4xl font-bold text-white mb-3">
+            {ja ? 'Tensaiに参加する' : bn ? 'লক্ষ্যে যোগ দিন' : 'Join the mission'}
+          </h2>
+          <p className="text-fluid-base text-white/45 max-w-md mx-auto">
+            {ja
+              ? '私たちはチームを拡大しています。情熱あるメンバーを探しています。'
+              : bn
+              ? 'আমরা বাড়ছি। বিশ্বস্ত ব্যবস্থায় বিশ্বাস রাখলে আপনার জায়গা হয়তো এখানেই।'
+              : "We're growing. If you believe in building clean, trustworthy systems that change lives — there may be a place for you here."}
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {ROLES.map((r) => (
+            <div key={r.role} className="glass-card rounded-2xl p-5 flex items-center justify-between card-hover-glow transition-all group">
+              <div>
+                <div className="font-bold text-white text-sm">{r.role}</div>
+                <div className="text-xs text-white/38 mt-0.5">{r.type}</div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${r.tagColor}`}>{r.tag}</span>
+                <a href="mailto:hello@tensaiconsultancy.com" className="text-xs font-semibold text-green-400 hover:underline transition-colors">
+                  {ja ? '応募 →' : bn ? 'আবেদন →' : 'Apply →'}
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="text-center text-xs text-white/30 mt-6">
+          {ja ? '掲載されていない役割に興味がある場合は、' : bn ? 'আপনার পছন্দের পদ না থাকলে, ' : "Don't see your role? "}
+          <a href="mailto:hello@tensaiconsultancy.com" className="text-green-400 hover:underline">
+            {ja ? 'メールでご連絡ください。' : bn ? 'আমাদের ইমেইল করুন।' : 'Email us anyway.'}
+          </a>
+        </p>
+      </section>
+
+      {/* ── CTA ────────────────────────────────────────────── */}
+      <section className="max-w-3xl mx-auto px-4 py-16 sm:py-20 text-center">
+        <h2 className="text-fluid-4xl font-bold text-white mb-4">
+          {ja ? '一緒に働きたいですか？' : bn ? 'আমাদের সাথে কাজ করতে চান?' : 'Want to work with us?'}
+        </h2>
+        <p className="text-fluid-base text-white/45 max-w-md mx-auto mb-8 leading-relaxed">
+          {ja
+            ? 'Tensaiは常に情熱ある人材を探しています。ミッションに共感する方はご連絡ください。'
+            : bn
+            ? 'টেনসাই সবসময় অনুপ্রাণিত মানুষ খোঁজে। লক্ষ্যে বিশ্বাস রাখলে যোগাযোগ করুন।'
+            : "Tensai is always looking for passionate people who believe in the mission. If that's you, reach out."}
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a href="mailto:hello@tensaiconsultancy.com" className="bg-green-600 hover:bg-green-500 text-white px-8 py-3.5 rounded-full font-bold text-sm transition-all glow-green">
+            {ja ? 'メールを送る →' : bn ? 'যোগাযোগ করুন →' : 'Get in Touch →'}
+          </a>
+          <Link href="/about" className="glass-card border border-white/10 hover:border-white/25 text-white/70 hover:text-white px-8 py-3.5 rounded-full font-semibold text-sm transition-all">
+            {ja ? '← 私たちについて' : bn ? '← আমাদের সম্পর্কে' : '← About Tensai'}
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Footer ─────────────────────────────────────────── */}
+      <footer className="border-t border-white/[0.06] py-8 px-4 bg-alt-section">
+        <div className="max-w-7xl mx-auto">
+          <p className="text-[10px] text-white/20 text-center leading-relaxed mb-5 italic max-w-2xl mx-auto">
+            {ja
+              ? '天才は教育・人材マーケットプレイスです。ビザ代理店でも人材派遣業者でもありません。トレーニング、検証、接続を提供します。ビザの保証やファイル処理は行いません。'
+              : bn
+              ? 'টেনসাই একটি টেক-চালিত শিক্ষা ও প্রতিভা মার্কেটপ্লেস — ভিসা এজেন্সি বা জনশক্তি সরবরাহকারী নয়। আমরা প্রশিক্ষণ, যাচাই ও সংযোগ প্রদান করি। আমরা ফাইল প্রক্রিয়া করি না বা ভিসার নিশ্চয়তা দিই না।'
+              : 'Tensai is a tech-enabled Education & Talent Marketplace — not a visa agency or manpower recruiter. We train, verify, and connect. We do not process files, guarantee visas, or supply labour.'}
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-5">
+            <Link href="/" className="flex items-center gap-2.5">
+              <Image src="/tensai-logo.png" alt="Tensai" width={28} height={28} className="rounded-full object-contain" />
+              <span className="text-sm font-bold text-white/75">Tensai</span>
+            </Link>
+            <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-white/38">
+              <Link href="/about"   className="hover:text-white/65 transition-colors">{a.navAbout}</Link>
+              <Link href="/team"    className="text-green-400 font-medium">{a.navTeam}</Link>
+              <Link href="/gallery" className="hover:text-white/65 transition-colors">{a.navGallery}</Link>
+              <Link href="/terms"   className="hover:text-white/65 transition-colors">{termsText}</Link>
+              <Link href="/privacy" className="hover:text-white/65 transition-colors">{privText}</Link>
+            </div>
+            <p className="text-xs text-white/30">{l.footer}</p>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  );
+}

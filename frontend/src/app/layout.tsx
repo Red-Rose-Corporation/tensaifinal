@@ -20,20 +20,14 @@ export const metadata: Metadata = {
     description: "The Way of Global Career. Tensai connects verified students with global institutions through a transparent, fraud-proof digital ecosystem.",
     siteName: "Tensai",
     type: "website",
-    images: [
-      {
-        url: "/tensai-logo.png",
-        width: 512,
-        height: 512,
-        alt: "Tensai — The Way of Global Career",
-      },
-    ],
+    // No explicit `images` here — the sibling opengraph-image.tsx file
+    // convention supplies a branded 1200x630 logo+tagline card and cascades
+    // to every route that doesn't define its own override.
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Tensai — The Way of Global Career",
     description: "The Way of Global Career. Connect. Verify. Succeed.",
-    images: ["/tensai-logo.png"],
   },
 };
 

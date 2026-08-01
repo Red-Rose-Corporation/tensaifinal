@@ -404,6 +404,16 @@ function ReferralHero({ affiliateCode, affiliateLink, pendingPayout, copied, onC
             {copied ? '✓' : (ja ? 'コピー' : bn ? 'কপি' : 'Copy')}
           </button>
         </div>
+        <p className="mt-2.5 text-[11px] leading-relaxed opacity-75 flex items-start gap-1.5">
+          <span className="shrink-0">💡</span>
+          <span>
+            {ja
+              ? 'WhatsAppやFacebookで共有すると、画像付きのプレビューカードが表示されます。相手がすぐ登録しなくても、30日以内であればいつ登録してもあなたの紹介として記録されます。'
+              : bn
+              ? 'WhatsApp বা Facebook-এ শেয়ার করলে ছবিসহ একটা সুন্দর প্রিভিউ কার্ড দেখাবে। যাকে পাঠালেন সে সাথে সাথে অ্যাকাউন্ট না খুললেও, ৩০ দিনের মধ্যে যেকোনো সময় খুললে সেটা আপনার রেফারেল হিসেবেই গণ্য হবে।'
+              : 'When shared on WhatsApp or Facebook, this shows a rich preview card with an image. Even if they don’t sign up right away, you still get credit if they join within 30 days.'}
+          </span>
+        </p>
         {pendingPayout > 0 && (
           <div className="mt-2 inline-flex items-center gap-1.5 bg-amber-400/20 border border-amber-300/30 text-amber-100 text-xs px-3 py-1 rounded-full">
             ⏳ ৳{Number(pendingPayout).toLocaleString()} {ja ? '支払い待ち' : bn ? 'পেমেন্ট বাকি' : 'pending payout'}

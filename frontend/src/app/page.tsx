@@ -1,11 +1,11 @@
 'use client';
 import { useLang } from '@/context/LanguageContext';
-import { useAuthStore } from '@/store/authStore';
 import api from '@/lib/api';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import SiteHeader from '@/components/shared/SiteHeader';
 
 interface GalleryItem {
   id: number;
@@ -32,27 +32,31 @@ interface SiteSettings {
 }
 
 export default function HomePage() {
-  const { t, lang, toggle } = useLang();
+  const { t, lang } = useLang();
   const l = t.landing;
   const ja = lang === 'ja';
   const bn = lang === 'bn';
 
-  const user = useAuthStore((s) => s.user);
-  const isAdmin = user?.roles?.some((r) => r === 'admin' || r === 'super_admin');
-  const ADMIN_URL = 'https://tensai-production-3af6.up.railway.app/admin';
-  const dashboardHref = user ? (isAdmin ? ADMIN_URL : `/dashboard/${user.gateway_type}`) : null;
-
   const [featured, setFeatured] = useState<GalleryItem[]>([]);
   const [galleryLoading, setGalleryLoading] = useState(true);
   const [galleryError, setGalleryError] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   const { data: settings } = useQuery<SiteSettings>({
     queryKey: ['public-settings'],
     queryFn: () => api.get('/settings/public').then(r => r.data),
     staleTime: 5 * 60 * 1000,
   });
+
+  interface GuidePost {
+    id: number; title: string; slug: string; excerpt: string;
+    thumbnail: string | null; type: string;
+  }
+  const { data: guideData } = useQuery<{ data: GuidePost[] }>({
+    queryKey: ['home-guide-preview'],
+    queryFn: () => api.get('/feed').then(r => r.data),
+    staleTime: 5 * 60 * 1000,
+  });
+  const guidePosts = (guideData?.data ?? []).slice(0, 3);
 
   useEffect(() => {
     setGalleryLoading(true);
@@ -67,12 +71,6 @@ export default function HomePage() {
       .finally(() => {
         setGalleryLoading(false);
       });
-  }, []);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   /* ── Data ──────────────────────────────────────────────── */
@@ -230,111 +228,10 @@ export default function HomePage() {
   const termsText = l.terms;
   const privText  = l.privacy;
 
-  /* Lang toggle label — next language in cycle */
-  const toggleLabel = lang === 'en' ? 'বাংলা' : lang === 'bn' ? '日本語' : 'English';
-  const toggleAriaLabel = lang === 'en'
-    ? 'Switch to Bangla'
-    : lang === 'bn'
-    ? '日本語に切り替える'
-    : 'Switch to English';
-
   return (
     <div className="min-h-screen bg-[#0d1117]">
 
-      {/* ── Navbar ─────────────────────────────────────────── */}
-      <nav
-        aria-label={ja ? 'メインナビゲーション' : bn ? 'প্রধান নেভিগেশন' : 'Main navigation'}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'glass-nav' : 'bg-transparent'}`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <Image src="/tensai-logo.png" alt="Tensai" width={36} height={36} className="rounded-full object-contain" priority />
-            <div>
-              <div className="text-base font-bold text-white tracking-tight leading-none">Tensai</div>
-              <div className="text-[9px] text-white/35 tracking-wider leading-none mt-0.5 hidden sm:block">
-                {ja ? 'グローバルキャリアへの道' : bn ? 'বৈশ্বিক ক্যারিয়ারের পথ' : 'THE WAY OF GLOBAL CAREER'}
-              </div>
-            </div>
-          </Link>
-
-          <div className="flex items-center gap-1 sm:gap-2">
-            <button
-              type="button"
-              onClick={toggle}
-              aria-label={toggleAriaLabel}
-              className="text-xs font-semibold px-2.5 py-1 rounded-full border border-white/10 text-white/60 hover:border-green-500/40 hover:text-green-400 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
-            >
-              {toggleLabel}
-            </button>
-            <Link href="/about"    className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{navAbout}</Link>
-            <Link href="/team"     className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{navTeam}</Link>
-            <Link href="/gallery"  className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{l.gallery}</Link>
-            <Link href="/branches" className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{ja ? '支局' : bn ? 'শাখা' : 'Branches'}</Link>
-            <Link href="/feed"     className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{ja ? 'ガイド' : bn ? 'গাইড' : 'Guide'}</Link>
-            <Link href="/contact"  className="text-sm text-white/50 hover:text-white transition-colors px-2 py-1 hidden md:inline">{ja ? 'お問い合わせ' : bn ? 'যোগাযোগ' : 'Contact'}</Link>
-            {dashboardHref ? (
-              <Link
-                href={dashboardHref}
-                target={isAdmin ? '_blank' : undefined}
-                rel={isAdmin ? 'noopener noreferrer' : undefined}
-                className="text-sm bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-full font-semibold transition-all glow-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-300 hidden sm:inline"
-              >
-                {ja ? 'ダッシュボード' : bn ? 'ড্যাশবোর্ড' : 'Dashboard'}
-              </Link>
-            ) : (
-              <>
-                <Link href="/auth/login" className="text-sm text-white/65 hover:text-white transition-colors px-3 py-1.5 hidden sm:inline">{l.login}</Link>
-                <Link
-                  href="/auth/register"
-                  className="text-sm bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-full font-semibold transition-all glow-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-300 hidden sm:inline"
-                >
-                  {l.getStarted}
-                </Link>
-              </>
-            )}
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setMobileOpen(o => !o)}
-              className="md:hidden p-2 rounded-xl text-white/60 hover:text-white hover:bg-white/[0.08] transition-all"
-              aria-label="Menu"
-            >
-              {mobileOpen
-                ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-              }
-            </button>
-          </div>
-        </div>
-        {/* Mobile menu dropdown */}
-        {mobileOpen && (
-          <div className="md:hidden bg-[#0d1117]/95 backdrop-blur-md border-t border-white/[0.08] px-4 py-4 flex flex-col gap-1">
-            <Link href="/about"    onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{navAbout}</Link>
-            <Link href="/team"     onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{navTeam}</Link>
-            <Link href="/gallery"  onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{l.gallery}</Link>
-            <Link href="/branches" onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{ja ? '支局' : bn ? 'শাখা' : 'Branches'}</Link>
-            <Link href="/feed"     onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{ja ? 'ガイド' : bn ? 'গাইড' : 'Guide'}</Link>
-            <Link href="/contact"  onClick={() => setMobileOpen(false)} className="text-sm text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/[0.06] transition-all">{ja ? 'お問い合わせ' : bn ? 'যোগাযোগ' : 'Contact'}</Link>
-            <div className="border-t border-white/[0.08] mt-2 pt-3 flex gap-2">
-              {dashboardHref ? (
-                <Link
-                  href={dashboardHref}
-                  target={isAdmin ? '_blank' : undefined}
-                  rel={isAdmin ? 'noopener noreferrer' : undefined}
-                  onClick={() => setMobileOpen(false)}
-                  className="flex-1 text-center text-sm bg-green-600 hover:bg-green-500 text-white px-4 py-2.5 rounded-full font-semibold transition-all"
-                >
-                  {ja ? 'ダッシュボード' : bn ? 'ড্যাশবোর্ড' : 'Dashboard'}
-                </Link>
-              ) : (
-                <>
-                  <Link href="/auth/login"    onClick={() => setMobileOpen(false)} className="flex-1 text-center text-sm text-white/70 hover:text-white border border-white/10 hover:border-white/25 px-4 py-2.5 rounded-full transition-all">{l.login}</Link>
-                  <Link href="/auth/register" onClick={() => setMobileOpen(false)} className="flex-1 text-center text-sm bg-green-600 hover:bg-green-500 text-white px-4 py-2.5 rounded-full font-semibold transition-all">{l.getStarted}</Link>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-      </nav>
+      <SiteHeader active="home" />
 
       <main>
 
@@ -406,6 +303,61 @@ export default function HomePage() {
           {/* Bottom fade */}
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0d1117] to-transparent pointer-events-none" aria-hidden="true" />
         </section>
+
+        {/* ── Latest from Guide ──────────────────────────────── */}
+        {guidePosts.length > 0 && (
+          <section className="max-w-7xl mx-auto px-4 pb-14 sm:pb-20">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
+                  {ja ? '知識ハブ' : bn ? 'নলেজ হাব' : 'Knowledge Hub'}
+                </p>
+                <h2 className="text-fluid-4xl font-bold text-white">
+                  {ja ? 'ガイドの最新記事' : bn ? 'গাইড থেকে সর্বশেষ' : 'Latest from our Guide'}
+                </h2>
+              </div>
+              <Link
+                href="/feed"
+                className="hidden sm:inline-flex items-center gap-1.5 text-sm text-green-400 hover:text-green-300 font-semibold transition-colors shrink-0"
+              >
+                {ja ? 'すべて見る' : bn ? 'সব দেখুন' : 'See all'} →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {guidePosts.map((post) => (
+                <Link
+                  key={post.id}
+                  href={`/feed/${post.slug}`}
+                  className="group glass-card rounded-2xl overflow-hidden border border-white/[0.08] hover:border-green-500/25 card-hover-glow transition-all flex flex-col"
+                >
+                  <div className="relative h-40 bg-white/[0.03] overflow-hidden shrink-0">
+                    {post.thumbnail ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={post.thumbnail}
+                        alt={post.title}
+                        className="w-full h-full object-cover object-top group-hover:scale-[1.04] transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-3xl opacity-20">📖</div>
+                    )}
+                  </div>
+                  <div className="p-4 flex flex-col flex-1">
+                    <h3 className="font-bold text-white text-sm leading-snug mb-2 line-clamp-2 group-hover:text-green-400 transition-colors">
+                      {post.title}
+                    </h3>
+                    <p className="text-xs text-white/45 leading-relaxed line-clamp-2 flex-1">{post.excerpt}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-6 text-center sm:hidden">
+              <Link href="/feed" className="inline-flex items-center gap-1.5 text-sm text-green-400 hover:text-green-300 font-semibold transition-colors">
+                {ja ? 'すべて見る' : bn ? 'সব দেখুন' : 'See all'} →
+              </Link>
+            </div>
+          </section>
+        )}
 
         {/* ── Gateway Bento Grid ─────────────────────────────── */}
         <section className="max-w-7xl mx-auto px-4 pt-14 pb-14 sm:pt-20 sm:pb-20">

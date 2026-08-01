@@ -33,6 +33,13 @@ function readTime(type: string, excerpt: string) {
 
 /* ── Navbar ─────────────────────────────────────────────────── */
 function FeedNav({ user, t }: { user: unknown; t: (a:string,b:string,c:string)=>string }) {
+  const links = [
+    { href: '/about',    label: t('About','会社概要','সম্পর্কে') },
+    { href: '/team',     label: t('Team','チーム','টিম') },
+    { href: '/gallery',  label: t('Gallery','ギャラリー','গ্যালারি') },
+    { href: '/branches', label: t('Branches','支局','শাখা') },
+    { href: '/contact',  label: t('Contact','お問い合わせ','যোগাযোগ') },
+  ];
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
@@ -49,6 +56,13 @@ function FeedNav({ user, t }: { user: unknown; t: (a:string,b:string,c:string)=>
           <span className="text-sm font-bold text-green-700 truncate">
             {t('Study Guide','留学ガイド','স্টাডি গাইড')}
           </span>
+        </div>
+        <div className="hidden lg:flex items-center gap-4 shrink-0 mr-2">
+          {links.map(link => (
+            <Link key={link.href} href={link.href} className="text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors">
+              {link.label}
+            </Link>
+          ))}
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           {user ? (
@@ -69,6 +83,14 @@ function FeedNav({ user, t }: { user: unknown; t: (a:string,b:string,c:string)=>
             </>
           )}
         </div>
+      </div>
+      {/* Secondary link row on mobile/tablet where the inline links are hidden */}
+      <div className="lg:hidden border-t border-slate-100 px-4 py-2 flex items-center gap-4 overflow-x-auto scrollbar-none">
+        {links.map(link => (
+          <Link key={link.href} href={link.href} className="text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors shrink-0">
+            {link.label}
+          </Link>
+        ))}
       </div>
     </nav>
   );
@@ -330,10 +352,12 @@ function FeedInner() {
             </div>
             <span className="font-bold">Tensai</span>
           </Link>
-          <div className="flex gap-4">
-            <Link href="/about"   className="hover:text-slate-600 transition-colors">{t('About','概要','সম্পর্কে')}</Link>
-            <Link href="/privacy" className="hover:text-slate-600 transition-colors">{t('Privacy','プライバシー','গোপনীয়তা')}</Link>
-            <Link href="/terms"   className="hover:text-slate-600 transition-colors">{t('Terms','規約','শর্ত')}</Link>
+          <div className="flex flex-wrap gap-4">
+            <Link href="/about"    className="hover:text-slate-600 transition-colors">{t('About','概要','সম্পর্কে')}</Link>
+            <Link href="/branches" className="hover:text-slate-600 transition-colors">{t('Branches','支局','শাখা')}</Link>
+            <Link href="/contact"  className="hover:text-slate-600 transition-colors">{t('Contact','お問い合わせ','যোগাযোগ')}</Link>
+            <Link href="/privacy"  className="hover:text-slate-600 transition-colors">{t('Privacy','プライバシー','গোপনীয়তা')}</Link>
+            <Link href="/terms"    className="hover:text-slate-600 transition-colors">{t('Terms','規約','শর্ত')}</Link>
           </div>
         </div>
       </div>

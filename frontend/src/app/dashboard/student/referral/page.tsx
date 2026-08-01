@@ -194,7 +194,11 @@ export default function StudentReferralPage() {
                         </button>
                       </div>
                       <p className="text-[11px] text-slate-400 mt-2">
-                        {ja ? '登録時に自動的に記録されます。' : bn ? 'নিবন্ধনের সময় স্বয়ংক্রিয়ভাবে রেকর্ড হবে।' : 'Automatically recorded when your friend registers.'}
+                        {ja
+                          ? '共有すると画像付きのプレビューが表示されます。友人がすぐ登録しなくても、30日以内であれば自動的に記録されます。'
+                          : bn
+                          ? 'শেয়ার করলে ছবিসহ প্রিভিউ কার্ড দেখাবে। বন্ধু সাথে সাথে নিবন্ধন না করলেও, ৩০ দিনের মধ্যে করলে স্বয়ংক্রিয়ভাবে রেকর্ড হবে।'
+                          : 'Sharing shows a rich preview card. Even if your friend doesn’t register right away, it’s recorded automatically if they join within 30 days.'}
                       </p>
                     </div>
                   </div>
@@ -227,7 +231,7 @@ export default function StudentReferralPage() {
                       {
                         num: '2',
                         title: ja ? '友人が登録' : bn ? 'বন্ধু নিবন্ধন করেন' : 'Friend registers',
-                        desc:  ja ? '紹介リンクを使って友人が登録します' : bn ? 'আপনার রেফারেল লিংক ব্যবহার করে আপনার বন্ধু নিবন্ধন করেন' : 'Your friend signs up using your referral link',
+                        desc:  ja ? '今すぐでなくても、30日以内に登録すれば有効です' : bn ? 'এখনই না হলেও, ৩০ দিনের মধ্যে নিবন্ধন করলেই হবে' : 'Doesn’t have to be right away — any time within 30 days counts',
                       },
                       {
                         num: '3',

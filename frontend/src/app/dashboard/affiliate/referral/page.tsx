@@ -134,10 +134,10 @@ export default function AffiliateReferralPage() {
               </div>
               <p className="text-xs text-slate-400">
                 {ja
-                  ? '機関がこのリンクから登録すると、自動的にあなたの紹介として記録されます。'
+                  ? '共有すると画像付きのプレビューが表示されます。機関がすぐ登録しなくても、30日以内であれば自動的にあなたの紹介として記録されます。'
                   : bn
-                  ? 'প্রতিষ্ঠান এই লিংক দিয়ে নিবন্ধিত হলে স্বয়ংক্রিয়ভাবে আপনার রেফারেল হিসেবে রেকর্ড হবে।'
-                  : 'When an institution registers via this link, they are automatically recorded as your referral.'}
+                  ? 'শেয়ার করলে ছবিসহ প্রিভিউ কার্ড দেখাবে। প্রতিষ্ঠান সাথে সাথে নিবন্ধিত না হলেও, ৩০ দিনের মধ্যে হলে স্বয়ংক্রিয়ভাবে আপনার রেফারেল হিসেবে রেকর্ড হবে।'
+                  : 'Sharing shows a rich preview card. Even if the institution doesn’t register right away, it’s automatically recorded as your referral if they join within 30 days.'}
               </p>
             </div>
           )}
