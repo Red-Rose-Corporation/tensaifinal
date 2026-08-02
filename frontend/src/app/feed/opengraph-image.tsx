@@ -6,9 +6,6 @@ export const alt = 'Tensai — Your Platform for Global Study, Caregiver & Work 
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-// Same variable font the site uses everywhere else (see frontend/src/app/layout.tsx).
-const SORA_URL = 'https://github.com/google/fonts/raw/main/ofl/sora/Sora%5Bwght%5D.ttf';
-
 export default async function Image() {
   // Read the logo from disk instead of fetching our own domain — a self-fetch
   // from within this route's own server function was silently failing on
@@ -16,18 +13,10 @@ export default async function Image() {
   const logoData = await readFile(join(process.cwd(), 'public/tensai-logo.png'), 'base64');
   const logoSrc = `data:image/png;base64,${logoData}`;
 
-  // Fall back to a generic sans-serif if the font fetch ever fails — never let a
-  // font-loading hiccup take down the whole share card.
-  let fonts: { name: string; data: ArrayBuffer; weight: 400 | 800; style: 'normal' }[] = [];
-  try {
-    const soraData = await fetch(SORA_URL).then((res) => res.arrayBuffer());
-    fonts = [
-      { name: 'Sora', data: soraData, weight: 400, style: 'normal' },
-      { name: 'Sora', data: soraData, weight: 800, style: 'normal' },
-    ];
-  } catch {
-    // fonts stays empty — ImageResponse uses its built-in default.
-  }
+  // No custom font: the Sora TTF fetched from GitHub fails to parse in this
+  // satori version's font engine (throws inside ImageResponse's render step,
+  // not the fetch itself, so a fetch-only try/catch never caught it). Falls
+  // back to satori's built-in sans-serif, which renders fine.
 
   return new ImageResponse(
     (
@@ -43,7 +32,7 @@ export default async function Image() {
           backgroundImage:
             'radial-gradient(circle at 12% 15%, rgba(34,197,94,0.28), transparent 55%), radial-gradient(circle at 88% 88%, rgba(20,184,166,0.16), transparent 50%)',
           padding: '80px 90px',
-          fontFamily: fonts.length ? '"Sora"' : 'sans-serif',
+          fontFamily: 'sans-serif',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 18, marginBottom: 50 }}>
@@ -76,11 +65,11 @@ export default async function Image() {
               fontWeight: 700,
             }}
           >
-            📖 Free Guide
+            Free Guide
           </div>
         </div>
       </div>
     ),
-    { ...size, fonts }
+    { ...size }
   );
 }
