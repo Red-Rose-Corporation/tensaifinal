@@ -216,6 +216,9 @@ export default function StudentReferralPage() {
                 <span className="text-sm font-semibold text-slate-800">
                   {ja ? 'どのように機能するか' : bn ? 'কীভাবে কাজ করে' : 'How it works'}
                 </span>
+                <span className="ml-auto inline-flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-700 text-[11px] font-semibold px-2.5 py-1 rounded-full shrink-0">
+                  ⏳ {ja ? '登録は30日以内ならいつでも有効' : bn ? '৩০ দিনের মধ্যে যেকোনো সময় গণ্য হবে' : 'Counts anytime within 30 days'}
+                </span>
               </div>
               <div className="px-5 py-5">
                 <div className="relative">
