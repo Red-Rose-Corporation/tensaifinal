@@ -5,11 +5,12 @@ import { useAuthStore } from '@/store/authStore';
 import { useLang } from '@/context/LanguageContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactElement } from 'react';
 import { useUiStore } from '@/store/uiStore';
 import { Application, AppDoc, FormTemplateData } from '@/components/applications/ApplicationFormShared';
 import ApplicationFormBody from '@/components/applications/ApplicationFormBody';
 import ApplicationStarter from '@/components/applications/ApplicationStarter';
+import NewApplicationHero from '@/components/applications/NewApplicationHero';
 
 const JOURNEY_STEPS = [
   { key: 'selected',   en: 'Selected',   ja: '選択済み',  bn: 'নির্বাচিত' },
@@ -305,13 +306,31 @@ export default function StudentApplicationPage() {
     }
 
     // Pool / processing statuses
-    const processingStatuses: Record<string, { icon: string; headerCls: string; titleKey: keyof typeof sl; hintKey: keyof typeof sl }> = {
-      pool:        { icon: '🔍', headerCls: 'from-slate-500 to-slate-600',   titleKey: 'statusPool',               hintKey: 'poolHint' },
-      selected:    { icon: '👁️',  headerCls: 'from-indigo-500 to-indigo-600', titleKey: 'statusInstitutionSelected', hintKey: 'institutionSelectedHint' },
-      accepted:    { icon: '✅', headerCls: 'from-amber-500 to-amber-600',   titleKey: 'statusAccepted',           hintKey: 'acceptedHint' },
-      processing:  { icon: '🔄', headerCls: 'from-blue-600 to-blue-700',     titleKey: 'statusProcessing',         hintKey: 'processingHint' },
-      complete:    { icon: '🎓', headerCls: 'from-emerald-600 to-green-600', titleKey: 'statusComplete',           hintKey: 'completeHint' },
-      incomplete:  { icon: '⚠️', headerCls: 'from-orange-500 to-orange-600', titleKey: 'statusIncomplete',         hintKey: 'incompleteHint' },
+    const processingStatuses: Record<string, { icon: ReactElement; headerCls: string; titleKey: keyof typeof sl; hintKey: keyof typeof sl }> = {
+      pool: {
+        icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />,
+        headerCls: 'from-slate-500 to-slate-600', titleKey: 'statusPool', hintKey: 'poolHint',
+      },
+      selected: {
+        icon: <><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></>,
+        headerCls: 'from-indigo-500 to-indigo-600', titleKey: 'statusInstitutionSelected', hintKey: 'institutionSelectedHint',
+      },
+      accepted: {
+        icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />,
+        headerCls: 'from-amber-500 to-amber-600', titleKey: 'statusAccepted', hintKey: 'acceptedHint',
+      },
+      processing: {
+        icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />,
+        headerCls: 'from-blue-600 to-blue-700', titleKey: 'statusProcessing', hintKey: 'processingHint',
+      },
+      complete: {
+        icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />,
+        headerCls: 'from-emerald-600 to-green-600', titleKey: 'statusComplete', hintKey: 'completeHint',
+      },
+      incomplete: {
+        icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />,
+        headerCls: 'from-orange-500 to-orange-600', titleKey: 'statusIncomplete', hintKey: 'incompleteHint',
+      },
     };
 
     if (processingStatuses[app.status]) {
@@ -322,7 +341,9 @@ export default function StudentApplicationPage() {
           {backBtn}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className={`bg-gradient-to-r ${s.headerCls} px-6 py-6 text-center`}>
-              <div className="text-4xl mb-3">{s.icon}</div>
+              <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">{s.icon}</svg>
+              </div>
               <h3 className="text-base font-black text-white">{sl[s.titleKey] as string}</h3>
               <p className="text-white/80 text-xs mt-1">{app.form_template?.country} · {app.form_template?.name}</p>
               <p className="font-mono text-[10px] text-white/60 mt-1">{app.application_code}</p>
@@ -330,7 +351,9 @@ export default function StudentApplicationPage() {
             {showStepper && <StudentStepper status={app.status} lang={lang} />}
             <div className="px-6 py-5">
               <div className="flex items-start gap-3 bg-amber-50 border border-amber-100 rounded-xl p-4">
-                <span className="text-base shrink-0">ℹ️</span>
+                <svg className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 <p className="text-sm text-amber-800 leading-relaxed">{sl[s.hintKey] as string}</p>
               </div>
             </div>
@@ -535,17 +558,8 @@ export default function StudentApplicationPage() {
       {/* ── Tab 2: New Application ────────────────────────────────────────────── */}
       {tab === 'new' && (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="bg-gradient-to-br from-green-700 to-emerald-600 px-6 py-6 flex items-center gap-4">
-            <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center shrink-0">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <div>
-              <h2 className="text-base font-black text-white leading-tight">{sl.startTitle}</h2>
-              <p className="text-green-100 text-sm mt-0.5">{sl.startDesc}</p>
-            </div>
-          </div>
+          <NewApplicationHero />
+          <p className="px-6 sm:px-10 pt-4 text-sm text-slate-500">{sl.startDesc}</p>
           <ApplicationStarter
             role="student"
             onCreated={handleCreated}

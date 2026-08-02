@@ -1,13 +1,20 @@
 'use client';
+import { useLang } from '@/context/LanguageContext';
 
 const STEPS = [
-  { n: 1, label: 'Select Country Form', short: 'Country' },
-  { n: 2, label: 'Fill Student Info', short: 'Student Info' },
-  { n: 3, label: 'Education & Documents', short: 'Education' },
-  { n: 4, label: 'Save & Continue', short: 'Save' },
+  { n: 1, label: { en: 'Select Country Form', ja: '国のフォームを選択', bn: 'দেশের ফর্ম বেছে নিন' }, short: { en: 'Country', ja: '国', bn: 'দেশ' } },
+  { n: 2, label: { en: 'Fill Student Info', ja: '学生情報を入力', bn: 'শিক্ষার্থীর তথ্য দিন' }, short: { en: 'Student Info', ja: '学生情報', bn: 'তথ্য' } },
+  { n: 3, label: { en: 'Education & Documents', ja: '学歴と書類', bn: 'শিক্ষা ও ডকুমেন্ট' }, short: { en: 'Education', ja: '学歴', bn: 'শিক্ষা' } },
+  { n: 4, label: { en: 'Save & Continue', ja: '保存して続行', bn: 'সংরক্ষণ করুন' }, short: { en: 'Save', ja: '保存', bn: 'সংরক্ষণ' } },
 ];
 
 export default function NewApplicationHero() {
+  const { lang } = useLang();
+  const tr = (s: { en: string; ja: string; bn: string }) => lang === 'ja' ? s.ja : lang === 'bn' ? s.bn : s.en;
+
+  const badgeText = tr({ en: 'New Application', ja: '新規申請', bn: 'নতুন আবেদন' });
+  const title = tr({ en: 'Create a New Student Application', ja: '新しい学生申請を作成', bn: 'নতুন শিক্ষার্থী আবেদন তৈরি করুন' });
+
   return (
     <div
       className="relative rounded-t-2xl overflow-hidden px-4 sm:px-8 md:px-10 py-7 sm:py-8"
@@ -30,13 +37,13 @@ export default function NewApplicationHero() {
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           <span className="text-[10px] font-bold uppercase tracking-[.12em]" style={{ color: 'rgba(167,243,208,.95)' }}>
-            New Application
+            {badgeText}
           </span>
         </div>
 
         {/* Title */}
         <h1 className="text-[22px] sm:text-[26px] font-black text-white leading-[1.12] tracking-[-0.02em] mb-6">
-          Create a New Student Application
+          {title}
         </h1>
 
         {/* Steps — mobile: numbered dots row; sm+: full label box */}
@@ -51,7 +58,7 @@ export default function NewApplicationHero() {
                   {step.n}
                 </span>
                 <span className="text-[10px] font-semibold whitespace-nowrap" style={{ color: 'rgba(255,255,255,.75)' }}>
-                  {step.short}
+                  {tr(step.short)}
                 </span>
               </div>
               {i < STEPS.length - 1 && (
@@ -75,7 +82,7 @@ export default function NewApplicationHero() {
                 {step.n}
               </span>
               <span className="text-[11px] font-semibold leading-tight" style={{ color: 'rgba(255,255,255,.78)' }}>
-                {step.label}
+                {tr(step.label)}
               </span>
               {i < STEPS.length - 1 && (
                 <svg className="w-3 h-3 flex-shrink-0 ml-auto" fill="none" stroke="rgba(255,255,255,.2)" viewBox="0 0 24 24">
