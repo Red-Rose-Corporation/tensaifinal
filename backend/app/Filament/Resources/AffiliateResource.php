@@ -145,8 +145,14 @@ class AffiliateResource extends Resource
                     ->label('Name')
                     ->searchable()
                     ->sortable()
-                    ->weight('bold')
-                    ->description(fn (AffiliateProfile $r) => $r->user?->email),
+                    ->weight('bold'),
+
+                Tables\Columns\TextColumn::make('user.email')
+                    ->label('Email')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('affiliate_type')
                     ->label('Type')
@@ -221,6 +227,7 @@ class AffiliateResource extends Resource
                     ]),
             ])
             ->defaultSort('total_earned', 'desc')
+            ->paginated([25, 50, 100, 500])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('suspend')

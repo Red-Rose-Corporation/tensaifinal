@@ -10,6 +10,8 @@ class ListAffiliates extends ListRecords
 {
     protected static string $resource = AffiliateResource::class;
 
+    protected int|string|array $tablePageSize = 25;
+
     protected function getHeaderActions(): array
     {
         return [];
