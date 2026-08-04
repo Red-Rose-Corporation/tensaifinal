@@ -333,7 +333,7 @@ export default function StudentReferralPage() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="bg-slate-50 border-b border-slate-100">
-                          <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">{ja ? '名前' : bn ? 'নাম' : 'Name'}</th>
+                          <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">{ja ? 'ID' : bn ? 'আইডি' : 'Customer ID'}</th>
                           <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">{ja ? 'サービス' : bn ? 'সার্ভিস' : 'Service'}</th>
                           <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">{ja ? '国' : bn ? 'দেশ' : 'Country'}</th>
                           <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500">{ja ? 'ステータス' : bn ? 'স্ট্যাটাস' : 'Status'}</th>
@@ -345,8 +345,7 @@ export default function StudentReferralPage() {
                         {referrals.map(r => (
                           <tr key={r.id} className="hover:bg-slate-50/60 transition-colors">
                             <td className="px-5 py-3.5">
-                              <p className="font-semibold text-slate-800 text-sm">{r.name}</p>
-                              <p className="text-xs text-slate-400 truncate max-w-[160px]">{r.email}</p>
+                              <p className="font-mono font-semibold text-slate-800 text-sm">CUS-{String(r.id).padStart(6, '0')}</p>
                             </td>
                             <td className="px-4 py-3.5 text-sm text-slate-600">
                               {r.service_name
@@ -393,8 +392,7 @@ export default function StudentReferralPage() {
                       <div key={r.id} className="px-4 py-4">
                         <div className="flex items-start justify-between gap-3 mb-2">
                           <div>
-                            <p className="text-sm font-bold text-slate-800">{r.name}</p>
-                            <p className="text-xs text-slate-400 mt-0.5">{r.email}</p>
+                            <p className="font-mono text-sm font-bold text-slate-800">CUS-{String(r.id).padStart(6, '0')}</p>
                           </div>
                           <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${STATUS_BADGE[r.status] ?? STATUS_BADGE.pending}`}>
                             <span className={`w-1.5 h-1.5 rounded-full ${STATUS_DOT[r.status] ?? STATUS_DOT.pending}`} />
