@@ -4,7 +4,7 @@
     {
       "name": "frontend",
       "runtimeExecutable": "powershell",
-      "runtimeArgs": ["-Command", "cd frontend; npm run dev"],
+      "runtimeArgs": ["-Command", "$env:PATH = 'C:\\laragon\\bin\\nodejs\\node-v22;' + $env:PATH; cd frontend; npm run dev"],
       "port": 3000
     }
   ]

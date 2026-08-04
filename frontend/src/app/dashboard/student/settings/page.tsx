@@ -105,11 +105,15 @@ export default function StudentSettingsPage() {
       return api.post('/student/account/avatar', fd, { headers: { 'Content-Type': undefined } });
     },
     onSuccess: () => {
-      fetchMe().catch(() => {});
+      // Wait for the store's user.avatar_url to refresh before dropping the
+      // local blob preview - otherwise avatarSrc briefly falls back to the
+      // stale pre-upload URL (or null) between these two updates.
+      fetchMe().catch(() => {}).finally(() => {
+        setAvatarPreview(null);
+        if (avatarObjectUrl.current) { URL.revokeObjectURL(avatarObjectUrl.current); avatarObjectUrl.current = null; }
+      });
       setAvatarSaved(true); setAvatarErr('');
       setTimeout(() => setAvatarSaved(false), 3000);
-      // Revoke the blob URL now that the server copy is confirmed
-      if (avatarObjectUrl.current) { URL.revokeObjectURL(avatarObjectUrl.current); avatarObjectUrl.current = null; }
     },
     onError: (e: unknown) => {
       const ax = e as { response?: { data?: { message?: string } } };
