@@ -749,16 +749,20 @@ class ApplicationResource extends Resource
                     ->formatStateUsing(fn ($state) => match ($state ?? '') {
                         'admin', 'super_admin'            => 'Admin',
                         'branch_admin', 'branch_manager'  => 'Branch',
-                        'agency'                          => 'Agency',
-                        'student'                         => 'Student',
+                        'agency'                          => 'Affiliate',
+                        'student'                         => 'Direct',
                         default                           => ucfirst($state ?? ''),
                     })
                     ->description(fn (Application $r) => match ($r->submitted_by_role) {
                         'branch_admin', 'branch_manager' => $r->branch?->name ?? $r->user?->name ?? '—',
                         'agency'   => $r->user?->name ?? '—',
-                        'student'  => $r->user?->name ?? '—',
+                        'student'  => '—',
                         default    => $r->user?->name ?? '—',
-                    }),
+                    })
+                    ->url(fn (Application $r) => $r->submitted_by_role === 'agency' && $r->user?->affiliateProfile
+                        ? \App\Filament\Resources\AffiliateResource::getUrl('edit', ['record' => $r->user->affiliateProfile->id])
+                        : null
+                    ),
 
                 // Created date
                 Tables\Columns\TextColumn::make('created_at')
@@ -785,8 +789,8 @@ class ApplicationResource extends Resource
                     ->options([
                         'admin'        => 'Admin',
                         'branch_admin' => 'Branch',
-                        'agency'       => 'Agency',
-                        'student'      => 'Student',
+                        'agency'       => 'Affiliate',
+                        'student'      => 'Direct',
                     ])
                     ->native(false),
 
