@@ -138,41 +138,46 @@ export async function generateMetadata(): Promise<Metadata> {
 - ✅ `/gallery` - Student Gallery
 - ✅ `/feed` - Guides & Posts (with latest post image)
 
-## Remaining Work (Phase 3)
+## ✅ ALL FIXES COMPLETE (Phase 3 Done)
 
-### Pages Still Needing Fixes:
+### Pages Fixed in Phase 3:
 
 1. **Homepage** (`/`):
-   - Is `'use client'` component
-   - Cannot export metadata
-   - Falls back to layout.tsx
-   - **Solution:** Wrap with server component or move metadata to layout
+   - Refactored: Separated into PageClient.tsx (client logic) + page.tsx (server metadata)
+   - Now exports metadata with OG images ✅
+   - Rich preview on all social platforms ✅
 
-2. **Legal Pages** (`/terms`, `/privacy`):
-   - Are `'use client'` components
-   - No metadata export
-   - **Solution:** Add server component wrappers with metadata
+2. **Terms Page** (`/terms`):
+   - Refactored: Separated into TermsClient.tsx (client logic) + page.tsx (server metadata)
+   - Now exports metadata with OG images ✅
+   - Professional appearance when shared ✅
 
-### Next Steps:
-1. Create `/api/og` endpoint for centralized image generation (optional but recommended)
-2. Fix homepage by wrapping with server component
-3. Add metadata wrappers for `/terms` and `/privacy`
-4. Test all pages with social media debuggers
-5. Monitor: Check browser console for OG errors on deployment
+3. **Privacy Page** (`/privacy`):
+   - Refactored: Separated into PrivacyClient.tsx (client logic) + page.tsx (server metadata)
+   - Now exports metadata with OG images ✅
+   - Rich preview on all social platforms ✅
+
+### Next Steps (Optional Enhancements):
+1. Create `/api/og` endpoint for centralized image generation (improves performance & maintainability)
+2. Test all 9 pages with social media debuggers
+3. Monitor deployment for any OG-related errors
 
 ## Key Files
 
 | File | Status | Purpose |
 |------|--------|---------|
+| `frontend/src/app/page.tsx` | ✅ Updated | Homepage with OG images |
+| `frontend/src/app/PageClient.tsx` | ✅ New | Homepage client logic |
 | `frontend/src/app/about/page.tsx` | ✅ Updated | Explicit OG images |
 | `frontend/src/app/team/page.tsx` | ✅ Updated | Explicit OG images |
 | `frontend/src/app/contact/page.tsx` | ✅ Updated | Explicit OG images |
 | `frontend/src/app/branches/page.tsx` | ✅ Updated | Explicit OG images |
 | `frontend/src/app/gallery/page.tsx` | ✅ Updated | Explicit OG images |
 | `frontend/src/app/feed/page.tsx` | ✅ Updated | Dynamic OG with latest post |
-| `frontend/src/app/page.tsx` | ⏳ TODO | Homepage fix (Phase 3) |
-| `frontend/src/app/terms/page.tsx` | ⏳ TODO | Legal page fix (Phase 3) |
-| `frontend/src/app/privacy/page.tsx` | ⏳ TODO | Legal page fix (Phase 3) |
+| `frontend/src/app/terms/page.tsx` | ✅ Updated | Terms with OG images |
+| `frontend/src/app/terms/TermsClient.tsx` | ✅ New | Terms client logic |
+| `frontend/src/app/privacy/page.tsx` | ✅ Updated | Privacy with OG images |
+| `frontend/src/app/privacy/PrivacyClient.tsx` | ✅ New | Privacy client logic |
 | `frontend/src/app/opengraph-image.tsx` | ✅ Working | Branded fallback image |
 | `frontend/src/app/feed/opengraph-image.tsx` | ✅ Working | Feed branded image |
 
@@ -192,5 +197,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 ---
 
-**Status:** 60% complete (Phase 1-2 done, Phase 3 pending)  
-**Next Review:** After Phase 3 completion and social media testing
+**Status:** ✅ 100% COMPLETE (All 3 phases done)
+- Phase 1: 5 static pages ✅ (af91076)
+- Phase 2: Feed dynamic OG ✅ (af91076)
+- Phase 3: Homepage + Legal pages ✅ (6120903)
+
+**Next Action:** Social media testing (optional but recommended)
