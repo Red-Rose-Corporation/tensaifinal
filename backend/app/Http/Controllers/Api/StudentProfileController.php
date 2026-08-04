@@ -16,7 +16,7 @@ class StudentProfileController extends Controller
     {
         $profile = $request->user()->studentProfile;
         if (!$profile) {
-            return response()->json(['message' => 'Profile not found.'], 404);
+            $profile = StudentProfile::create(['user_id' => $request->user()->id]);
         }
         return response()->json([
             'profile' => $profile,
@@ -30,7 +30,7 @@ class StudentProfileController extends Controller
     {
         $profile = $request->user()->studentProfile;
         if (!$profile) {
-            return response()->json(['message' => 'Profile not found.'], 404);
+            $profile = StudentProfile::create(['user_id' => $request->user()->id]);
         }
         if ($profile->is_data_locked) {
             return response()->json(['message' => 'Profile is locked. Contact admin to make changes.'], 403);
