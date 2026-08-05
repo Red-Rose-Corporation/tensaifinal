@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import SiteHeader from '@/components/shared/SiteHeader';
+import EmotionalStorySection from '@/components/home/EmotionalStorySection';
 
 interface GalleryItem {
   id: number;
@@ -303,6 +304,9 @@ export default function HomePageClient() {
           {/* Bottom fade */}
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0d1117] to-transparent pointer-events-none" aria-hidden="true" />
         </section>
+
+        {/* ── Emotional Story Section ────────────────────────── */}
+        <EmotionalStorySection />
 
         {/* ── Latest from Guide ──────────────────────────────── */}
         {guidePosts.length > 0 && (
