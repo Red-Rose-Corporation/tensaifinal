@@ -570,23 +570,7 @@ export default function HomePageClient() {
                 {l.galleryViewAll}
               </Link>
             </div>
-          ) : featured.length === 0 ? (
-            /* Empty placeholder */
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {[
-                { emoji: '🎓', label: ja ? '学生の旅'              : bn ? 'শিক্ষার্থীর যাত্রা'  : 'Student Journeys'  },
-                { emoji: '🏆', label: ja ? 'マイルストーン'         : bn ? 'মাইলস্টোন'            : 'Milestones'        },
-                { emoji: '🌏', label: ja ? '日本進学'               : bn ? 'জাপান প্লেসমেন্ট'     : 'Japan Placements'  },
-                { emoji: '🤝', label: ja ? 'エージェンシーパートナー': bn ? 'এজেন্সি পার্টনার'     : 'Agency Partners'   },
-              ].map((p) => (
-                <div key={p.label} className="aspect-square rounded-2xl glass-card flex flex-col items-center justify-center gap-2 text-center p-4">
-                  <div className="text-3xl sm:text-4xl" aria-hidden="true">{p.emoji}</div>
-                  <div className="text-xs sm:text-sm font-medium text-white/55 leading-snug">{p.label}</div>
-                  <div className="text-[10px] text-white/28">{ja ? '近日公開' : bn ? 'শীঘ্রই আসছে' : 'Coming soon'}</div>
-                </div>
-              ))}
-            </div>
-          ) : (
+          ) : featured.length === 0 ? null : (
             /* Real gallery images — bento layout: first item is the hero tile, rest fill in around it */
             <div className="grid grid-cols-2 sm:grid-cols-4 auto-rows-[140px] sm:auto-rows-[170px] [grid-auto-flow:dense] gap-4">
               {featured.map((item, i) => {
