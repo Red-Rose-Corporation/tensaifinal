@@ -58,8 +58,12 @@ export async function generateMetadata(
     };
   }
 
-  const title       = `${post.title} — ${SITE_NAME}`;
-  const description = post.excerpt?.slice(0, 160) ?? '';
+  // Optimized for social media: keep title under 60 chars including site name
+  const postTitle = post.title.length > 35 ? post.title.slice(0, 32) + '...' : post.title;
+  const title     = `${postTitle} — Tensai`;
+
+  // Description: Facebook displays ~160-165 chars optimally
+  const description = (post.excerpt || '').slice(0, 155).trim();
   const image       = ogImage(post.thumbnail);
   const url         = `${SITE_URL}/feed/${slug}`;
 

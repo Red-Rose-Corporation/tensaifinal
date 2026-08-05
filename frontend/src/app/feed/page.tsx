@@ -29,8 +29,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const latestPost = await fetchLatestPost();
   const image = ogImage(latestPost?.thumbnail ?? null);
 
-  const title = '📖 বিদেশে যাওয়ার আগে যা জানা জরুরি — Tensai';
-  const description = 'বিদেশে উচ্চশিক্ষা, কেয়ারগিভার ও ওয়ার্ক ভিসা পরামর্শের বিশ্বস্ত প্রতিষ্ঠান';
+  // Optimized for social media display (60 chars max for title, 160 for description)
+  const title = '📖 বিদেশে যাওয়ার গাইড — Tensai';
+  const description = 'বিদেশে পড়াশোনা, স্বাস্থ্যসেবা ও কাজের ভিসায় বিশ্বস্ত পরামর্শ';
 
   return {
     title,
