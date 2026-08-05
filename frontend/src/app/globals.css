@@ -72,6 +72,16 @@ body {
 .text-fluid-4xl  { font-size: clamp(1.75rem,   4vw,    2.5rem);   }
 .text-fluid-hero { font-size: clamp(2rem,       5vw,    3.25rem);  line-height: 1.08; }
 
+/* Homepage hero only — larger, tighter, with a soft glow for a premium feel.
+   Kept separate from .text-fluid-hero so the other page heroes are untouched. */
+.text-fluid-hero-xl {
+  font-size: clamp(2.25rem, 6.4vw, 4.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 60px rgba(74, 222, 128, 0.25), 0 1px 0 rgba(255, 255, 255, 0.06);
+  text-wrap: balance;
+}
+
 @keyframes gradient-shift {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }

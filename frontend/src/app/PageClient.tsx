@@ -264,7 +264,7 @@ export default function HomePageClient() {
             </div>
 
             {/* Headline */}
-            <h1 className="text-fluid-hero font-black text-white tracking-tight mb-10 leading-[1.15] max-w-3xl mx-auto">
+            <h1 className="text-fluid-hero-xl font-black text-white mb-10 max-w-4xl mx-auto">
               {l.heroSub}
             </h1>
 
