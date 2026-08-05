@@ -2,7 +2,7 @@
 
 export default function EmotionalStorySection() {
   return (
-    <section className="relative min-h-[70vh] flex items-center justify-center py-20 px-4 overflow-hidden">
+    <section className="relative min-h-auto sm:min-h-[70vh] flex items-center justify-center py-12 sm:py-20 px-4 overflow-hidden">
       {/* Soft background gradient & orbs */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0d1117] via-[#0d1117]/95 to-[#0d1117] pointer-events-none" />
 
@@ -25,35 +25,35 @@ export default function EmotionalStorySection() {
       <div className="relative z-10 max-w-4xl mx-auto w-full">
 
         {/* Top accent line */}
-        <div className="flex items-center justify-center mb-12">
+        <div className="flex items-center justify-center mb-6 sm:mb-12">
           <div className="h-px flex-1 bg-gradient-to-r from-transparent to-green-500/30" />
           <span className="mx-4 text-green-500/50 text-xs font-semibold tracking-widest">OUR MISSION</span>
           <div className="h-px flex-1 bg-gradient-to-l from-transparent to-green-500/30" />
         </div>
 
         {/* Main emotional statement - BENGALI */}
-        <div className="text-center mb-8 animate-fade-up">
-          <p className="text-[2.5rem] sm:text-[3.5rem] md:text-5xl font-black leading-[1.1] text-white mb-6 tracking-tight">
+        <div className="text-center mb-4 sm:mb-8 animate-fade-up">
+          <p className="text-2xl sm:text-[3.5rem] md:text-5xl font-black leading-[1.1] text-white mb-3 sm:mb-6 tracking-tight">
             অজানা পথের ভয় ভুলে,
           </p>
-          <p className="text-[2rem] sm:text-[2.8rem] md:text-4xl font-bold leading-[1.15] text-white/90 mb-8">
+          <p className="text-xl sm:text-[2.8rem] md:text-4xl font-bold leading-[1.15] text-white/90 mb-4 sm:mb-8">
             বিদেশ যাত্রার পথটাকে সত্যি আর মসৃণ করতে—
           </p>
-          <p className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent mb-12">
+          <p className="text-lg sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent mb-6 sm:mb-12">
             Tensai সবসময় আপনার আপন সারথি।
           </p>
         </div>
 
         {/* English translation with softer styling */}
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 sm:p-8 md:p-10 backdrop-blur-sm mb-12">
-          <p className="text-center text-white/70 text-base sm:text-lg leading-relaxed font-light">
-            <span className="text-white/40 text-sm uppercase tracking-widest block mb-3">English Translation</span>
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4 sm:p-8 md:p-10 backdrop-blur-sm mb-6 sm:mb-12">
+          <p className="text-center text-white/70 text-sm sm:text-lg leading-relaxed font-light">
+            <span className="text-white/40 text-xs uppercase tracking-widest block mb-2 sm:mb-3">English Translation</span>
             "Forget the fear of unknown paths. To make your journey abroad truly smooth and safe—<span className="text-green-400 font-semibold">Tensai is always your trusted companion</span>, guiding you every step of the way."
           </p>
         </div>
 
         {/* What this means section */}
-        <div className="grid sm:grid-cols-3 gap-4 mb-12">
+        <div className="grid sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-12">
           {[
             { icon: '🛡️', title: 'Trust', desc: 'No fraud, no fake profiles—just verified paths forward' },
             { icon: '🤝', title: 'Partnership', desc: 'We walk alongside you, not ahead or behind' },
@@ -61,28 +61,28 @@ export default function EmotionalStorySection() {
           ].map((item, i) => (
             <div
               key={i}
-              className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6 text-center hover:bg-white/[0.05] hover:border-green-500/20 transition-all duration-300 group"
+              className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-4 sm:p-6 text-center hover:bg-white/[0.05] hover:border-green-500/20 transition-all duration-300 group"
             >
-              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">{item.icon}</div>
-              <h3 className="font-bold text-white text-sm mb-2">{item.title}</h3>
-              <p className="text-xs text-white/50 leading-relaxed">{item.desc}</p>
+              <div className="text-2xl sm:text-3xl mb-2 sm:mb-3 group-hover:scale-110 transition-transform">{item.icon}</div>
+              <h3 className="font-bold text-white text-xs sm:text-sm mb-1 sm:mb-2">{item.title}</h3>
+              <p className="text-[11px] sm:text-xs text-white/50 leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
 
         {/* CTA */}
         <div className="text-center">
-          <p className="text-white/40 text-sm mb-6">
+          <p className="text-white/40 text-xs sm:text-sm mb-4 sm:mb-6">
             Ready to start your global journey with confidence?
           </p>
-          <button className="group relative inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-green-600 to-green-500 text-white font-bold text-sm hover:from-green-500 hover:to-green-400 transition-all duration-300 glow-green hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-300">
+          <button className="group relative inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-full bg-gradient-to-r from-green-600 to-green-500 text-white font-bold text-sm hover:from-green-500 hover:to-green-400 transition-all duration-300 glow-green hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-300 active:scale-95">
             <span>Begin Your Journey</span>
             <span className="group-hover:translate-x-1 transition-transform">→</span>
           </button>
         </div>
 
         {/* Bottom accent line */}
-        <div className="flex items-center justify-center mt-16">
+        <div className="flex items-center justify-center mt-8 sm:mt-16">
           <div className="h-px flex-1 bg-gradient-to-r from-transparent to-violet-500/20" />
           <span className="mx-4 text-white/20 text-xs">✦</span>
           <div className="h-px flex-1 bg-gradient-to-l from-transparent to-violet-500/20" />
