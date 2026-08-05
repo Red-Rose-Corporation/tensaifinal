@@ -32,7 +32,7 @@ const translations = {
       badge: '🌏 Now Connecting to Japan',
       heroTitle: 'The Hub for',
       heroHighlight: 'Global Education & Healthcare.',
-      heroSub: 'The trusted platform for finding jobs in overseas higher education and healthcare sectors.',
+      heroSub: 'Your platform for global education, healthcare & work visa',
       ctaStudent: "Join as a User",
       ctaAgency: 'Agency',
       ctaInstitution: 'Institution',
