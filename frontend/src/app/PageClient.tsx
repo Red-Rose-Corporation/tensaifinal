@@ -264,9 +264,9 @@ export default function HomePageClient() {
             </div>
 
             {/* Headline */}
-            <h1 className="text-fluid-hero font-black text-white tracking-tight mb-5 leading-[1.06]">
+            <h1 className="text-fluid-hero font-black text-white tracking-tight mb-5 leading-[1.15]">
               {l.heroTitle}<br />
-              <span className="gradient-text">{l.heroHighlight}</span>
+              <span className="text-green-400 font-black">{l.heroHighlight}</span>
             </h1>
 
             {/* Sub-copy */}
