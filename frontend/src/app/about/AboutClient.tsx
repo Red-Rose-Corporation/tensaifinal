@@ -152,7 +152,7 @@ export default function AboutPage() {
       role: a.role1,
       bio: a.bio1,
       badge: a.badge1,
-      photo: 'https://pub-f01f8a3511524b808cb8116aa5d495aa.r2.dev/ceo.webp',
+      photo: 'https://pub-f01f8a3511524b808cb8116aa5d495aa.r2.dev/WhatsApp%20Image%202026-08-05%20at%209.07.21%20PM.jpeg',
       avatarBg: 'bg-green-700',
       linkedin: 'https://linkedin.com/in/md-norozzaman-207418169/',
       accent: 'border-green-200 hover:border-green-400',

@@ -18,7 +18,7 @@ export default function TeamPage() {
     {
       name: 'Md. Norozzaman',
       nameJa: 'Md. ノロザマン',
-      photo: 'https://pub-f01f8a3511524b808cb8116aa5d495aa.r2.dev/ceo.webp',
+      photo: 'https://pub-f01f8a3511524b808cb8116aa5d495aa.r2.dev/WhatsApp%20Image%202026-08-05%20at%209.07.21%20PM.jpeg',
       initials: 'MN',
       role: a.role1,
       badge: a.badge1,
