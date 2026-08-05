@@ -350,6 +350,12 @@ export default function HomePageClient() {
           </div>
         </section>
 
+        {/* ── Emotional Story Section ────────────────────────── */}
+        <EmotionalStorySection />
+
+        {/* ── Language Vision Section ────────────────────────── */}
+        <LanguageVisionSection />
+
         {/* ── How It Works ───────────────────────────────────── */}
         <section className="bg-alt-section py-14 sm:py-20 border-t border-white/[0.05]">
           <div className="max-w-5xl mx-auto px-4">
@@ -476,12 +482,6 @@ export default function HomePageClient() {
             </div>
           </div>
         </section>
-
-        {/* ── Emotional Story Section ────────────────────────── */}
-        <EmotionalStorySection />
-
-        {/* ── Language Vision Section ────────────────────────── */}
-        <LanguageVisionSection />
 
         {/* ── Latest from Guide ──────────────────────────────── */}
         {guidePosts.length > 0 && (
