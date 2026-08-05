@@ -34,10 +34,10 @@ export default function LanguageVisionSection() {
 
         {/* Main Bengali quote - LARGE & PROMINENT */}
         <div className="text-center mb-6 sm:mb-12">
-          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black leading-[1.05] text-white mb-3 sm:mb-8 tracking-tight">
+          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black leading-[1.05] text-white mb-3 sm:mb-8 tracking-tight">
             যে ভাষা শেখে,
           </p>
-          <p className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-[1.1] text-white/90 mb-4 sm:mb-6">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-[1.1] text-white/90 mb-4 sm:mb-6">
             সে বিশ্ব দেখে।
           </p>
           <div className="h-1 w-16 sm:w-20 bg-gradient-to-r from-blue-400 to-cyan-400 mx-auto mb-6 sm:mb-10" />

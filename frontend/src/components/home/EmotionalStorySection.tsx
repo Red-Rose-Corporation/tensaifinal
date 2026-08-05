@@ -33,13 +33,13 @@ export default function EmotionalStorySection() {
 
         {/* Main emotional statement - BENGALI */}
         <div className="text-center mb-4 sm:mb-8 animate-fade-up">
-          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black leading-[1.1] text-white mb-3 sm:mb-6 tracking-tight">
+          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black leading-[1.1] text-white mb-3 sm:mb-6 tracking-tight">
             অজানা পথের ভয় ভুলে,
           </p>
-          <p className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-[1.15] text-white/90 mb-4 sm:mb-8">
+          <p className="text-base sm:text-xl md:text-2xl lg:text-3xl font-bold leading-[1.15] text-white/90 mb-4 sm:mb-8">
             বিদেশ যাত্রার পথটাকে সত্যি আর মসৃণ করতে—
           </p>
-          <p className="text-base sm:text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent mb-6 sm:mb-12">
+          <p className="text-sm sm:text-base md:text-xl lg:text-2xl font-bold bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent mb-6 sm:mb-12">
             Tensai সবসময় আপনার আপন সারথি।
           </p>
         </div>
