@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import SiteHeader from '@/components/shared/SiteHeader';
 import EmotionalStorySection from '@/components/home/EmotionalStorySection';
+import LanguageVisionSection from '@/components/home/LanguageVisionSection';
 
 interface GalleryItem {
   id: number;
@@ -307,6 +308,9 @@ export default function HomePageClient() {
 
         {/* ── Emotional Story Section ────────────────────────── */}
         <EmotionalStorySection />
+
+        {/* ── Language Vision Section ────────────────────────── */}
+        <LanguageVisionSection />
 
         {/* ── Latest from Guide ──────────────────────────────── */}
         {guidePosts.length > 0 && (
