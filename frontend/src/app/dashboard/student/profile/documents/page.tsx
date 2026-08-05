@@ -314,7 +314,7 @@ export default function DocumentsPage() {
               {lang === 'bn' ? 'নতুন কাগজপত্র আপলোড করুন' : lang === 'ja' ? '書類をアップロード' : 'Upload New Document'}
             </p>
             <p className="text-xs text-slate-400">
-              {lang === 'bn' ? 'OCR স্বয়ংক্রিয়ভাবে তথ্য পড়বে ও যাচাই করবে।' : lang === 'ja' ? 'OCRが自動でデータを読み取り検証します。' : 'OCR will automatically read and verify your document data.'}
+              {lang === 'bn' ? 'আমরা স্বয়ংক্রিয়ভাবে আপনার তথ্য পড়ে যাচাই করব।' : lang === 'ja' ? '自動でデータを読み取り確認します。' : 'We\'ll automatically read and verify your document data.'}
             </p>
           </div>
         </div>
