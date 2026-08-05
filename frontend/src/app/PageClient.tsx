@@ -264,15 +264,9 @@ export default function HomePageClient() {
             </div>
 
             {/* Headline */}
-            <h1 className="text-fluid-hero font-black text-white tracking-tight mb-5 leading-[1.15]">
-              {l.heroTitle}<br />
-              <span className="text-green-400 font-black">{l.heroHighlight}</span>
-            </h1>
-
-            {/* Sub-copy */}
-            <p className="text-fluid-base text-white/50 max-w-2xl mx-auto mb-10 leading-relaxed">
+            <h1 className="text-fluid-hero font-black text-white tracking-tight mb-10 leading-[1.15] max-w-3xl mx-auto">
               {l.heroSub}
-            </p>
+            </h1>
 
             {/* CTA */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-14 w-full max-w-sm mx-auto sm:max-w-none">
