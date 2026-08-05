@@ -306,66 +306,6 @@ export default function HomePageClient() {
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0d1117] to-transparent pointer-events-none" aria-hidden="true" />
         </section>
 
-        {/* ── Emotional Story Section ────────────────────────── */}
-        <EmotionalStorySection />
-
-        {/* ── Language Vision Section ────────────────────────── */}
-        <LanguageVisionSection />
-
-        {/* ── Latest from Guide ──────────────────────────────── */}
-        {guidePosts.length > 0 && (
-          <section className="max-w-7xl mx-auto px-4 pb-14 sm:pb-20">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
-                  {ja ? '知識ハブ' : bn ? 'নলেজ হাব' : 'Knowledge Hub'}
-                </p>
-                <h2 className="text-fluid-4xl font-bold text-white">
-                  {ja ? 'ガイドの最新記事' : bn ? 'গাইড থেকে সর্বশেষ' : 'Latest from our Guide'}
-                </h2>
-              </div>
-              <Link
-                href="/feed"
-                className="hidden sm:inline-flex items-center gap-1.5 text-sm text-green-400 hover:text-green-300 font-semibold transition-colors shrink-0"
-              >
-                {ja ? 'すべて見る' : bn ? 'সব দেখুন' : 'See all'} →
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {guidePosts.map((post) => (
-                <Link
-                  key={post.id}
-                  href={`/feed/${post.slug}`}
-                  className="group glass-card rounded-2xl overflow-hidden border border-white/[0.08] hover:border-green-500/25 card-hover-glow transition-all flex flex-col"
-                >
-                  <div className="relative h-40 bg-white/[0.03] overflow-hidden shrink-0">
-                    {post.thumbnail ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={post.thumbnail}
-                        alt={post.title}
-                        className="w-full h-full object-cover object-top group-hover:scale-[1.04] transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-3xl opacity-20">📖</div>
-                    )}
-                  </div>
-                  <div className="p-4 flex flex-col flex-1">
-                    <h3 className="font-bold text-white text-sm leading-snug mb-2 line-clamp-2 group-hover:text-green-400 transition-colors">
-                      {post.title}
-                    </h3>
-                    <p className="text-xs text-white/45 leading-relaxed line-clamp-2 flex-1">{post.excerpt}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-            <div className="mt-6 text-center sm:hidden">
-              <Link href="/feed" className="inline-flex items-center gap-1.5 text-sm text-green-400 hover:text-green-300 font-semibold transition-colors">
-                {ja ? 'すべて見る' : bn ? 'সব দেখুন' : 'See all'} →
-              </Link>
-            </div>
-          </section>
-        )}
 
         {/* ── Gateway Bento Grid ─────────────────────────────── */}
         <section className="max-w-7xl mx-auto px-4 pt-14 pb-14 sm:pt-20 sm:pb-20">
@@ -472,7 +412,7 @@ export default function HomePageClient() {
                 {ja ? 'なぜ天才か' : bn ? 'কেন টেনসাই' : 'Why Tensai'}
               </p>
               <h2 className="text-fluid-4xl font-bold text-white mb-3">{l.whyTitle}</h2>
-              <p className="text-fluid-base text-white/40 max-w-xl mx-auto leading-relaxed">{l.whySub}</p>
+              <p className="text-fluid-base text-white/40 max-w-xl mx-auto leading-[1.6]">{l.whySub}</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -536,6 +476,67 @@ export default function HomePageClient() {
             </div>
           </div>
         </section>
+
+        {/* ── Emotional Story Section ────────────────────────── */}
+        <EmotionalStorySection />
+
+        {/* ── Language Vision Section ────────────────────────── */}
+        <LanguageVisionSection />
+
+        {/* ── Latest from Guide ──────────────────────────────── */}
+        {guidePosts.length > 0 && (
+          <section className="max-w-7xl mx-auto px-4 pb-14 sm:pb-20">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
+                  {ja ? '知識ハブ' : bn ? 'নলেজ হাব' : 'Knowledge Hub'}
+                </p>
+                <h2 className="text-fluid-4xl font-bold text-white">
+                  {ja ? 'ガイドの最新記事' : bn ? 'গাইড থেকে সর্বশেষ' : 'Latest from our Guide'}
+                </h2>
+              </div>
+              <Link
+                href="/feed"
+                className="hidden sm:inline-flex items-center gap-1.5 text-sm text-green-400 hover:text-green-300 font-semibold transition-colors shrink-0"
+              >
+                {ja ? 'すべて見る' : bn ? 'সব দেখুন' : 'See all'} →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {guidePosts.map((post) => (
+                <Link
+                  key={post.id}
+                  href={`/feed/${post.slug}`}
+                  className="group glass-card rounded-2xl overflow-hidden border border-white/[0.08] hover:border-green-500/25 card-hover-glow transition-all flex flex-col"
+                >
+                  <div className="relative h-40 bg-white/[0.03] overflow-hidden shrink-0">
+                    {post.thumbnail ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={post.thumbnail}
+                        alt={post.title}
+                        className="w-full h-full object-cover object-top group-hover:scale-[1.04] transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-3xl opacity-20">📖</div>
+                    )}
+                  </div>
+                  <div className="p-4 flex flex-col flex-1">
+                    <h3 className="font-bold text-white text-sm leading-snug mb-2 line-clamp-2 group-hover:text-green-400 transition-colors">
+                      {post.title}
+                    </h3>
+                    <p className="text-xs text-white/45 leading-relaxed line-clamp-2 flex-1">{post.excerpt}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-6 text-center sm:hidden">
+              <Link href="/feed" className="inline-flex items-center gap-1.5 text-sm text-green-400 hover:text-green-300 font-semibold transition-colors">
+                {ja ? 'すべて見る' : bn ? 'সব দেখুন' : 'See all'} →
+              </Link>
+            </div>
+          </section>
+        )}
 
         {/* ── Gallery ────────────────────────────────────────── */}
         <section className="max-w-7xl mx-auto px-4 py-14 sm:py-20 border-t border-white/[0.05]">
