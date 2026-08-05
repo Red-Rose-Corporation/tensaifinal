@@ -302,7 +302,7 @@ export default function HomePageClient() {
 
 
         {/* ── Gateway Bento Grid ─────────────────────────────── */}
-        <section className="max-w-7xl mx-auto px-4 pt-14 pb-14 sm:pt-20 sm:pb-20">
+        <section className="max-w-7xl mx-auto px-4 pt-8 pb-10 sm:pt-14 sm:pb-16">
           <div className="text-center mb-10">
             <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
               {ja ? 'ゲートウェイを選択' : bn ? 'আপনার গেটওয়ে বেছে নিন' : 'Choose Your Gateway'}
@@ -332,7 +332,7 @@ export default function HomePageClient() {
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${accent.iconBg} border ${accent.iconBorder} flex items-center justify-center text-2xl`} aria-hidden="true">{g.icon}</div>
                 <div>
                   <h3 className="font-bold text-white text-sm mb-1.5">{g.title}</h3>
-                  <p className="text-xs text-white/50 leading-relaxed">{g.desc}</p>
+                  <p className="text-xs text-white/50 leading-relaxed group-hover:text-white/60 transition-colors">{g.desc}</p>
                 </div>
                 <div className={`mt-auto text-xs ${accent.cta} font-semibold flex items-center gap-1.5 group-hover:gap-2.5 transition-all`}>
                   <span>{ja ? '詳しく見る' : bn ? 'শুরু করুন' : 'Get started'}</span>
@@ -351,16 +351,16 @@ export default function HomePageClient() {
         <LanguageVisionSection />
 
         {/* ── How It Works ───────────────────────────────────── */}
-        <section className="bg-alt-section py-14 sm:py-20 border-t border-white/[0.05]">
+        <section className="bg-alt-section py-10 sm:py-16 border-t border-white/[0.05]">
           <div className="max-w-5xl mx-auto px-4">
-            <div className="text-center mb-10 sm:mb-14">
+            <div className="text-center mb-8 sm:mb-12">
               <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
                 {ja ? 'プロセス' : bn ? 'প্রক্রিয়া' : 'Process'}
               </p>
               <h2 className="text-fluid-4xl font-bold text-white">
                 {ja ? 'どのように機能するか' : bn ? 'কীভাবে কাজ করে' : 'How it works'}
               </h2>
-              <p className="text-fluid-sm text-white/38 mt-3 max-w-md mx-auto">
+              <p className="text-fluid-sm text-green-300/60 mt-3 max-w-md mx-auto">
                 {ja ? '3ステップで日本への道が開きます' : bn ? 'মাত্র ৩ ধাপে জাপানের পথ খুলে যায়' : 'Three clear steps from registration to Japan placement'}
               </p>
             </div>
@@ -405,14 +405,14 @@ export default function HomePageClient() {
         </section>
 
         {/* ── Why Tensai ─────────────────────────────────────── */}
-        <section className="py-14 sm:py-20 border-t border-white/[0.05]">
+        <section className="py-10 sm:py-16 border-t border-white/[0.05]">
           <div className="max-w-7xl mx-auto px-4">
-            <div className="text-center mb-10 sm:mb-12">
+            <div className="text-center mb-8 sm:mb-10">
               <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
                 {ja ? 'なぜ天才か' : bn ? 'কেন টেনসাই' : 'Why Tensai'}
               </p>
               <h2 className="text-fluid-4xl font-bold text-white mb-3">{l.whyTitle}</h2>
-              <p className="text-fluid-base text-white/40 max-w-xl mx-auto leading-[1.6]">{l.whySub}</p>
+              <p className="text-fluid-base text-green-300/60 max-w-xl mx-auto leading-[1.6]">{l.whySub}</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -437,7 +437,7 @@ export default function HomePageClient() {
         </section>
 
         {/* ── Testimonials ───────────────────────────────────── */}
-        <section className="bg-alt-section py-14 sm:py-20 border-t border-white/[0.05]">
+        <section className="bg-alt-section py-10 sm:py-16 border-t border-white/[0.05]">
           <div className="max-w-7xl mx-auto px-4">
             <div className="text-center mb-10 sm:mb-12">
               <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
@@ -446,7 +446,7 @@ export default function HomePageClient() {
               <h2 className="text-fluid-4xl font-bold text-white">
                 {ja ? '実際に変えた人たち' : bn ? 'বাস্তব মানুষ, বাস্তব সাফল্য' : 'Real people. Real results.'}
               </h2>
-              <p className="text-fluid-sm text-white/38 mt-3 max-w-md mx-auto">
+              <p className="text-fluid-sm text-green-300/60 mt-3 max-w-md mx-auto">
                 {ja ? '学生、エージェンシー、教育機関 — 全員に効果があります' : bn ? 'শিক্ষার্থী, এজেন্সি, প্রতিষ্ঠান — সবার জন্য কাজ করে' : 'Students, agencies, institutions — it works for everyone'}
               </p>
             </div>
@@ -479,7 +479,7 @@ export default function HomePageClient() {
 
         {/* ── Latest from Guide ──────────────────────────────── */}
         {guidePosts.length > 0 && (
-          <section className="max-w-7xl mx-auto px-4 pb-14 sm:pb-20">
+          <section className="max-w-7xl mx-auto px-4 pb-10 sm:pb-14">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
