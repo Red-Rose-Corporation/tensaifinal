@@ -6,25 +6,13 @@ import api from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
-const DIVISIONS = ['Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna', 'Barishal', 'Rangpur', 'Mymensingh'] as const;
 const QUALIFICATIONS = ['SSC', 'HSC', 'Diploma', 'Bachelor', 'Master', 'PhD', 'Other'] as const;
 
 interface ProfileData {
   full_name?: string;
   full_name_japanese?: string;
-  date_of_birth?: string;
-  gender?: string;
-  nationality?: string;
-  religion?: string;
-  street_address?: string;
-  district?: string;
-  division?: string;
-  postal_code?: string;
-  emergency_contact_name?: string;
-  emergency_contact_phone?: string;
-  emergency_contact_relation?: string;
+  headline?: string;
   highest_qualification?: string;
-  gpa?: string | number;
   institution_name?: string;
   passing_year?: string | number;
   is_data_locked?: boolean;
@@ -54,19 +42,8 @@ export default function StudentProfilePage() {
       setForm({
         full_name: data.profile.full_name ?? '',
         full_name_japanese: data.profile.full_name_japanese ?? '',
-        date_of_birth: data.profile.date_of_birth ?? '',
-        gender: data.profile.gender ?? '',
-        nationality: data.profile.nationality ?? '',
-        religion: data.profile.religion ?? '',
-        street_address: data.profile.street_address ?? '',
-        district: data.profile.district ?? '',
-        division: data.profile.division ?? '',
-        postal_code: data.profile.postal_code ?? '',
-        emergency_contact_name: data.profile.emergency_contact_name ?? '',
-        emergency_contact_phone: data.profile.emergency_contact_phone ?? '',
-        emergency_contact_relation: data.profile.emergency_contact_relation ?? '',
+        headline: data.profile.headline ?? '',
         highest_qualification: data.profile.highest_qualification ?? '',
-        gpa: data.profile.gpa ?? '',
         institution_name: data.profile.institution_name ?? '',
         passing_year: data.profile.passing_year ?? '',
       });
@@ -119,8 +96,8 @@ export default function StudentProfilePage() {
         </div>
       )}
 
-      {/* Personal Info */}
-      <Section title={p.personalInfo}>
+      {/* Identity & Headline */}
+      <Section title="Your Profile">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label={p.fullName}>
             <input className={inputCls(locked)} disabled={locked} value={form.full_name ?? ''} onChange={(e) => set('full_name', e.target.value)} />
@@ -128,78 +105,21 @@ export default function StudentProfilePage() {
           <Field label={p.fullNameJapanese}>
             <input className={inputCls(locked)} disabled={locked} value={form.full_name_japanese ?? ''} onChange={(e) => set('full_name_japanese', e.target.value)} placeholder="例：田中 太郎（カタカナ）" />
           </Field>
-          <Field label={p.dateOfBirth}>
-            <input type="date" className={inputCls(locked)} disabled={locked} value={form.date_of_birth ?? ''} onChange={(e) => set('date_of_birth', e.target.value)} />
-          </Field>
-          <Field label={p.gender}>
-            <select className={inputCls(locked)} disabled={locked} value={form.gender ?? ''} onChange={(e) => set('gender', e.target.value)}>
-              <option value="">—</option>
-              <option value="male">{p.genderMale}</option>
-              <option value="female">{p.genderFemale}</option>
-              <option value="other">{p.genderOther}</option>
-            </select>
-          </Field>
-          <Field label={p.nationality}>
-            <input className={inputCls(locked)} disabled={locked} value={form.nationality ?? ''} onChange={(e) => set('nationality', e.target.value)} />
-          </Field>
-          <Field label={p.religion}>
-            <input className={inputCls(locked)} disabled={locked} value={form.religion ?? ''} onChange={(e) => set('religion', e.target.value)} />
+          <Field label="Headline" className="sm:col-span-2">
+            <input className={inputCls(locked)} disabled={locked} value={form.headline ?? ''} onChange={(e) => set('headline', e.target.value)} placeholder="e.g. 3rd Year Engineering Student, Preparing for Japan" />
+            <p className="text-xs text-slate-400 mt-1">A short headline about your current status (visible to others)</p>
           </Field>
         </div>
       </Section>
 
-      {/* Contact & Address */}
-      <Section title={p.contactAddress}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label={`${p.phone} 🔒`}>
-            <input className={inputCls(true)} disabled value={user?.phone ?? ''} placeholder="—" />
-            <p className="text-xs text-slate-400 mt-1">{p.phoneNote}</p>
-          </Field>
-          <div /> {/* spacer */}
-          <Field label={p.streetAddress} className="sm:col-span-2">
-            <input className={inputCls(locked)} disabled={locked} value={form.street_address ?? ''} onChange={(e) => set('street_address', e.target.value)} placeholder="House no., Road, Area" />
-          </Field>
-          <Field label={p.district}>
-            <input className={inputCls(locked)} disabled={locked} value={form.district ?? ''} onChange={(e) => set('district', e.target.value)} />
-          </Field>
-          <Field label={p.division}>
-            <select className={inputCls(locked)} disabled={locked} value={form.division ?? ''} onChange={(e) => set('division', e.target.value)}>
-              <option value="">{p.selectDivision}</option>
-              {DIVISIONS.map((d) => <option key={d} value={d}>{d}</option>)}
-            </select>
-          </Field>
-          <Field label={p.postalCode}>
-            <input className={inputCls(locked)} disabled={locked} value={form.postal_code ?? ''} onChange={(e) => set('postal_code', e.target.value)} placeholder="e.g. 1207" maxLength={10} />
-          </Field>
-        </div>
-      </Section>
-
-      {/* Emergency Contact */}
-      <Section title={p.emergencyContact}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label={p.emergencyName}>
-            <input className={inputCls(locked)} disabled={locked} value={form.emergency_contact_name ?? ''} onChange={(e) => set('emergency_contact_name', e.target.value)} />
-          </Field>
-          <Field label={p.emergencyPhone}>
-            <input className={inputCls(locked)} disabled={locked} value={form.emergency_contact_phone ?? ''} onChange={(e) => set('emergency_contact_phone', e.target.value)} placeholder="+8801XXXXXXXXX" />
-          </Field>
-          <Field label={p.emergencyRelation}>
-            <input className={inputCls(locked)} disabled={locked} value={form.emergency_contact_relation ?? ''} onChange={(e) => set('emergency_contact_relation', e.target.value)} />
-          </Field>
-        </div>
-      </Section>
-
-      {/* Academic Info */}
-      <Section title={p.academicInfo}>
+      {/* Education Summary */}
+      <Section title="Education">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label={p.highestQualification}>
             <select className={inputCls(locked)} disabled={locked} value={form.highest_qualification ?? ''} onChange={(e) => set('highest_qualification', e.target.value)}>
               <option value="">—</option>
               {QUALIFICATIONS.map((q) => <option key={q} value={q}>{q}</option>)}
             </select>
-          </Field>
-          <Field label={p.gpa}>
-            <input type="number" step="0.01" min="0" max="5" className={inputCls(locked)} disabled={locked} value={form.gpa ?? ''} onChange={(e) => set('gpa', e.target.value)} placeholder="0.00 – 5.00" />
           </Field>
           <Field label={p.institutionName}>
             <input className={inputCls(locked)} disabled={locked} value={form.institution_name ?? ''} onChange={(e) => set('institution_name', e.target.value)} />
@@ -208,6 +128,7 @@ export default function StudentProfilePage() {
             <input type="number" min="1990" max="2030" className={inputCls(locked)} disabled={locked} value={form.passing_year ?? ''} onChange={(e) => set('passing_year', e.target.value)} placeholder="1990–2030" />
           </Field>
         </div>
+        <p className="text-xs text-slate-400 mt-3">For detailed education history, visit your Application Profile</p>
       </Section>
 
       {/* Save bar */}
