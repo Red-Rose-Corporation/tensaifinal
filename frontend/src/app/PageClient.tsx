@@ -436,48 +436,6 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* ── Testimonials ───────────────────────────────────── */}
-        <section className="bg-alt-section py-10 sm:py-16 border-t border-white/[0.05]">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="text-center mb-10 sm:mb-12">
-              <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
-                {ja ? '体験談' : bn ? 'সাফল্যের গল্প' : 'Success Stories'}
-              </p>
-              <h2 className="text-fluid-4xl font-bold text-white">
-                {ja ? '実際に変えた人たち' : bn ? 'বাস্তব মানুষ, বাস্তব সাফল্য' : 'Real people. Real results.'}
-              </h2>
-              <p className="text-fluid-sm text-green-300/60 mt-3 max-w-md mx-auto">
-                {ja ? '学生、エージェンシー、教育機関 — 全員に効果があります' : bn ? 'শিক্ষার্থী, এজেন্সি, প্রতিষ্ঠান — সবার জন্য কাজ করে' : 'Students, agencies, institutions — it works for everyone'}
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {TESTIMONIALS.map((tm, idx) => (
-                <div key={tm.name} className={`glass-card rounded-2xl p-6 flex flex-col gap-4 border ${tm.border} border-l-4 relative ${idx === 0 ? 'ring-1 ring-amber-500/30' : ''}`} style={{borderLeftColor: idx === 0 ? '#d97706' : 'inherit'}}>
-                  <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${tm.color} rounded-t-2xl`} />
-                  {idx === 0 && <div className="absolute -top-2 -right-2 text-amber-400 font-black">⭐</div>}
-                  <div className="flex items-center justify-between">
-                    <div className="text-2xl text-white/30" aria-hidden="true">❝</div>
-                    <div className="flex gap-0.5" aria-label="5 stars">
-                      {[1,2,3,4,5].map(s => <svg key={s} width="12" height="12" viewBox="0 0 24 24" fill="#facc15" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>)}
-                    </div>
-                  </div>
-                  <p className="text-white/80 text-sm leading-relaxed flex-1">{tm.quote}</p>
-                  <div className="flex items-center gap-3 pt-2 border-t border-white/[0.06]">
-                    <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${tm.color} border ${tm.border} flex items-center justify-center text-sm font-bold text-white shrink-0`}>
-                      {tm.avatar}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-white text-sm font-semibold truncate">{tm.name}</p>
-                      <p className="text-white/40 text-[11px] truncate">{tm.role}</p>
-                    </div>
-                    <span className="ml-auto text-xl shrink-0" aria-hidden="true">{tm.flag}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* ── Latest from Guide ──────────────────────────────── */}
         {guidePosts.length > 0 && (
           <section className="max-w-7xl mx-auto px-4 pb-10 sm:pb-14">
@@ -532,6 +490,49 @@ export default function HomePageClient() {
             </div>
           </section>
         )}
+
+        {/* ── Testimonials ───────────────────────────────────── */}
+        <section className="bg-alt-section py-10 sm:py-16 border-t border-white/[0.05]">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="text-center mb-10 sm:mb-12">
+              <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
+                {ja ? '体験談' : bn ? 'সাফল্যের গল্প' : 'Success Stories'}
+              </p>
+              <h2 className="text-fluid-4xl font-bold text-white">
+                {ja ? '実際に変えた人たち' : bn ? 'বাস্তব মানুষ, বাস্তব সাফল্য' : 'Real people. Real results.'}
+              </h2>
+              <p className="text-fluid-sm text-green-300/60 mt-3 max-w-md mx-auto">
+                {ja ? '学生、エージェンシー、教育機関 — 全員に効果があります' : bn ? 'শিক্ষার্থী, এজেন্সি, প্রতিষ্ঠান — সবার জন্য কাজ করে' : 'Students, agencies, institutions — it works for everyone'}
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {TESTIMONIALS.map((tm, idx) => (
+                <div key={tm.name} className={`glass-card rounded-2xl p-6 flex flex-col gap-4 border ${tm.border} border-l-4 relative ${idx === 0 ? 'ring-1 ring-amber-500/30' : ''}`} style={{borderLeftColor: idx === 0 ? '#d97706' : 'inherit'}}>
+                  <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${tm.color} rounded-t-2xl`} />
+                  {idx === 0 && <div className="absolute -top-2 -right-2 text-amber-400 font-black">⭐</div>}
+                  <div className="flex items-center justify-between">
+                    <div className="text-2xl text-white/30" aria-hidden="true">❝</div>
+                    <div className="flex gap-0.5" aria-label="5 stars">
+                      {[1,2,3,4,5].map(s => <svg key={s} width="12" height="12" viewBox="0 0 24 24" fill="#facc15" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>)}
+                    </div>
+                  </div>
+                  <p className="text-white/80 text-sm leading-relaxed flex-1">{tm.quote}</p>
+                  <div className="flex items-center gap-3 pt-2 border-t border-white/[0.06]">
+                    <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${tm.color} border ${tm.border} flex items-center justify-center text-sm font-bold text-white shrink-0`}>
+                      {tm.avatar}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-white text-sm font-semibold truncate">{tm.name}</p>
+                      <p className="text-white/40 text-[11px] truncate">{tm.role}</p>
+                    </div>
+                    <span className="ml-auto text-xl shrink-0" aria-hidden="true">{tm.flag}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
 
         {/* ── Gallery ────────────────────────────────────────── */}
         <section className="max-w-7xl mx-auto px-4 py-14 sm:py-20 border-t border-white/[0.05]">
