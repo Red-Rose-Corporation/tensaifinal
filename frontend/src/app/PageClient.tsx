@@ -396,7 +396,7 @@ export default function HomePageClient() {
             <div className="text-center mt-12">
               <Link
                 href="/auth/register"
-                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-8 py-3.5 rounded-full font-bold text-sm transition-all glow-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-300"
+                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-8 py-4 rounded-full font-bold text-sm transition-all glow-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-300"
               >
                 {ja ? '今すぐ始める →' : bn ? 'এখনই শুরু করুন →' : 'Start your journey →'}
               </Link>
@@ -427,8 +427,8 @@ export default function HomePageClient() {
                   <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center text-xl`} aria-hidden="true">
                     {f.icon}
                   </div>
-                  <h3 className="font-bold text-white text-sm leading-snug">{f.title}</h3>
-                  <p className="text-xs text-white/55 leading-relaxed">{f.desc}</p>
+                  <h3 className="font-bold text-green-400 text-sm leading-snug">{f.title}</h3>
+                  <p className="text-xs text-green-300/70 leading-relaxed">{f.desc}</p>
                 </div>
                 );
               })}
@@ -451,16 +451,17 @@ export default function HomePageClient() {
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {TESTIMONIALS.map((tm) => (
-                <div key={tm.name} className={`glass-card rounded-2xl p-6 flex flex-col gap-4 border ${tm.border} relative`}>
+              {TESTIMONIALS.map((tm, idx) => (
+                <div key={tm.name} className={`glass-card rounded-2xl p-6 flex flex-col gap-4 border ${tm.border} border-l-4 relative ${idx === 0 ? 'ring-1 ring-amber-500/30' : ''}`} style={{borderLeftColor: idx === 0 ? '#d97706' : 'inherit'}}>
                   <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${tm.color} rounded-t-2xl`} />
+                  {idx === 0 && <div className="absolute -top-2 -right-2 text-amber-400 font-black">⭐</div>}
                   <div className="flex items-center justify-between">
                     <div className="text-2xl text-white/30" aria-hidden="true">❝</div>
                     <div className="flex gap-0.5" aria-label="5 stars">
                       {[1,2,3,4,5].map(s => <svg key={s} width="12" height="12" viewBox="0 0 24 24" fill="#facc15" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>)}
                     </div>
                   </div>
-                  <p className="text-white/70 text-sm leading-relaxed flex-1">{tm.quote}</p>
+                  <p className="text-white/80 text-sm leading-relaxed flex-1">{tm.quote}</p>
                   <div className="flex items-center gap-3 pt-2 border-t border-white/[0.06]">
                     <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${tm.color} border ${tm.border} flex items-center justify-center text-sm font-bold text-white shrink-0`}>
                       {tm.avatar}
