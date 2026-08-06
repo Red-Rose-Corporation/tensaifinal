@@ -136,7 +136,6 @@ export default function StudentInfoForm({ initialProfile, onSaved }: Props) {
   // Personal
   const [applicantName, setApplicantName] = useState<string>((initialProfile?.applicant_name as string) ?? '');
   const [bloodGroup, setBloodGroup]       = useState<string>((initialProfile?.blood_group as string) ?? '');
-  const [mobile, setMobile]               = useState<string>((initialProfile?.mobile_number as string) ?? '');
   const [whatsapp, setWhatsapp]           = useState<string>((initialProfile?.whatsapp_number as string) ?? '');
 
   // Family
@@ -205,7 +204,6 @@ export default function StudentInfoForm({ initialProfile, onSaved }: Props) {
       await api.put('/student/profile', {
         applicant_name: applicantName || null,
         blood_group: bloodGroup || null,
-        mobile_number: mobile || null,
         whatsapp_number: whatsapp || null,
         family_info: family,
         permanent_address: permAddr,
