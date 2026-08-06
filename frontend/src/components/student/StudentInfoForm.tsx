@@ -255,9 +255,6 @@ export default function StudentInfoForm({ initialProfile, onSaved }: Props) {
               ))}
             </select>
           </Field>
-          <Field label="Mobile Number" required>
-            <PhoneInput value={mobile} onChange={setMobile} id="student-mobile" />
-          </Field>
           <Field label="WhatsApp Number">
             <PhoneInput value={whatsapp} onChange={setWhatsapp} id="student-whatsapp" />
           </Field>
