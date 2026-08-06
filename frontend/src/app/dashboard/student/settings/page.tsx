@@ -54,7 +54,7 @@ const NAV_ITEMS = [
 ];
 
 const inp = 'w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500/40 bg-white transition-shadow';
-const lbl = 'block text-xs font-semibold text-slate-500 mb-1.5';
+const lbl = 'block text-xs sm:text-sm font-semibold text-slate-500 mb-1.5';
 
 export default function StudentSettingsPage() {
   const { lang } = useLang();
@@ -335,7 +335,7 @@ export default function StudentSettingsPage() {
                 {contactSaved && <Alert type="success" msg={t('Phone number saved','保存しました','ফোন নম্বর সংরক্ষিত হয়েছে')} />}
                 {contactErr   && <Alert type="error"   msg={contactErr} />}
                 <label className={lbl}>{t('Phone Number','電話番号','ফোন নম্বর')}</label>
-                <form onSubmit={e => { e.preventDefault(); saveContact.mutate(); }} className="flex gap-2">
+                <form onSubmit={e => { e.preventDefault(); saveContact.mutate(); }} className="flex flex-col sm:flex-row gap-2">
                   <div className="relative flex-1">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                       <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -347,7 +347,7 @@ export default function StudentSettingsPage() {
                       value={phone} onChange={e => setPhone(e.target.value)} />
                   </div>
                   <button type="submit" disabled={saveContact.isPending}
-                    className="min-h-[44px] px-5 py-2.5 bg-green-700 hover:bg-green-800 text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 whitespace-nowrap shadow-sm">
+                    className="min-h-[44px] w-full sm:w-auto px-5 py-2.5 bg-green-700 hover:bg-green-800 text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 shadow-sm">
                     {saveContact.isPending ? (
                       <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin inline-block" />
                     ) : t('Save','保存','সংরক্ষণ')}
@@ -457,9 +457,9 @@ export default function StudentSettingsPage() {
                 )}
 
                 {/* Actions */}
-                <div className="flex items-center gap-3 pt-1">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
                   <button type="submit" disabled={savePassword.isPending || !pwValid}
-                    className="min-h-[44px] flex items-center gap-2 px-5 py-2.5 bg-green-700 hover:bg-green-800 text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-40 shadow-sm">
+                    className="min-h-[44px] flex items-center justify-center gap-2 px-5 py-2.5 bg-green-700 hover:bg-green-800 text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-40 shadow-sm">
                     {savePassword.isPending ? (
                       <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />{t('Updating…','更新中…','আপডেট হচ্ছে…')}</>
                     ) : (

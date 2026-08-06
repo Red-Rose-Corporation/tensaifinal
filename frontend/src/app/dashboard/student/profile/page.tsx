@@ -133,16 +133,16 @@ export default function StudentProfilePage() {
 
       {/* Save bar */}
       {!locked && (
-        <div className="flex flex-wrap items-center gap-3 mt-2">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-2">
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-6 py-2.5 bg-green-700 text-white rounded-xl text-sm font-semibold hover:bg-green-800 disabled:opacity-50 transition-colors shrink-0"
+            className="w-full sm:w-auto px-6 py-2.5 bg-green-700 text-white rounded-xl text-sm font-semibold hover:bg-green-800 disabled:opacity-50 transition-colors"
           >
             {saving ? p.saving : p.saveBtn}
           </button>
-          {savedMsg && <span className="text-sm text-emerald-600 min-w-0">{savedMsg}</span>}
-          {errorMsg && <span className="text-sm text-red-500 min-w-0">{errorMsg}</span>}
+          {savedMsg && <span className="text-sm text-emerald-600">{savedMsg}</span>}
+          {errorMsg && <span className="text-sm text-red-500">{errorMsg}</span>}
         </div>
       )}
 
@@ -153,7 +153,7 @@ export default function StudentProfilePage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 mb-5">
-      <h2 className="font-semibold text-slate-500 mb-4 text-xs uppercase tracking-wide">{title}</h2>
+      <h2 className="font-semibold text-slate-500 mb-4 text-xs sm:text-sm uppercase tracking-wide">{title}</h2>
       {children}
     </div>
   );
@@ -162,7 +162,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Field({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
   return (
     <div className={className}>
-      <label className="block text-xs font-medium text-slate-500 mb-1.5">{label}</label>
+      <label className="block text-xs sm:text-sm font-medium text-slate-500 mb-1.5">{label}</label>
       {children}
     </div>
   );
