@@ -354,7 +354,7 @@ export default function HomePageClient() {
                 <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
                   {ja ? '知識ハブ' : bn ? 'নলেজ হাব' : 'Knowledge Hub'}
                 </p>
-                <h2 className="text-fluid-4xl font-bold text-white">
+                <h2 className="text-fluid-3xl font-bold text-white">
                   {ja ? 'ガイドの最新記事' : bn ? 'গাইড থেকে সর্বশেষ' : 'Latest from our Guide'}
                 </h2>
               </div>
@@ -372,13 +372,13 @@ export default function HomePageClient() {
                   href={`/feed/${post.slug}`}
                   className="group glass-card rounded-2xl overflow-hidden border border-white/[0.08] hover:border-green-500/25 card-hover-glow transition-all flex flex-col"
                 >
-                  <div className="relative h-40 bg-white/[0.03] overflow-hidden shrink-0">
+                  <div className="relative aspect-video bg-white/[0.03] overflow-hidden shrink-0">
                     {post.thumbnail ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={post.thumbnail}
                         alt={post.title}
-                        className="w-full h-full object-cover object-top group-hover:scale-[1.04] transition-transform duration-500"
+                        className="w-full h-full object-cover object-center group-hover:scale-[1.04] transition-transform duration-500"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-3xl opacity-20">📖</div>
@@ -408,7 +408,7 @@ export default function HomePageClient() {
               <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
                 {ja ? 'プロセス' : bn ? 'প্রক্রিয়া' : 'Process'}
               </p>
-              <h2 className="text-fluid-4xl font-bold text-white">
+              <h2 className="text-fluid-3xl font-bold text-white">
                 {ja ? 'どのように機能するか' : bn ? 'কীভাবে কাজ করে' : 'How it works'}
               </h2>
               <p className="text-fluid-sm text-green-300/60 mt-3 max-w-md mx-auto">
