@@ -2,7 +2,7 @@
 
 export default function EmotionalStorySection() {
   return (
-    <section className="relative min-h-auto sm:min-h-[70vh] flex items-center justify-center py-12 sm:py-20 px-4 overflow-hidden">
+    <section className="relative flex items-center justify-center py-10 sm:py-16 px-4 overflow-hidden">
       {/* Soft background gradient & orbs */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0d1117] via-[#0d1117]/95 to-[#0d1117] pointer-events-none" />
 

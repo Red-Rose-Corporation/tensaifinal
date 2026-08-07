@@ -301,7 +301,7 @@ export default function HomePageClient() {
 
 
         {/* ── Gateway Bento Grid ─────────────────────────────── */}
-        <section className="max-w-7xl mx-auto px-4 pt-8 pb-10 sm:pt-14 sm:pb-16">
+        <section className="max-w-7xl mx-auto px-4 py-10 sm:py-16">
           <div className="text-center mb-10">
             <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
               {ja ? 'ゲートウェイを選択' : bn ? 'আপনার গেটওয়ে বেছে নিন' : 'Choose Your Gateway'}
@@ -348,7 +348,7 @@ export default function HomePageClient() {
 
         {/* ── Latest from Guide ──────────────────────────────── */}
         {guidePosts.length > 0 && (
-          <section className="max-w-7xl mx-auto px-4 pt-10 sm:pt-14 pb-10 sm:pb-14">
+          <section className="max-w-7xl mx-auto px-4 py-10 sm:py-16">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <p className="text-green-400/60 text-[11px] font-semibold tracking-[0.3em] uppercase mb-2">
@@ -531,7 +531,7 @@ export default function HomePageClient() {
 
 
         {/* ── Gallery ────────────────────────────────────────── */}
-        <section className="max-w-7xl mx-auto px-4 py-14 sm:py-20 border-t border-white/[0.05]">
+        <section className="max-w-7xl mx-auto px-4 py-10 sm:py-16 border-t border-white/[0.05]">
           <div className="mb-8">
             <div className="flex items-start justify-between gap-3 flex-wrap">
               <div>
@@ -619,7 +619,7 @@ export default function HomePageClient() {
       </main>
 
       {/* ── Final CTA ──────────────────────────────────────── */}
-      <section className="relative border-t border-white/[0.05] py-14 sm:py-20 px-4 overflow-hidden">
+      <section className="relative border-t border-white/[0.05] py-10 sm:py-16 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-green-950/60 via-[#0d1117] to-cyan-950/30 pointer-events-none" aria-hidden="true" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-green-600/8 rounded-full blur-[80px] pointer-events-none" aria-hidden="true" />
         <div className="max-w-3xl mx-auto text-center relative">
