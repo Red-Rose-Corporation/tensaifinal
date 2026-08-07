@@ -148,13 +148,6 @@ function PostNav({ title, user, t }: {
   user: unknown;
   t: (a: string, b: string, c: string) => string;
 }) {
-  const links = [
-    { href: '/about',    label: t('About','会社概要','সম্পর্কে') },
-    { href: '/team',     label: t('Team','チーム','টিম') },
-    { href: '/gallery',  label: t('Gallery','ギャラリー','গ্যালারি') },
-    { href: '/branches', label: t('Branches','支局','শাখা') },
-    { href: '/contact',  label: t('Contact','お問い合わせ','যোগাযোগ') },
-  ];
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
       <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
@@ -197,16 +190,6 @@ function PostNav({ title, user, t }: {
               </Link>
             </>
           )}
-        </div>
-      </div>
-      {/* Secondary link row — the rest of the site's nav, collapsed to keep the reading header uncluttered */}
-      <div className="border-t border-slate-100 px-4 py-2 flex items-center gap-4 overflow-x-auto scrollbar-none">
-        <div className="max-w-3xl mx-auto w-full flex items-center gap-4">
-          {links.map(link => (
-            <Link key={link.href} href={link.href} className="text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors shrink-0">
-              {link.label}
-            </Link>
-          ))}
         </div>
       </div>
     </nav>
@@ -561,17 +544,17 @@ function PostInner() {
             </div>
 
             {/* Title */}
-            <h1 className="text-[1.85rem] sm:text-[2.4rem] font-black text-slate-900 leading-[1.18] tracking-tight mb-4">
+            <h1 className="text-[1.7rem] sm:text-[2.15rem] font-black text-slate-900 leading-[1.22] tracking-tight mb-3.5">
               {post.title}
             </h1>
 
             {/* Excerpt as sub-headline */}
-            <p className="text-base sm:text-[1.05rem] text-slate-500 leading-[1.7] mb-5 border-l-4 border-green-500 pl-4">
+            <p className="text-[0.95rem] sm:text-base text-slate-500 leading-[1.65] mb-4 border-l-[3px] border-green-500 pl-3.5">
               {post.excerpt.slice(0, 180)}{post.excerpt.length > 180 ? '…' : ''}
             </p>
 
             {/* Meta row: date + read time + divider */}
-            <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium pb-5 border-b border-slate-200">
+            <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium pb-4 border-b border-slate-200">
               {post.published_at && (
                 <span>{new Date(post.published_at).toLocaleDateString(undefined, { dateStyle: 'long' })}</span>
               )}
@@ -614,13 +597,13 @@ function PostInner() {
                 </Link>
               ))}
             </div>
-            <h1 className="text-[1.85rem] sm:text-[2.4rem] font-black text-slate-900 leading-[1.18] tracking-tight mb-4">
+            <h1 className="text-[1.7rem] sm:text-[2.15rem] font-black text-slate-900 leading-[1.22] tracking-tight mb-3.5">
               {post.title}
             </h1>
-            <p className="text-base sm:text-[1.05rem] text-slate-500 leading-[1.7] mb-5 border-l-4 border-green-500 pl-4">
+            <p className="text-[0.95rem] sm:text-base text-slate-500 leading-[1.65] mb-4 border-l-[3px] border-green-500 pl-3.5">
               {post.excerpt.slice(0, 180)}{post.excerpt.length > 180 ? '…' : ''}
             </p>
-            <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium pb-5 mb-5 border-b border-slate-200">
+            <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium pb-4 mb-4 border-b border-slate-200">
               {post.published_at && (
                 <span>{new Date(post.published_at).toLocaleDateString(undefined, { dateStyle: 'long' })}</span>
               )}
