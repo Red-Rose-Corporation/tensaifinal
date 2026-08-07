@@ -45,13 +45,19 @@ export default function StudentInterviews() {
         </div>
       ) : sorted.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200 p-10 sm:p-16 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-7 h-7 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 rounded-2xl bg-green-50 border border-green-100 flex items-center justify-center mx-auto mb-5">
+            <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
             </svg>
           </div>
-          <div className="font-bold text-sm text-slate-500">{si.emptyTitle}</div>
-          <div className="text-xs text-slate-400 mt-1">{si.emptyDesc}</div>
+          <h2 className="font-bold text-lg text-slate-800">{si.emptyTitle}</h2>
+          <p className="text-sm text-slate-500 mt-2 max-w-sm mx-auto leading-relaxed">{si.emptyDesc}</p>
+          <div className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-green-700 bg-green-50 border border-green-100 px-3.5 py-2 rounded-full">
+            <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            {si.emptyNotice}
+          </div>
         </div>
       ) : (
         <div className="space-y-3">

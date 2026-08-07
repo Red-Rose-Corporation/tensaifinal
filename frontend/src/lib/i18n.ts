@@ -206,7 +206,8 @@ const translations = {
     studentInterviews: {
       title: 'My Interviews',
       emptyTitle: 'No interviews scheduled yet',
-      emptyDesc: 'Once an admin schedules an interview for you, it will appear here.',
+      emptyDesc: 'Interviews are arranged once your application is reviewed. Keep your profile and documents up to date so you\'re ready when one comes in.',
+      emptyNotice: 'We\'ll notify you here the moment one is scheduled',
       online: '💻 Online',
       inPerson: '🏢 In Person',
       joinMeeting: 'Join Meeting →',
@@ -692,7 +693,8 @@ const translations = {
     studentInterviews: {
       title: '面接',
       emptyTitle: '面接の予定はありません',
-      emptyDesc: '管理者が手配すると、ここに表示されます。',
+      emptyDesc: '出願内容が確認され次第、面接が手配されます。いつでも対応できるよう、プロフィールと書類を最新の状態に保ちましょう。',
+      emptyNotice: '面接が決まり次第、こちらでお知らせします',
       online: '💻 オンライン',
       inPerson: '🏢 対面',
       joinMeeting: 'ミーティングに参加 →',
@@ -1179,7 +1181,8 @@ const translations = {
     studentInterviews: {
       title: 'ইন্টারভিউ',
       emptyTitle: 'কোনো ইন্টারভিউ নির্ধারিত নেই',
-      emptyDesc: 'অ্যাডমিন ব্যবস্থা করলে ইন্টারভিউ এখানে দেখাবে।',
+      emptyDesc: 'আপনার আবেদন পর্যালোচনার পর ইন্টারভিউ নির্ধারণ করা হয়। প্রস্তুত থাকতে আপনার প্রোফাইল ও কাগজপত্র হালনাগাদ রাখুন।',
+      emptyNotice: 'ইন্টারভিউ নির্ধারিত হলেই আমরা এখানে জানিয়ে দেব',
       online: '💻 অনলাইন',
       inPerson: '🏢 সরাসরি',
       joinMeeting: 'মিটিংয়ে যোগ দিন →',
