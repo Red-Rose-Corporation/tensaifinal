@@ -210,16 +210,7 @@ export default function StudentProfilePage() {
 
       {/* Account Info */}
       <Section title={tr('Account Info', 'アカウント情報', 'অ্যাকাউন্টের তথ্য')}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
-          <Field label={tr('Name', '氏名', 'নাম')}>
-            <div className="flex items-center gap-2 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-600">
-              <svg className="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              <span className="truncate flex-1">{user?.name}</span>
-            </div>
-            <p className="text-[10px] text-slate-400 mt-1">{tr('Contact support to change','変更はサポートへ','পরিবর্তনের জন্য সাপোর্টে যোগাযোগ করুন')}</p>
-          </Field>
+        <div className="mb-5">
           <Field label={tr('Email Address', 'メールアドレス', 'ইমেইল')}>
             <div className="flex items-center gap-2 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-600">
               <svg className="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
