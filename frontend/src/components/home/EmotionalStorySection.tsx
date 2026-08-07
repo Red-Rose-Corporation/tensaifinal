@@ -32,14 +32,14 @@ export default function EmotionalStorySection() {
         </div>
 
         {/* Main emotional statement - BENGALI */}
-        <div className="text-center mb-4 sm:mb-8 animate-fade-up">
-          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black leading-[1.1] bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent mb-3 sm:mb-6 tracking-tight">
+        <div lang="bn" className="text-center mb-4 sm:mb-8 animate-fade-up">
+          <p className="text-xl sm:text-2xl md:text-3xl font-bold leading-[1.5] bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent mb-2 sm:mb-3">
             অজানা পথের ভয় ভুলে,
           </p>
-          <p className="text-base sm:text-xl md:text-2xl lg:text-3xl font-bold leading-[1.15] bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent mb-4 sm:mb-8">
+          <p className="text-xl sm:text-2xl md:text-3xl font-bold leading-[1.5] bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent mb-4 sm:mb-8">
             বিদেশ যাত্রার পথটাকে সত্যি আর মসৃণ করতে—
           </p>
-          <p className="text-sm sm:text-base md:text-xl lg:text-2xl font-bold bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent mb-6 sm:mb-12">
+          <p className="text-xl sm:text-2xl md:text-3xl font-bold leading-[1.5] bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent mb-6 sm:mb-12">
             Tensai সবসময় আপনার আপন সারথি।
           </p>
         </div>
