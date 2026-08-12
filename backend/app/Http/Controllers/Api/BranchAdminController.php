@@ -50,9 +50,27 @@ class BranchAdminController extends Controller
             'google_maps_url' => 'nullable|url|max:500',
             'working_hours'   => 'nullable|array',
             'social_links'    => 'nullable|array',
+            'logo'            => 'nullable|image|max:2048',
+            'cover_image'     => 'nullable|image|max:8192',
         ]);
 
         $b = $this->branch($request);
+        $disk = app()->environment('production') ? 'r2' : 'public';
+
+        if ($request->hasFile('logo')) {
+            if ($b->logo) Storage::disk($disk)->delete($b->logo);
+            $validated['logo'] = $request->file('logo')->store('branch-logos', $disk);
+        } else {
+            unset($validated['logo']);
+        }
+
+        if ($request->hasFile('cover_image')) {
+            if ($b->cover_image) Storage::disk($disk)->delete($b->cover_image);
+            $validated['cover_image'] = $request->file('cover_image')->store('branch-covers', $disk);
+        } else {
+            unset($validated['cover_image']);
+        }
+
         $b->update($validated);
 
         return response()->json(['message' => 'Settings updated.', 'branch' => $b->fresh()]);
@@ -261,13 +279,24 @@ class BranchAdminController extends Controller
             'bio'        => 'nullable|string',
             'email'      => 'nullable|email|max:100',
             'phone'      => 'nullable|string|max:30',
+            'photo'      => 'nullable|image|max:4096',
             'sort_order' => 'nullable|integer',
             'is_active'  => 'boolean',
         ]);
 
-        $member = BranchTeamMember::create(array_merge($validated, [
-            'branch_id' => $request->user()->branch_id,
-        ]));
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $disk = app()->environment('production') ? 'r2' : 'public';
+            $photoPath = $request->file('photo')->store('branch-team', $disk);
+        }
+
+        $member = BranchTeamMember::create(array_merge(
+            array_diff_key($validated, ['photo' => null]),
+            [
+                'branch_id' => $request->user()->branch_id,
+                'photo'     => $photoPath,
+            ]
+        ));
 
         return response()->json($member, 201);
     }
@@ -283,19 +312,34 @@ class BranchAdminController extends Controller
             'bio'        => 'nullable|string',
             'email'      => 'nullable|email|max:100',
             'phone'      => 'nullable|string|max:30',
+            'photo'      => 'nullable|image|max:4096',
             'sort_order' => 'nullable|integer',
             'is_active'  => 'boolean',
         ]);
 
-        $member->update($validated);
+        if ($request->hasFile('photo')) {
+            $disk = app()->environment('production') ? 'r2' : 'public';
+            if ($member->photo) Storage::disk($disk)->delete($member->photo);
+            $member->photo = $request->file('photo')->store('branch-team', $disk);
+        }
+
+        $member->fill(array_diff_key($validated, ['photo' => null]));
+        $member->save();
+
         return response()->json($member->fresh());
     }
 
     public function deleteTeamMember(Request $request, int $id): JsonResponse
     {
-        BranchTeamMember::where('branch_id', $request->user()->branch_id)
-            ->findOrFail($id)
-            ->delete();
+        $member = BranchTeamMember::where('branch_id', $request->user()->branch_id)
+            ->findOrFail($id);
+
+        if ($member->photo) {
+            $disk = app()->environment('production') ? 'r2' : 'public';
+            Storage::disk($disk)->delete($member->photo);
+        }
+
+        $member->delete();
         return response()->json(['message' => 'Deleted.']);
     }
 

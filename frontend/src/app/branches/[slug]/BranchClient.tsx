@@ -12,7 +12,7 @@ interface TeamMember {
   id: number; name: string; role: string | null; bio: string | null;
   photo_url: string | null; email: string | null; phone: string | null;
 }
-interface GalleryItem { id: number; display_image_url: string; caption: string | null; }
+interface GalleryItem { id: number; display_image_url: string; caption: string | null; title: string | null; description: string | null; }
 interface Service { id: number; title: string; description: string | null; icon: string | null; }
 interface Branch {
   id: number; name: string; slug: string; tagline: string | null;
@@ -268,8 +268,8 @@ export default function BranchPage() {
                 <button key={g.id}
                   className="aspect-square rounded-xl overflow-hidden group border border-white/[0.06] hover:border-green-500/30 transition-all relative"
                   onClick={() => setActiveGalleryId(g.id)}
-                  aria-label={g.caption ?? (ja ? '画像を拡大' : bn ? 'ছবি বড় করুন' : 'View image')}>
-                  <Image src={g.display_image_url} alt={g.caption || `${branch.name} gallery`} fill
+                  aria-label={g.title ?? g.caption ?? (ja ? '画像を拡大' : bn ? 'ছবি বড় করুন' : 'View image')}>
+                  <Image src={g.display_image_url} alt={g.title || g.caption || `${branch.name} gallery`} fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" />
                 </button>
@@ -416,18 +416,23 @@ export default function BranchPage() {
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
           onClick={() => setActiveGalleryId(null)}
           role="dialog" aria-modal="true"
-          aria-label={activeGalleryItem.caption ?? `${branch.name} gallery`}>
+          aria-label={activeGalleryItem.title ?? activeGalleryItem.caption ?? `${branch.name} gallery`}>
           <div className="relative max-w-5xl w-full flex items-center justify-center" onClick={e => e.stopPropagation()}>
             <Image
               src={activeGalleryItem.display_image_url}
-              alt={activeGalleryItem.caption || `${branch.name} gallery image`}
+              alt={activeGalleryItem.title || activeGalleryItem.caption || `${branch.name} gallery image`}
               width={1200} height={800}
               className="max-w-full max-h-[85vh] object-contain rounded-xl"
             />
-            {activeGalleryItem.caption && (
-              <p className="absolute bottom-0 left-0 right-0 text-center text-sm text-white/70 bg-black/50 py-2 rounded-b-xl">
-                {activeGalleryItem.caption}
-              </p>
+            {(activeGalleryItem.title || activeGalleryItem.description || activeGalleryItem.caption) && (
+              <div className="absolute bottom-0 left-0 right-0 text-center bg-black/60 py-3 px-4 rounded-b-xl">
+                {(activeGalleryItem.title || activeGalleryItem.caption) && (
+                  <p className="text-sm font-semibold text-white">{activeGalleryItem.title || activeGalleryItem.caption}</p>
+                )}
+                {activeGalleryItem.description && (
+                  <p className="text-xs text-white/60 mt-0.5">{activeGalleryItem.description}</p>
+                )}
+              </div>
             )}
           </div>
           <button onClick={() => setActiveGalleryId(null)}

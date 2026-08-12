@@ -5,7 +5,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useLang } from '@/context/LanguageContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface TeamMember {
   id: number;
@@ -37,8 +37,11 @@ export default function BranchTeamPage() {
   const [modal, setModal] = useState<'add' | 'edit' | null>(null);
   const [editing, setEditing] = useState<TeamMember | null>(null);
   const [form, setForm] = useState(EMPTY);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [preview, setPreview] = useState('');
   const [err, setErr] = useState('');
   const [actionErr, setActionErr] = useState('');
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const { data: members = [], isLoading } = useQuery<TeamMember[]>({
     queryKey: ['branch-team'],
@@ -47,9 +50,19 @@ export default function BranchTeamPage() {
   });
 
   const save = useMutation({
-    mutationFn: (data: typeof EMPTY) => editing
-      ? api.patch(`/branch-admin/team/${editing.id}`, data).then(r => r.data)
-      : api.post('/branch-admin/team', data).then(r => r.data),
+    mutationFn: (data: typeof EMPTY) => {
+      const fd = new FormData();
+      fd.append('name', data.name);
+      fd.append('role', data.role);
+      fd.append('bio', data.bio);
+      fd.append('email', data.email);
+      fd.append('phone', data.phone);
+      fd.append('sort_order', String(data.sort_order));
+      fd.append('is_active', data.is_active ? '1' : '0');
+      if (photo) fd.append('photo', photo);
+      const url = editing ? `/branch-admin/team/${editing.id}` : '/branch-admin/team';
+      return api.post(url, fd, { headers: { 'Content-Type': 'multipart/form-data' } }).then(r => r.data);
+    },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['branch-team'] }); closeModal(); },
     onError: (e: unknown) => {
       const err = e as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } };
@@ -64,13 +77,18 @@ export default function BranchTeamPage() {
     onError: () => setActionErr(ja ? '削除に失敗しました。' : bn ? 'মুছতে ব্যর্থ হয়েছে।' : 'Failed to delete.'),
   });
 
-  function openAdd() { setEditing(null); setForm(EMPTY); setErr(''); setModal('add'); }
+  function openAdd() { setEditing(null); setForm(EMPTY); setPhoto(null); setPreview(''); setErr(''); setModal('add'); }
   function openEdit(m: TeamMember) {
     setEditing(m);
     setForm({ name: m.name, role: m.role, bio: m.bio ?? '', email: m.email ?? '', phone: m.phone ?? '', sort_order: m.sort_order, is_active: m.is_active });
-    setErr(''); setModal('edit');
+    setPhoto(null); setPreview(m.photo_url ?? ''); setErr(''); setModal('edit');
   }
-  function closeModal() { setModal(null); setEditing(null); setErr(''); }
+  function closeModal() { setModal(null); setEditing(null); setPhoto(null); setPreview(''); setErr(''); }
+  function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setPhoto(f); setPreview(URL.createObjectURL(f));
+  }
 
   if (!user || !isBranchAdmin) return null;
 
@@ -181,6 +199,33 @@ export default function BranchTeamPage() {
             {/* Scrollable body */}
             <form id="team-form" onSubmit={e => { e.preventDefault(); save.mutate(form); }} className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
               {err && <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 font-medium">⚠️ {err}</div>}
+
+              <div className="flex items-center gap-4">
+                <div
+                  onClick={() => fileRef.current?.click()}
+                  className="relative w-20 h-20 rounded-2xl bg-slate-100 border-2 border-dashed border-slate-200 hover:border-green-400 hover:bg-green-50/40 transition-all cursor-pointer flex items-center justify-center overflow-hidden shrink-0 group"
+                >
+                  {preview
+                    // eslint-disable-next-line @next/next/no-img-element
+                    ? <img src={preview} alt="preview" className="w-full h-full object-cover" />
+                    : <svg className="w-7 h-7 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+                      </svg>}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                    <span className="text-white text-[10px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity text-center px-1">
+                      {ja ? '変更' : bn ? 'পরিবর্তন' : 'Change'}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 mb-1">{ja ? '写真' : bn ? 'ছবি' : 'Photo'} <span className="text-slate-400 font-normal">{ja ? '任意' : bn ? 'ঐচ্ছিক' : 'optional'}</span></p>
+                  <button type="button" onClick={() => fileRef.current?.click()} className="text-xs font-semibold text-green-700 hover:text-green-800">
+                    {ja ? '画像をアップロード' : bn ? 'ছবি আপলোড করুন' : 'Upload photo'}
+                  </button>
+                  <p className="text-[11px] text-slate-400 mt-0.5">JPG, PNG, WebP — max 4MB</p>
+                </div>
+                <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handlePhoto} />
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
