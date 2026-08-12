@@ -317,7 +317,11 @@ export default function BranchPage() {
                 {branch.phone && (
                   <a href={`tel:${branch.phone.replace(/[^\d+]/g, '')}`}
                     className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-green-500/30 transition-all text-center">
-                    <span className="text-xl">📞</span>
+                    <span className="text-white/70">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
+                    </span>
                     <span className="text-[9px] font-semibold uppercase tracking-wide text-white/40">{ja ? '電話' : bn ? 'ফোন' : 'Phone'}</span>
                     <span className="text-[10px] text-white/60 truncate w-full" dir="ltr">{branch.phone}</span>
                   </a>
@@ -325,7 +329,7 @@ export default function BranchPage() {
                 {branch.whatsapp && (
                   <a href={`https://wa.me/${branch.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer"
                     className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-green-500/10 border border-green-500/25 hover:bg-green-500/20 transition-all text-center">
-                    <span className="text-xl">💬</span>
+                    <span className="text-green-400">{WHATSAPP_SVG}</span>
                     <span className="text-[9px] font-semibold uppercase tracking-wide text-green-400/80">WhatsApp</span>
                     <span className="text-[10px] text-green-400 truncate w-full" dir="ltr">{branch.whatsapp}</span>
                   </a>
@@ -333,7 +337,11 @@ export default function BranchPage() {
                 {branch.email && (
                   <a href={`mailto:${branch.email}`}
                     className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-green-500/30 transition-all text-center">
-                    <span className="text-xl">✉️</span>
+                    <span className="text-white/70">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </span>
                     <span className="text-[9px] font-semibold uppercase tracking-wide text-white/40">{ja ? 'メール' : bn ? 'ইমেইল' : 'Email'}</span>
                     <span className="text-[10px] text-white/60 truncate w-full">{branch.email}</span>
                   </a>
