@@ -119,6 +119,11 @@ export default function BranchPage() {
 
   const locationLabel = `${branch.city}${branch.country && branch.country !== 'Bangladesh' ? `, ${branch.country}` : ''}`;
 
+  // Guard against bad data (e.g. platform/URL fields swapped when entered) — only show
+  // links that actually have a usable http(s) URL.
+  const validSocialLinks = Object.entries(branch.social_links ?? {})
+    .filter(([, url]) => typeof url === 'string' && /^https?:\/\//i.test(url.trim()));
+
   return (
     <div className="min-h-screen bg-[#0d1117] flex flex-col">
 
@@ -137,6 +142,15 @@ export default function BranchPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-green-900/40 to-[#0d1117]" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0d1117] via-[#0d1117]/70 to-transparent" />
+        <div className="absolute top-24 left-0 right-0 z-10 max-w-7xl mx-auto px-4 w-full">
+          <Link href="/branches"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-white/70 hover:text-green-400 bg-black/30 hover:bg-black/40 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10 transition-all">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+            </svg>
+            {ja ? '支局一覧へ' : bn ? 'সব শাখা' : 'All Branches'}
+          </Link>
+        </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 pb-12 w-full">
           <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
             {branch.logo_url && (
@@ -297,6 +311,36 @@ export default function BranchPage() {
             <p className="text-white/40 text-xs mb-5">
               {ja ? '通常2時間以内に返信します' : bn ? 'সাধারণত ২ ঘণ্টার মধ্যে সাড়া দেওয়া হয়' : 'We typically respond within 2 hours'}
             </p>
+            {/* Quick-action cards — same visual system as the main /contact page */}
+            {(branch.phone || branch.whatsapp || branch.email) && (
+              <div className="grid grid-cols-3 gap-2 mb-5">
+                {branch.phone && (
+                  <a href={`tel:${branch.phone.replace(/[^\d+]/g, '')}`}
+                    className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-green-500/30 transition-all text-center">
+                    <span className="text-xl">📞</span>
+                    <span className="text-[9px] font-semibold uppercase tracking-wide text-white/40">{ja ? '電話' : bn ? 'ফোন' : 'Phone'}</span>
+                    <span className="text-[10px] text-white/60 truncate w-full" dir="ltr">{branch.phone}</span>
+                  </a>
+                )}
+                {branch.whatsapp && (
+                  <a href={`https://wa.me/${branch.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer"
+                    className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-green-500/10 border border-green-500/25 hover:bg-green-500/20 transition-all text-center">
+                    <span className="text-xl">💬</span>
+                    <span className="text-[9px] font-semibold uppercase tracking-wide text-green-400/80">WhatsApp</span>
+                    <span className="text-[10px] text-green-400 truncate w-full" dir="ltr">{branch.whatsapp}</span>
+                  </a>
+                )}
+                {branch.email && (
+                  <a href={`mailto:${branch.email}`}
+                    className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-green-500/30 transition-all text-center">
+                    <span className="text-xl">✉️</span>
+                    <span className="text-[9px] font-semibold uppercase tracking-wide text-white/40">{ja ? 'メール' : bn ? 'ইমেইল' : 'Email'}</span>
+                    <span className="text-[10px] text-white/60 truncate w-full">{branch.email}</span>
+                  </a>
+                )}
+              </div>
+            )}
+
             <div className="space-y-3 text-sm">
               {branch.address && (
                 <div className="flex gap-3 text-white/60">
@@ -305,32 +349,6 @@ export default function BranchPage() {
                   </svg>
                   <span>{branch.address}</span>
                 </div>
-              )}
-              {branch.phone && (
-                <a href={`tel:${branch.phone.replace(/[^\d+]/g, '')}`} className="flex gap-3 text-white/60 hover:text-green-400 transition-colors">
-                  <svg className="w-4 h-4 shrink-0 mt-0.5 text-white/25" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
-                  <span>{branch.phone}</span>
-                </a>
-              )}
-              {branch.email && (
-                <a href={`mailto:${branch.email}`} className="flex gap-3 text-white/60 hover:text-green-400 transition-colors">
-                  <svg className="w-4 h-4 shrink-0 mt-0.5 text-white/25" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  <span>{branch.email}</span>
-                </a>
-              )}
-              {branch.whatsapp && (
-                <a href={`https://wa.me/${branch.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer"
-                  className="flex gap-3 text-white/60 hover:text-green-400 transition-colors">
-                  <span className="shrink-0 mt-0.5 text-white/25">{WHATSAPP_SVG}</span>
-                  <span>
-                    WhatsApp: {branch.whatsapp}
-                    <span className="block text-[10px] text-white/30">{ja ? '素早い返信' : bn ? 'দ্রুত উত্তর' : 'Quick replies'}</span>
-                  </span>
-                </a>
               )}
               {branch.google_maps_url && (
                 <a href={branch.google_maps_url} target="_blank" rel="noopener noreferrer"
@@ -343,11 +361,11 @@ export default function BranchPage() {
               )}
             </div>
 
-            {branch.social_links && Object.keys(branch.social_links).length > 0 && (
+            {validSocialLinks.length > 0 && (
               <div className="mt-5 pt-5 border-t border-white/[0.06]">
                 <p className="text-white/40 text-xs mb-3">{ja ? 'SNS' : bn ? 'সোশ্যাল মিডিয়া' : 'Follow us'}</p>
                 <div className="flex flex-wrap gap-2">
-                  {Object.entries(branch.social_links).map(([platform, url]) => (
+                  {validSocialLinks.map(([platform, url]) => (
                     <a key={platform} href={url} target="_blank" rel="noopener noreferrer"
                       className="px-3 py-1.5 bg-white/[0.05] border border-white/[0.08] text-white/60 text-xs rounded-lg hover:text-green-400 hover:border-green-500/30 transition-all">
                       {platform.charAt(0).toUpperCase() + platform.slice(1)}
@@ -397,6 +415,15 @@ export default function BranchPage() {
               className="px-8 py-3 bg-green-600 hover:bg-green-500 text-white rounded-full text-sm font-bold transition-all">
               {ja ? '無料登録' : bn ? 'বিনামূল্যে রেজিস্ট্রেশন' : 'Register Free'}
             </Link>
+            {branch.phone && (
+              <a href={`tel:${branch.phone.replace(/[^\d+]/g, '')}`}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white/[0.06] border border-white/[0.15] text-white rounded-full text-sm font-semibold hover:bg-white/[0.1] transition-all">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                {ja ? '電話する' : bn ? 'কল করুন' : 'Call Us'}
+              </a>
+            )}
             {branch.whatsapp && (
               <a href={`https://wa.me/${branch.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-white/[0.06] border border-white/[0.15] text-white rounded-full text-sm font-semibold hover:bg-white/[0.1] transition-all">

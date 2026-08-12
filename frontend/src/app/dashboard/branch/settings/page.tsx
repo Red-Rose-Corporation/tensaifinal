@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 interface BranchSettings {
   address: string | null;
   phone: string | null;
+  email: string | null;
   whatsapp: string | null;
   google_maps_url: string | null;
   working_hours: Record<string, string> | null;
@@ -29,7 +30,7 @@ export default function BranchSettingsPage() {
     if (user && !isBranchAdmin) router.replace(`/dashboard/${user.gateway_type ?? ''}`);
   }, [user, isBranchAdmin, router]);
 
-  const [form, setForm] = useState({ address: '', phone: '', whatsapp: '', google_maps_url: '' });
+  const [form, setForm] = useState({ address: '', phone: '', email: '', whatsapp: '', google_maps_url: '' });
   const [workingHours, setWorkingHours] = useState<Record<string, string>>({});
   const [socialLinks, setSocialLinks]   = useState<Record<string, string>>({});
   const [logoFile, setLogoFile]     = useState<File | null>(null);
@@ -52,6 +53,7 @@ export default function BranchSettingsPage() {
       setForm({
         address:         settings.address         ?? '',
         phone:           settings.phone           ?? '',
+        email:           settings.email           ?? '',
         whatsapp:        settings.whatsapp        ?? '',
         google_maps_url: settings.google_maps_url ?? '',
       });
@@ -211,11 +213,16 @@ export default function BranchSettingsPage() {
                   value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
                   placeholder="Branch office address" />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 mb-1.5">Phone</label>
                   <input className={inp} placeholder="+880 1XXX XXXXXX"
                     value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1.5">Email</label>
+                  <input className={inp} type="email" placeholder="branch@tensai.com"
+                    value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 mb-1.5">WhatsApp</label>
@@ -273,16 +280,27 @@ export default function BranchSettingsPage() {
               </button>
             </div>
             <div className="space-y-2">
-              {Object.entries(socialLinks).map(([platform, url]) => (
-                <div key={platform} className="flex gap-2 items-center">
-                  <input className={`${inp} w-32 shrink-0`} value={platform} placeholder="Platform"
-                    onChange={e => updateSocialKey(platform, e.target.value)} />
-                  <input className={`${inp} flex-1`} value={url} placeholder="https://…"
-                    onChange={e => updateSocialVal(platform, e.target.value)} />
-                  <button type="button" onClick={() => removeSocialRow(platform)}
-                    className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0 text-lg">×</button>
-                </div>
-              ))}
+              {Object.entries(socialLinks).map(([platform, url]) => {
+                const platformLooksLikeUrl = /^https?:\/\//i.test(platform.trim());
+                return (
+                  <div key={platform}>
+                    <div className="flex gap-2 items-center">
+                      <input className={`${inp} w-32 shrink-0 ${platformLooksLikeUrl ? 'border-red-300 focus:ring-red-400' : ''}`}
+                        value={platform} placeholder="e.g. facebook"
+                        onChange={e => updateSocialKey(platform, e.target.value)} />
+                      <input className={`${inp} flex-1`} value={url} placeholder="https://facebook.com/…"
+                        onChange={e => updateSocialVal(platform, e.target.value)} />
+                      <button type="button" onClick={() => removeSocialRow(platform)}
+                        className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0 text-lg">×</button>
+                    </div>
+                    {platformLooksLikeUrl && (
+                      <p className="text-[11px] text-red-500 mt-1 ml-1">
+                        ⚠ This looks like a link — put the platform name (e.g. &quot;facebook&quot;) on the left, and the full link on the right →
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
               {Object.keys(socialLinks).length === 0 && (
                 <p className="text-xs text-slate-500 py-1">No social links yet. Click + Add link.</p>
               )}

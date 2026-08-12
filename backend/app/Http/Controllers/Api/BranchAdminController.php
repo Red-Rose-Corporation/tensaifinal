@@ -46,6 +46,7 @@ class BranchAdminController extends Controller
             'description'     => 'nullable|string',
             'address'         => 'nullable|string|max:500',
             'phone'           => 'nullable|string|max:30',
+            'email'           => 'nullable|email|max:100',
             'whatsapp'        => 'nullable|string|max:30',
             'google_maps_url' => 'nullable|url|max:500',
             'working_hours'   => 'nullable|array',

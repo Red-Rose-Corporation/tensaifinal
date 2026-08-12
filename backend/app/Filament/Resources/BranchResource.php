@@ -119,10 +119,11 @@ class BranchResource extends Resource
                         ->label('Branch Name')
                         ->required()
                         ->maxLength(255)
-                        ->live(onBlur: true)
-                        ->afterStateUpdated(fn ($state, callable $set) =>
-                            $set('slug', Str::slug($state))),
+                        ->helperText('The public page URL won\'t change when you edit this — it keeps its existing link.'),
 
+                    // Edit mode: slug is intentionally left untouched by name changes so the
+                    // live public URL (/branches/{slug}) never breaks silently. Dehydrate the
+                    // existing stored value as-is; only backfill from name if it was ever empty.
                     Forms\Components\Hidden::make('slug')
                         ->dehydrateStateUsing(fn ($state, $get) => $state ?: Str::slug($get('name'))),
 
