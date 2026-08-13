@@ -549,7 +549,7 @@ function PostInner() {
             </h1>
 
             {/* Excerpt as sub-headline */}
-            <p className="text-[0.95rem] sm:text-base text-slate-500 leading-[1.65] mb-4 border-l-[3px] border-green-500 pl-3.5">
+            <p className="text-[0.95rem] sm:text-base text-slate-700 font-semibold leading-[1.65] mb-4 bg-green-50 border-l-[3px] border-green-500 rounded-r-xl px-4 py-3">
               {post.excerpt.slice(0, 180)}{post.excerpt.length > 180 ? '…' : ''}
             </p>
 
@@ -600,7 +600,7 @@ function PostInner() {
             <h1 className="text-[1.7rem] sm:text-[2.15rem] font-black text-slate-900 leading-[1.22] tracking-tight mb-3.5">
               {post.title}
             </h1>
-            <p className="text-[0.95rem] sm:text-base text-slate-500 leading-[1.65] mb-4 border-l-[3px] border-green-500 pl-3.5">
+            <p className="text-[0.95rem] sm:text-base text-slate-700 font-semibold leading-[1.65] mb-4 bg-green-50 border-l-[3px] border-green-500 rounded-r-xl px-4 py-3">
               {post.excerpt.slice(0, 180)}{post.excerpt.length > 180 ? '…' : ''}
             </p>
             <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium pb-4 mb-4 border-b border-slate-200">
