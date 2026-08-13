@@ -248,25 +248,30 @@ export default function BranchPage() {
             <p className="text-white/40 text-sm mb-6">
               {ja ? 'あなたの留学をサポートする専門家チーム' : bn ? 'এরাই আপনার বিদেশে পড়াশোনার পথ সহজ করবেন' : 'The people who will guide you every step of the way.'}
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
               {branch.team.map(m => (
-                <div key={m.id} className="text-center">
-                  <div className="relative w-28 h-28 rounded-full overflow-hidden mx-auto mb-3.5 border-2 border-white/10 bg-white/[0.04]">
+                <div key={m.id}
+                  className="text-center p-6 rounded-2xl bg-white/[0.03] border border-white/[0.07] hover:border-green-500/25 hover:bg-white/[0.045] transition-all">
+                  <div className="relative w-32 h-32 rounded-full overflow-hidden mx-auto mb-4 border-2 border-white/10 bg-white/[0.04] shadow-lg shadow-black/20">
                     {m.photo_url ? (
-                      <Image src={m.photo_url} alt={m.name} fill className="object-cover" sizes="112px" />
+                      <Image src={m.photo_url} alt={m.name} fill className="object-cover" sizes="128px" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <svg className="w-11 h-11 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-12 h-12 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                       </div>
                     )}
                   </div>
-                  <p className="font-bold text-white text-base">{m.name}</p>
-                  {m.role && <p className="text-green-400 text-sm mt-0.5">{m.role}</p>}
+                  <p className="font-bold text-white text-lg leading-tight">{m.name}</p>
+                  {m.role && (
+                    <p className="inline-block text-green-400 text-xs font-semibold uppercase tracking-wide mt-1.5 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/20">
+                      {m.role}
+                    </p>
+                  )}
                   {m.bio
-                    ? <p className="text-white/50 text-xs mt-1.5 leading-snug line-clamp-2">{m.bio}</p>
-                    : m.role && <p className="text-white/30 text-xs mt-1.5">{ja ? 'お気軽にご相談ください' : bn ? 'পরামর্শের জন্য যোগাযোগ করুন' : 'Available for consultation'}</p>
+                    ? <p className="text-white/55 text-sm mt-3 leading-relaxed line-clamp-2">{m.bio}</p>
+                    : m.role && <p className="text-white/35 text-xs mt-3">{ja ? 'お気軽にご相談ください' : bn ? 'পরামর্শের জন্য যোগাযোগ করুন' : 'Available for consultation'}</p>
                   }
                 </div>
               ))}
