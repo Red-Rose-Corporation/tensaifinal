@@ -30,42 +30,46 @@ class GalleryItemResource extends Resource
     {
         return $form->schema([
 
-            Forms\Components\Section::make('Basic Info')->schema([
-                Forms\Components\TextInput::make('title')
-                    ->required()
-                    ->maxLength(255)
-                    ->placeholder('e.g. Ahmed enrolled at Osaka University'),
+            Forms\Components\Section::make('Basic Info')
+                ->description('The title and category are what visitors see first in the gallery grid.')
+                ->icon('heroicon-o-identification')
+                ->schema([
+                    Forms\Components\TextInput::make('title')
+                        ->required()
+                        ->maxLength(255)
+                        ->placeholder('e.g. Ahmed enrolled at Osaka University'),
 
-                Forms\Components\Select::make('category')
-                    ->options([
-                        'students'   => 'ðŸŽ“ Students',
-                        'japan'      => 'ðŸ‡¯ðŸ‡µ Japan',
-                        'milestones' => 'ðŸ† Milestones',
-                        'agencies'   => 'ðŸ¢ Agencies',
-                        'events'     => 'ðŸŽ‰ Events',
-                        'docs'       => 'ðŸ“„ Docs',
-                        'departures' => 'âœˆï¸ Departures',
-                        'institutes' => 'ðŸ« Institutes',
-                    ])
-                    ->required(),
+                    Forms\Components\Select::make('category')
+                        ->options([
+                            'students'   => '🎓 Students',
+                            'japan'      => '🇯🇵 Japan',
+                            'milestones' => '🏆 Milestones',
+                            'agencies'   => '🏢 Agencies',
+                            'events'     => '🎉 Events',
+                            'docs'       => '📄 Docs',
+                            'departures' => '✈️ Departures',
+                            'institutes' => '🏫 Institutes',
+                        ])
+                        ->required(),
 
-                Forms\Components\Textarea::make('description')
-                    ->label('Short Summary')
-                    ->rows(2)
-                    ->maxLength(300)
-                    ->placeholder('One or two lines shown below the title in gallery grid.')
-                    ->columnSpanFull(),
+                    Forms\Components\Textarea::make('description')
+                        ->label('Short Summary')
+                        ->rows(2)
+                        ->maxLength(300)
+                        ->placeholder('One or two lines shown below the title in gallery grid.')
+                        ->columnSpanFull(),
 
-                Forms\Components\Select::make('branch_id')
-                    ->label('Branch (optional)')
-                    ->helperText('Tag this post to a branch to show it on that branch\'s public page too. Leave blank for a company-wide post.')
-                    ->options(fn () => Branch::pluck('name', 'id'))
-                    ->searchable()
-                    ->columnSpanFull(),
-            ])->columns(2),
+                    Forms\Components\Select::make('branch_id')
+                        ->label('Branch (optional)')
+                        ->helperText('Tag this post to a branch to show it on that branch\'s public page too. Leave blank for a company-wide post.')
+                        ->options(fn () => Branch::pluck('name', 'id'))
+                        ->searchable()
+                        ->columnSpanFull(),
+                ])->columns(2),
 
             Forms\Components\Section::make('Images')
                 ->description('Upload a cover image from your computer, OR paste an external URL below. Upload takes priority. You can add up to 2 more images below — 3 images total per post.')
+                ->icon('heroicon-o-photo')
                 ->schema([
                     Forms\Components\FileUpload::make('image_path')
                         ->label('Cover Image')
@@ -75,7 +79,7 @@ class GalleryItemResource extends Resource
                         ->visibility('public')
                         ->maxSize(8192)
                         ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                        ->helperText('JPG, PNG, WebP â€” max 8 MB. Shown in the gallery grid and as the main image.')
+                        ->helperText('JPG, PNG, WebP — max 8 MB. Shown in the gallery grid and as the main image. If the preview below sits on "Loading" for a while, that\'s just the browser fetching the thumbnail — the image itself has already uploaded fine.')
                         ->columnSpanFull(),
 
                     Forms\Components\TextInput::make('image_url')
@@ -100,7 +104,9 @@ class GalleryItemResource extends Resource
                 ]),
 
             Forms\Components\Section::make('Full Story')
-                ->description('Write the full success story or event details here. Shown on the gallery detail view.')
+                ->description('Write the full success story or event details here. Shown on the gallery detail view, below the short summary.')
+                ->icon('heroicon-o-document-text')
+                ->collapsible()
                 ->schema([
                     Forms\Components\RichEditor::make('content')
                         ->label('')
@@ -112,26 +118,29 @@ class GalleryItemResource extends Resource
                             'link',
                             'undo', 'redo',
                         ])
-                        ->placeholder('Write the full story here â€” student background, process, outcome...')
+                        ->placeholder('Write the full story here — student background, process, outcome...')
                         ->columnSpanFull(),
                 ]),
 
-            Forms\Components\Section::make('Visibility & Order')->schema([
-                Forms\Components\Toggle::make('is_featured')
-                    ->label('Featured on homepage')
-                    ->helperText('Shows in the Gallery section on the public landing page')
-                    ->default(false),
+            Forms\Components\Section::make('Visibility & Order')
+                ->description('Control whether this post is public, and where it appears relative to others.')
+                ->icon('heroicon-o-eye')
+                ->schema([
+                    Forms\Components\Toggle::make('is_featured')
+                        ->label('Featured on homepage')
+                        ->helperText('Shows in the Gallery section on the public landing page')
+                        ->default(false),
 
-                Forms\Components\Toggle::make('is_active')
-                    ->label('Active (visible to public)')
-                    ->default(true),
+                    Forms\Components\Toggle::make('is_active')
+                        ->label('Active (visible to public)')
+                        ->default(true),
 
-                Forms\Components\TextInput::make('sort_order')
-                    ->label('Sort Order')
-                    ->numeric()
-                    ->default(0)
-                    ->helperText('Lower number appears first'),
-            ])->columns(3),
+                    Forms\Components\TextInput::make('sort_order')
+                        ->label('Sort Order')
+                        ->numeric()
+                        ->default(0)
+                        ->helperText('Lower number appears first'),
+                ])->columns(3),
 
         ]);
     }
