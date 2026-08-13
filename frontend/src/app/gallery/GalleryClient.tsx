@@ -14,6 +14,13 @@ interface GalleryItem {
   image_url: string;
   extra_image_urls?: string[];
   category: string;
+  branch: { name: string; slug: string } | null;
+}
+
+interface BranchOption {
+  id: number;
+  name: string;
+  slug: string;
 }
 
 const PLACEHOLDER_CARDS = [
@@ -46,8 +53,17 @@ export default function GalleryPage() {
   const [items, setItems]       = useState<GalleryItem[]>([]);
   const [loading, setLoading]   = useState(true);
   const [active, setActive]     = useState('all');
+  const [branches, setBranches] = useState<BranchOption[]>([]);
+  const [activeBranch, setActiveBranch] = useState('all');
   const [lightbox, setLightbox] = useState<GalleryItem | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`${API}/branches`)
+      .then((r) => r.json())
+      .then((data) => setBranches(Array.isArray(data) ? data : []))
+      .catch(() => setBranches([]));
+  }, []);
 
   useEffect(() => {
     if (lightbox) setLightboxImage(lightbox.image_url);
@@ -69,7 +85,9 @@ export default function GalleryPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const filtered = active === 'all' ? items : items.filter((i) => i.category === active);
+  const filtered = items
+    .filter((i) => active === 'all' || i.category === active)
+    .filter((i) => activeBranch === 'all' || i.branch?.slug === activeBranch);
   const hasData  = !loading && items.length > 0;
 
   const termsText = ja ? '利用規約'   : bn ? 'শর্তাবলী'  : 'Terms';
@@ -131,6 +149,42 @@ export default function GalleryPage() {
         </div>
       </div>
 
+      {/* ── Branch Filter — separate from category: "which branch" vs "what kind of photo" ── */}
+      {branches.length > 0 && (
+        <div className="bg-[#0d1117] px-4 py-3 border-b border-white/[0.05]">
+          <div className="max-w-7xl mx-auto relative">
+            <div className="overflow-x-auto scrollbar-none">
+              <div className="flex items-center gap-2 min-w-max pr-8">
+                <span className="text-white/25 text-xs shrink-0">📍</span>
+                <button
+                  onClick={() => setActiveBranch('all')}
+                  className={`px-3.5 py-1 rounded-full text-[11px] font-medium transition-all whitespace-nowrap border ${
+                    activeBranch === 'all'
+                      ? 'border-green-500/40 text-green-400 bg-green-500/10'
+                      : 'border-white/[0.08] text-white/40 hover:text-white hover:bg-white/[0.05]'
+                  }`}
+                >
+                  {ja ? 'すべての支局' : bn ? 'সব শাখা' : 'All Branches'}
+                </button>
+                {branches.map((b) => (
+                  <button
+                    key={b.id}
+                    onClick={() => setActiveBranch(b.slug)}
+                    className={`px-3.5 py-1 rounded-full text-[11px] font-medium transition-all whitespace-nowrap border ${
+                      activeBranch === b.slug
+                        ? 'border-green-500/40 text-green-400 bg-green-500/10'
+                        : 'border-white/[0.08] text-white/40 hover:text-white hover:bg-white/[0.05]'
+                    }`}
+                  >
+                    {b.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Grid ───────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 py-12">
 
@@ -168,15 +222,24 @@ export default function GalleryPage() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
                     />
+                    {/* Source identity — always visible, so it's clear at a glance whether
+                        this is a specific branch's post or a company-wide one */}
+                    {item.branch && (
+                      <span className="absolute top-2 right-2 z-10 text-[9px] font-semibold text-white/90 bg-black/50 backdrop-blur-sm px-2 py-0.5 rounded-full truncate max-w-[85%]">
+                        📍 {item.branch.name}
+                      </span>
+                    )}
                     {/* Always visible on mobile, hover-reveal on desktop */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent flex flex-col justify-end p-4 md:opacity-0 md:group-hover:opacity-100 md:transition-opacity md:duration-300">
                       <p className="text-white font-bold text-xs leading-tight mb-0.5 line-clamp-1">{item.title}</p>
                       {item.description && (
                         <p className="text-white/55 text-[10px] leading-snug line-clamp-2 hidden md:block">{item.description}</p>
                       )}
-                      <span className="mt-1.5 self-start text-[9px] font-bold text-green-400 bg-green-400/15 border border-green-400/25 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                        {item.category}
-                      </span>
+                      {item.category && (
+                        <span className="mt-1.5 self-start text-[9px] font-bold text-green-400 bg-green-400/15 border border-green-400/25 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                          {item.category}
+                        </span>
+                      )}
                     </div>
                   </button>
                 ))}
@@ -323,9 +386,19 @@ export default function GalleryPage() {
               )}
             </div>
             <div className="p-5 sm:p-6 flex flex-col overflow-y-auto">
-              <span className="self-start text-[9px] font-bold text-green-400 bg-green-400/15 border border-green-400/25 px-2 py-0.5 rounded-full uppercase tracking-wider mb-3">
-                {lightbox.category}
-              </span>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {lightbox.category && (
+                  <span className="text-[9px] font-bold text-green-400 bg-green-400/15 border border-green-400/25 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    {lightbox.category}
+                  </span>
+                )}
+                {lightbox.branch && (
+                  <Link href={`/branches/${lightbox.branch.slug}`}
+                    className="text-[9px] font-bold text-white/70 hover:text-white bg-white/[0.08] border border-white/[0.12] px-2 py-0.5 rounded-full uppercase tracking-wider transition-colors">
+                    📍 {lightbox.branch.name}
+                  </Link>
+                )}
+              </div>
               <h3 className="text-white font-bold text-lg leading-tight mb-2">{lightbox.title}</h3>
               {lightbox.description && (
                 <p className="text-white/55 text-sm leading-relaxed">{lightbox.description}</p>

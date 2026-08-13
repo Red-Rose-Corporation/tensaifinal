@@ -14,6 +14,7 @@ interface GalleryItem {
   description: string | null;
   image_url: string;
   category: string;
+  branch: { name: string; slug: string } | null;
 }
 
 interface SiteSettings {
@@ -587,6 +588,11 @@ export default function HomePageClient() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
                     />
+                    {item.branch && (
+                      <span className="absolute top-2 right-2 z-10 text-[9px] font-semibold text-white/90 bg-black/50 backdrop-blur-sm px-2 py-0.5 rounded-full truncate max-w-[85%]">
+                        📍 {item.branch.name}
+                      </span>
+                    )}
                     <div
                       className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent flex flex-col justify-end p-3 sm:p-4 transition-opacity ${isHero ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
                     >
