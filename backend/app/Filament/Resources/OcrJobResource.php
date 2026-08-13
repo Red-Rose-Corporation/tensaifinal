@@ -116,7 +116,7 @@ class OcrJobResource extends Resource
 
                 Tables\Columns\TextColumn::make('reviewer.name')
                     ->label('Reviewed By')
-                    ->placeholder('â€”')
+                    ->placeholder('—')
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('created_at')
@@ -142,7 +142,7 @@ class OcrJobResource extends Resource
                 ]),
             ])
             ->actions([
-                // â”€â”€ Approve & apply extracted data to student profile â”€â”€â”€â”€â”€â”€
+                // ── Approve & apply extracted data to student profile ──────
                 Tables\Actions\Action::make('approve')
                     ->label('Approve & Apply')
                     ->icon('heroicon-o-check-circle')
@@ -188,7 +188,7 @@ class OcrJobResource extends Resource
                             ->send();
                     }),
 
-                // â”€â”€ Reject with reason â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                // ── Reject with reason ────────────────────────────────────
                 Tables\Actions\Action::make('reject')
                     ->label('Reject')
                     ->icon('heroicon-o-x-circle')

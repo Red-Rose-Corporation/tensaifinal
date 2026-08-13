@@ -60,10 +60,10 @@ class LeadResource extends Resource
             Forms\Components\Section::make('Student Info')->schema([
                 Forms\Components\Placeholder::make('student_email')
                     ->label('Email')
-                    ->content(fn (Lead $record): string => $record->student?->email ?? 'â€”'),
+                    ->content(fn (Lead $record): string => $record->student?->email ?? '—'),
                 Forms\Components\Placeholder::make('student_phone')
                     ->label('Phone')
-                    ->content(fn (Lead $record): string => $record->student?->phone ?? 'â€”'),
+                    ->content(fn (Lead $record): string => $record->student?->phone ?? '—'),
             ])->columns(2)->visibleOn('edit'),
 
             Forms\Components\Section::make('Assignment')->schema([
@@ -171,9 +171,9 @@ class LeadResource extends Resource
                 Tables\Columns\TextColumn::make('source')
                     ->label('Source')
                     ->getStateUsing(fn (Lead $record) => match($record->source_type) {
-                        'agency'    => $record->sourceAgency?->name ?? 'â€”',
-                        'branch'    => $record->sourceBranch?->name ?? 'â€”',
-                        'affiliate' => $record->sourceAffiliate?->name ?? 'â€”',
+                        'agency'    => $record->sourceAgency?->name ?? '—',
+                        'branch'    => $record->sourceBranch?->name ?? '—',
+                        'affiliate' => $record->sourceAffiliate?->name ?? '—',
                         'student'   => 'Self-applied',
                         'admin'     => 'Head Office',
                         default     => 'Head Office',
@@ -190,24 +190,24 @@ class LeadResource extends Resource
                     ->sortable('source_type'),
                 Tables\Columns\TextColumn::make('assignedAgency.name')
                     ->label('Assigned Agency')
-                    ->default('â€”'),
+                    ->default('—'),
                 Tables\Columns\TextColumn::make('assignedInstitution.name')
                     ->label('Institution')
-                    ->default('â€”')
+                    ->default('—')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('target_course')
                     ->label('Course')
-                    ->default('â€”')
+                    ->default('—')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('jlpt_nat_score')
                     ->label('JLPT/NAT')
-                    ->default('â€”')
+                    ->default('—')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('preferred_cities')
                     ->label('Preferred Cities')
                     ->getStateUsing(fn (Lead $record) => $record->preferred_cities
                         ? implode(', ', $record->preferred_cities)
-                        : 'â€”'
+                        : '—'
                     )
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('target_intake')

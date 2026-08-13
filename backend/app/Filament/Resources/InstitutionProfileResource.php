@@ -157,7 +157,7 @@ class InstitutionProfileResource extends Resource
                 Tables\Columns\TextColumn::make('verified_at')
                     ->label('Verified')
                     ->dateTime()
-                    ->placeholder('â€”')
+                    ->placeholder('—')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 

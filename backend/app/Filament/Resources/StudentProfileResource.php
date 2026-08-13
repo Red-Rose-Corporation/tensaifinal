@@ -89,22 +89,22 @@ class StudentProfileResource extends Resource
                 Tables\Columns\TextColumn::make('jlpt_level')
                     ->badge()
                     ->color('info')
-                    ->placeholder('â€”'),
+                    ->placeholder('—'),
 
                 Tables\Columns\TextColumn::make('nat_level')
                     ->badge()
                     ->color('warning')
-                    ->placeholder('â€”'),
+                    ->placeholder('—'),
 
                 Tables\Columns\TextColumn::make('gpa')
                     ->sortable()
-                    ->placeholder('â€”'),
+                    ->placeholder('—'),
 
                 Tables\Columns\TextColumn::make('highest_qualification')
-                    ->placeholder('â€”')
+                    ->placeholder('—')
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                // Eligibility score â€” computed from the model method
+                // Eligibility score — computed from the model method
                 Tables\Columns\TextColumn::make('eligibility_score')
                     ->label('Eligibility')
                     ->suffix('%')
@@ -125,12 +125,12 @@ class StudentProfileResource extends Resource
                 Tables\Columns\TextColumn::make('locked_at')
                     ->label('Locked At')
                     ->dateTime()
-                    ->placeholder('â€”')
+                    ->placeholder('—')
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('locker.name')
                     ->label('Locked By')
-                    ->placeholder('â€”')
+                    ->placeholder('—')
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('created_at')

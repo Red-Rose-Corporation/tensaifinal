@@ -39,8 +39,8 @@ class AffiliateManagedEntityResource extends Resource
                 Forms\Components\Select::make('entity_type')
                     ->label('Type')
                     ->options([
-                        'institution' => 'ðŸ« Institution',
-                        'employee'    => 'ðŸ‘¤ Employee / Recruiter',
+                        'institution' => '🏫 Institution',
+                        'employee'    => '👤 Employee / Recruiter',
                     ])
                     ->required(),
 
@@ -121,7 +121,7 @@ class AffiliateManagedEntityResource extends Resource
                         'employee'    => 'info',
                         default       => 'gray',
                     })
-                    ->formatStateUsing(fn (string $state) => $state === 'institution' ? 'ðŸ« Institution' : 'ðŸ‘¤ Employee'),
+                    ->formatStateUsing(fn (string $state) => $state === 'institution' ? '🏫 Institution' : '👤 Employee'),
 
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
@@ -129,7 +129,7 @@ class AffiliateManagedEntityResource extends Resource
                     ->description(fn (AffiliateManagedEntity $r) => $r->contact_email),
 
                 Tables\Columns\TextColumn::make('country')
-                    ->placeholder('â€”'),
+                    ->placeholder('—'),
 
                 Tables\Columns\TextColumn::make('commission_percent')
                     ->label('Commission')

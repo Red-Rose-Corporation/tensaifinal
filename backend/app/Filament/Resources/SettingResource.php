@@ -59,7 +59,7 @@ class SettingResource extends Resource
                     ->sortable()
                     ->weight('semibold')
                     ->description(fn (Setting $record) => $record->key)
-                    ->placeholder('â€”'),
+                    ->placeholder('—'),
 
                 Tables\Columns\TextColumn::make('value')
                     ->label('Current Value')

@@ -80,11 +80,11 @@ class ManagerResource extends Resource
                 Tables\Columns\TextColumn::make('email')->searchable(),
                 Tables\Columns\TextColumn::make('manager_sections')
                     ->label('Sections')
-                    ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', $state) : 'â€”')
+                    ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', $state) : '—')
                     ->wrap(),
                 Tables\Columns\TextColumn::make('manager_plain_password')
                     ->label('Password')
-                    ->formatStateUsing(fn ($state) => $state ?? 'â€”')
+                    ->formatStateUsing(fn ($state) => $state ?? '—')
                     ->copyable()
                     ->copyMessage('Password copied'),
                 Tables\Columns\TextColumn::make('manager_login_link')

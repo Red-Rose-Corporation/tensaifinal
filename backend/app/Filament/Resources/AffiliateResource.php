@@ -45,8 +45,8 @@ class AffiliateResource extends Resource
                 Forms\Components\Select::make('affiliate_type')
                     ->label('Affiliate Type')
                     ->options([
-                        'local'  => 'ðŸŽ“ Local â€” refers students',
-                        'global' => 'ðŸŒ Global â€” manages institutions/employees',
+                        'local'  => '🎓 Local — refers students',
+                        'global' => '🌐 Global — manages institutions/employees',
                     ])
                     ->required(),
 
@@ -63,10 +63,10 @@ class AffiliateResource extends Resource
 
                 Forms\Components\Select::make('performance_level')
                     ->options([
-                        'bronze'   => 'ðŸ¥‰ Bronze',
-                        'silver'   => 'ðŸ¥ˆ Silver',
-                        'gold'     => 'ðŸ¥‡ Gold',
-                        'platinum' => 'ðŸ’Ž Platinum',
+                        'bronze'   => '🥉 Bronze',
+                        'silver'   => '🥈 Silver',
+                        'gold'     => '🥇 Gold',
+                        'platinum' => '💎 Platinum',
                     ])
                     ->required(),
             ])->columns(2),
@@ -161,7 +161,7 @@ class AffiliateResource extends Resource
                         'global' => 'warning',
                         default  => 'primary',
                     })
-                    ->formatStateUsing(fn (string $state) => $state === 'global' ? 'ðŸŒ Global' : 'ðŸŽ“ Local'),
+                    ->formatStateUsing(fn (string $state) => $state === 'global' ? '🌐 Global' : '🎓 Local'),
 
                 Tables\Columns\TextColumn::make('performance_level')
                     ->badge()

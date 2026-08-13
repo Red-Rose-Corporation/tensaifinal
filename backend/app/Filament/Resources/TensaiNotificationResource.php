@@ -49,11 +49,11 @@ class TensaiNotificationResource extends Resource
 
                 Forms\Components\Select::make('type')
                     ->options([
-                        'info'    => 'â„¹ï¸ Info',
-                        'success' => 'âœ… Success',
-                        'warning' => 'âš ï¸ Warning',
-                        'error'   => 'âŒ Error',
-                        'system'  => 'ðŸ”§ System',
+                        'info'    => 'ℹ️ Info',
+                        'success' => '✅ Success',
+                        'warning' => '⚠️ Warning',
+                        'error'   => '❌ Error',
+                        'system'  => '🔧 System',
                     ])
                     ->default('info')
                     ->required(),
