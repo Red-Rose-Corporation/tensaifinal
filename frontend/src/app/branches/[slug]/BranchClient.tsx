@@ -141,7 +141,13 @@ export default function BranchPage() {
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-green-900/40 to-[#0d1117]" />
         )}
+        {/* Brand-tinted wash — ties any uploaded photo into the site's dark-green palette
+            instead of leaving a raw, uncoordinated photo */}
+        <div className="absolute inset-0 bg-green-950/25" />
+        {/* Bottom vignette — keeps the title/breadcrumb legible */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0d1117] via-[#0d1117]/70 to-transparent" />
+        {/* Top vignette — keeps the header nav readable over any photo, even before scrolling */}
+        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#0d1117]/85 to-transparent" />
         <div className="absolute top-24 left-0 right-0 z-10 max-w-7xl mx-auto px-4 w-full">
           <Link href="/branches"
             className="inline-flex items-center gap-1.5 text-xs font-medium text-white/70 hover:text-green-400 bg-black/30 hover:bg-black/40 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10 transition-all">
@@ -242,25 +248,25 @@ export default function BranchPage() {
             <p className="text-white/40 text-sm mb-6">
               {ja ? 'あなたの留学をサポートする専門家チーム' : bn ? 'এরাই আপনার বিদেশে পড়াশোনার পথ সহজ করবেন' : 'The people who will guide you every step of the way.'}
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
               {branch.team.map(m => (
                 <div key={m.id} className="text-center">
-                  <div className="relative w-20 h-20 rounded-full overflow-hidden mx-auto mb-3 border-2 border-white/10 bg-white/[0.04]">
+                  <div className="relative w-28 h-28 rounded-full overflow-hidden mx-auto mb-3.5 border-2 border-white/10 bg-white/[0.04]">
                     {m.photo_url ? (
-                      <Image src={m.photo_url} alt={m.name} fill className="object-cover" sizes="80px" />
+                      <Image src={m.photo_url} alt={m.name} fill className="object-cover" sizes="112px" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <svg className="w-8 h-8 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-11 h-11 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                       </div>
                     )}
                   </div>
-                  <p className="font-bold text-white text-sm">{m.name}</p>
-                  {m.role && <p className="text-green-400 text-xs mt-0.5">{m.role}</p>}
+                  <p className="font-bold text-white text-base">{m.name}</p>
+                  {m.role && <p className="text-green-400 text-sm mt-0.5">{m.role}</p>}
                   {m.bio
-                    ? <p className="text-white/50 text-xs mt-1 leading-snug line-clamp-2">{m.bio}</p>
-                    : m.role && <p className="text-white/30 text-xs mt-1">{ja ? 'お気軽にご相談ください' : bn ? 'পরামর্শের জন্য যোগাযোগ করুন' : 'Available for consultation'}</p>
+                    ? <p className="text-white/50 text-xs mt-1.5 leading-snug line-clamp-2">{m.bio}</p>
+                    : m.role && <p className="text-white/30 text-xs mt-1.5">{ja ? 'お気軽にご相談ください' : bn ? 'পরামর্শের জন্য যোগাযোগ করুন' : 'Available for consultation'}</p>
                   }
                 </div>
               ))}
@@ -277,15 +283,17 @@ export default function BranchPage() {
             <p className="text-white/40 text-sm mb-6">
               {ja ? 'オフィスの様子、学生イベント、面談の雰囲気' : bn ? 'অফিস, ইভেন্ট এবং শিক্ষার্থীদের সাফল্যের মুহূর্ত' : 'Office tours, student events, and success celebrations.'}
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {/* Fixed-size flex-wrap instead of a rigid grid — a handful of photos
+                won't leave awkward empty columns the way a 4-col grid would */}
+            <div className="flex flex-wrap gap-3">
               {displayedGallery.map(g => (
                 <button key={g.id}
-                  className="aspect-square rounded-xl overflow-hidden group border border-white/[0.06] hover:border-green-500/30 transition-all relative"
+                  className="w-[calc(50%-0.375rem)] sm:w-40 lg:w-44 aspect-square rounded-xl overflow-hidden group border border-white/[0.06] hover:border-green-500/30 transition-all relative"
                   onClick={() => setActiveGalleryId(g.id)}
                   aria-label={g.title ?? g.caption ?? (ja ? '画像を拡大' : bn ? 'ছবি বড় করুন' : 'View image')}>
                   <Image src={g.display_image_url} alt={g.title || g.caption || `${branch.name} gallery`} fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" />
+                    sizes="(max-width: 640px) 50vw, 176px" />
                 </button>
               ))}
             </div>
