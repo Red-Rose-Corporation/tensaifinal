@@ -548,11 +548,6 @@ function PostInner() {
               {post.title}
             </h1>
 
-            {/* Excerpt as sub-headline */}
-            <p className="text-[0.95rem] sm:text-base text-slate-700 font-semibold leading-[1.65] mb-4 bg-green-50 border-l-[3px] border-green-500 rounded-r-xl px-4 py-3">
-              {post.excerpt.slice(0, 180)}{post.excerpt.length > 180 ? '…' : ''}
-            </p>
-
             {/* Meta row: date + read time + divider */}
             <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium pb-4 border-b border-slate-200">
               {post.published_at && (
@@ -580,6 +575,11 @@ function PostInner() {
                 />
               </div>
             )}
+
+            {/* Excerpt — highlighted lead-in, after the feature image */}
+            <p className="text-[0.95rem] sm:text-base text-slate-700 font-semibold leading-[1.65] mt-6 bg-green-50 border-l-[3px] border-green-500 rounded-r-xl px-4 py-3">
+              {post.excerpt.slice(0, 180)}{post.excerpt.length > 180 ? '…' : ''}
+            </p>
           </div>
         )}
 
