@@ -381,16 +381,18 @@ function FeaturedCard({ post, user, t }: {
         transition-all duration-300 active:scale-[0.995]"
       style={{ height: 'clamp(280px, 45vw, 440px)' }}>
 
-      {/* Background image — blurred so image's own text doesn't compete with title */}
+      {/* Background image — blurred so image's own baked-in text/captions don't
+          compete with the real title rendered below */}
       {post.thumbnail
         ? <img src={post.thumbnail} alt={post.title}
             className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-[1.04] transition-transform duration-700 ease-out"
-            style={{ filter: 'blur(2px)', transform: 'scale(1.05)' }} />
+            style={{ filter: 'blur(10px) saturate(1.1)', transform: 'scale(1.12)' }} />
         : <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900" />
       }
 
-      {/* Dark overlay */}
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.93) 0%, rgba(0,0,0,0.65) 45%, rgba(0,0,0,0.25) 100%)' }} />
+      {/* Dark overlay — kept dark across the whole card (not just the bottom) so
+          any text baked into the thumbnail stays fully unreadable everywhere */}
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.93) 0%, rgba(0,0,0,0.78) 45%, rgba(0,0,0,0.6) 100%)' }} />
 
       {/* Top badges */}
       <div className="absolute top-4 left-4 flex items-center gap-2">
