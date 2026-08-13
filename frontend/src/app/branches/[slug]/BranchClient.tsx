@@ -43,6 +43,7 @@ export default function BranchPage() {
   const [notFound, setNotFound]       = useState(false);
   const [activeGalleryId, setActiveGalleryId] = useState<number | null>(null);
   const [showAllGallery, setShowAllGallery]   = useState(false);
+  const [hq, setHq] = useState<{ support_phone?: string; support_whatsapp?: string; support_email?: string } | null>(null);
 
   const activeGalleryItem = branch?.gallery.find(g => g.id === activeGalleryId) ?? null;
   const displayedGallery  = branch ? (showAllGallery ? branch.gallery : branch.gallery.slice(0, 12)) : [];
@@ -55,6 +56,16 @@ export default function BranchPage() {
       .catch(err => { console.error('Failed to load branch:', err); setNotFound(true); })
       .finally(() => setLoading(false));
   }, [slug]);
+
+  // Head-office contact — shown as a fallback under the branch's own contact
+  // info, so a visitor always has a way to reach Tensai even if this branch
+  // hasn't filled in its own phone/WhatsApp/email yet.
+  useEffect(() => {
+    fetch(`${PUBLIC_API}/settings/public`)
+      .then(r => r.json())
+      .then(d => setHq(d))
+      .catch(() => setHq(null));
+  }, []);
 
   // Escape closes lightbox
   useEffect(() => {
@@ -397,6 +408,36 @@ export default function BranchPage() {
                       {platform.charAt(0).toUpperCase() + platform.slice(1)}
                     </a>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* Head office fallback — always reachable even if this branch hasn't
+                filled in its own phone/WhatsApp/email yet. Deliberately smaller and
+                lighter than the branch's own cards above so it reads as a backup,
+                not the primary way to reach this branch. */}
+            {hq && (hq.support_phone || hq.support_whatsapp || hq.support_email) && (
+              <div className="mt-5 pt-5 border-t border-white/[0.06]">
+                <p className="text-white/40 text-xs mb-3">
+                  {ja ? 'または本社へ' : bn ? 'অথবা প্রধান কার্যালয়ে যোগাযোগ করুন' : 'Or reach our Head Office'}
+                </p>
+                <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-white/45">
+                  {hq.support_phone && (
+                    <a href={`tel:${hq.support_phone.replace(/\s/g, '')}`} className="hover:text-green-400 transition-colors" dir="ltr">
+                      {hq.support_phone}
+                    </a>
+                  )}
+                  {hq.support_whatsapp && (
+                    <a href={`https://wa.me/${hq.support_whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer"
+                      className="hover:text-green-400 transition-colors" dir="ltr">
+                      WhatsApp: +{hq.support_whatsapp.replace(/[^0-9]/g, '')}
+                    </a>
+                  )}
+                  {hq.support_email && (
+                    <a href={`mailto:${hq.support_email}`} className="hover:text-green-400 transition-colors">
+                      {hq.support_email}
+                    </a>
+                  )}
                 </div>
               </div>
             )}
