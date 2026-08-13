@@ -31,8 +31,14 @@ class GalleryController extends Controller
 
     public function featured(): JsonResponse
     {
-        $items = GalleryItem::active()->featured()->with('branch:id,name,slug')
-            ->orderBy('sort_order')
+        // Curated (is_featured) posts lead, but the homepage teaser no longer requires
+        // is_featured to be set at all — otherwise newly uploaded photos (branch photos
+        // in particular, which are never manually marked "Featured") would never rotate
+        // in and the same old hero image would sit there forever. Featured items still
+        // win the top spot; the rest auto-fills with whatever was uploaded most recently.
+        $items = GalleryItem::active()->with('branch:id,name,slug')
+            ->orderByDesc('is_featured')
+            ->orderByDesc('created_at')
             ->limit(6)
             ->get(['id', 'branch_id', 'title', 'description', 'image_url', 'image_path', 'extra_images', 'category']);
 
