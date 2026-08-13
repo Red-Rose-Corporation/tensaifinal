@@ -11,6 +11,7 @@ interface GalleryItem {
   id: number;
   title: string;
   description: string | null;
+  content?: string | null;
   image_url: string;
   extra_image_urls?: string[];
   category: string;
@@ -402,6 +403,21 @@ export default function GalleryPage() {
               <h3 className="text-white font-bold text-lg leading-tight mb-2">{lightbox.title}</h3>
               {lightbox.description && (
                 <p className="text-white/55 text-sm leading-relaxed">{lightbox.description}</p>
+              )}
+              {/* Full story — the admin's rich-text write-up was being saved but never
+                  shown anywhere on the public site; only the short summary rendered. */}
+              {lightbox.content && (
+                <div
+                  className="mt-4 pt-4 border-t border-white/[0.08] text-white/65 text-sm leading-relaxed
+                    [&_h1]:text-white [&_h1]:font-black [&_h1]:text-base [&_h1]:mt-4 [&_h1]:mb-2
+                    [&_h2]:text-white [&_h2]:font-bold [&_h2]:text-base [&_h2]:mt-4 [&_h2]:mb-2
+                    [&_h3]:text-white [&_h3]:font-bold [&_h3]:text-sm [&_h3]:mt-3 [&_h3]:mb-1.5
+                    [&_p]:my-2.5 [&_strong]:text-white [&_strong]:font-bold [&_em]:italic
+                    [&_a]:text-green-400 [&_a]:underline hover:[&_a]:text-green-300
+                    [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2.5 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2.5 [&_li]:my-1
+                    [&_blockquote]:border-l-2 [&_blockquote]:border-green-500/40 [&_blockquote]:pl-3 [&_blockquote]:text-white/50 [&_blockquote]:italic"
+                  dangerouslySetInnerHTML={{ __html: lightbox.content }}
+                />
               )}
             </div>
           </div>
