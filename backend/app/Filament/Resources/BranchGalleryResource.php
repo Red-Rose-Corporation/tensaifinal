@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BranchGalleryResource\Pages;
 use App\Models\Branch;
-use App\Models\BranchGalleryItem;
+use App\Models\GalleryItem;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,9 +12,15 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Manages the same unified GalleryItem table as the main site's Gallery resource,
+ * scoped to rows that have a branch_id — i.e. "branch gallery photos". A photo
+ * created here (or via a branch admin's own dashboard) shows up both on that
+ * branch's public page and in the main /gallery grid, tagged with its branch.
+ */
 class BranchGalleryResource extends Resource
 {
-    protected static ?string $model = BranchGalleryItem::class;
+    protected static ?string $model = GalleryItem::class;
     protected static ?string $navigationIcon  = 'heroicon-o-photo';
     protected static ?string $navigationGroup = 'Branches';
     protected static ?string $navigationLabel = 'Branch Gallery';
@@ -23,7 +29,7 @@ class BranchGalleryResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery();
+        $query = parent::getEloquentQuery()->whereNotNull('branch_id');
         $user  = auth()->user();
         if ($user?->hasRole(['branch_admin', 'branch_manager']) && $user->branch_id) {
             $query->where('branch_id', $user->branch_id);
@@ -43,11 +49,14 @@ class BranchGalleryResource extends Resource
                 ->required()
                 ->default(fn () => $user?->branch_id),
 
+            Forms\Components\TextInput::make('title')->maxLength(255)->columnSpanFull(),
+            Forms\Components\Textarea::make('description')->rows(2)->columnSpanFull(),
+
             Forms\Components\FileUpload::make('image_path')
                 ->label('Image')
                 ->image()
                 ->disk(app()->environment('production') ? 'r2' : 'public')
-                ->directory('branches/gallery')
+                ->directory('gallery')
                 ->visibility('public')
                 ->maxSize(8192)
                 ->columnSpanFull(),
@@ -57,7 +66,6 @@ class BranchGalleryResource extends Resource
                 ->url()
                 ->columnSpanFull(),
 
-            Forms\Components\TextInput::make('caption')->maxLength(255),
             Forms\Components\TextInput::make('sort_order')->numeric()->default(0),
             Forms\Components\Toggle::make('is_active')->default(true),
         ]);
@@ -73,7 +81,7 @@ class BranchGalleryResource extends Resource
                     ->sortable()
                     ->hidden(fn () => $user?->hasRole(['branch_admin', 'branch_manager'])),
 
-                Tables\Columns\TextColumn::make('caption')->placeholder('—')->limit(40),
+                Tables\Columns\TextColumn::make('title')->placeholder('—')->limit(40),
                 Tables\Columns\IconColumn::make('is_active')->boolean(),
                 Tables\Columns\TextColumn::make('sort_order')->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),

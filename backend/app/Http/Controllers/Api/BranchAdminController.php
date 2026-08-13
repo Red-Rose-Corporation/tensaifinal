@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Branch;
-use App\Models\BranchGalleryItem;
 use App\Models\BranchTeamMember;
+use App\Models\GalleryItem;
 use App\Models\InstitutionSelection;
 use App\Models\Lead;
 use App\Models\StudentProfile;
@@ -348,7 +348,7 @@ class BranchAdminController extends Controller
 
     public function gallery(Request $request): JsonResponse
     {
-        $items = BranchGalleryItem::where('branch_id', $request->user()->branch_id)
+        $items = GalleryItem::where('branch_id', $request->user()->branch_id)
             ->orderBy('sort_order')
             ->get();
         return response()->json($items);
@@ -359,7 +359,6 @@ class BranchAdminController extends Controller
         $validated = $request->validate([
             'title'       => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'caption'     => 'nullable|string|max:255',
             'image'       => 'nullable|image|max:8192',
             'image_url'   => 'nullable|url',
             'sort_order'  => 'nullable|integer',
@@ -369,14 +368,15 @@ class BranchAdminController extends Controller
         $imagePath = null;
         if ($request->hasFile('image')) {
             $disk = app()->environment('production') ? 'r2' : 'public';
-            $imagePath = $request->file('image')->store('branch-gallery', $disk);
+            $imagePath = $request->file('image')->store('gallery', $disk);
         }
 
-        $item = BranchGalleryItem::create([
+        // Branch-sourced items intentionally leave category/is_featured unset —
+        // those stay admin-curated concerns on the unified GalleryItem table.
+        $item = GalleryItem::create([
             'branch_id'   => $request->user()->branch_id,
             'title'       => $validated['title'] ?? null,
             'description' => $validated['description'] ?? null,
-            'caption'     => $validated['caption'] ?? null,
             'image_path'  => $imagePath,
             'image_url'   => !$imagePath ? ($validated['image_url'] ?? null) : null,
             'sort_order'  => $validated['sort_order'] ?? 0,
@@ -388,13 +388,12 @@ class BranchAdminController extends Controller
 
     public function updateGallery(Request $request, int $id): JsonResponse
     {
-        $item = BranchGalleryItem::where('branch_id', $request->user()->branch_id)
+        $item = GalleryItem::where('branch_id', $request->user()->branch_id)
             ->findOrFail($id);
 
         $validated = $request->validate([
             'title'       => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'caption'     => 'nullable|string|max:255',
             'image'       => 'nullable|image|max:8192',
             'image_url'   => 'nullable|url',
             'sort_order'  => 'nullable|integer',
@@ -404,14 +403,14 @@ class BranchAdminController extends Controller
         if ($request->hasFile('image')) {
             $disk = app()->environment('production') ? 'r2' : 'public';
             if ($item->image_path) Storage::disk($disk)->delete($item->image_path);
-            $item->image_path = $request->file('image')->store('branch-gallery', $disk);
+            $item->image_path = $request->file('image')->store('gallery', $disk);
             $item->image_url  = null;
         } elseif (!empty($validated['image_url'])) {
             $item->image_url  = $validated['image_url'];
             $item->image_path = null;
         }
 
-        $item->fill(array_intersect_key($validated, array_flip(['title', 'description', 'caption', 'sort_order', 'is_active'])));
+        $item->fill(array_intersect_key($validated, array_flip(['title', 'description', 'sort_order', 'is_active'])));
         $item->save();
 
         return response()->json($item->fresh());
@@ -419,7 +418,7 @@ class BranchAdminController extends Controller
 
     public function deleteGallery(Request $request, int $id): JsonResponse
     {
-        $item = BranchGalleryItem::where('branch_id', $request->user()->branch_id)
+        $item = GalleryItem::where('branch_id', $request->user()->branch_id)
             ->findOrFail($id);
 
         if ($item->image_path) {

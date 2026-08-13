@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\GalleryItemResource\Pages;
+use App\Models\Branch;
 use App\Models\GalleryItem;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -53,6 +54,13 @@ class GalleryItemResource extends Resource
                     ->rows(2)
                     ->maxLength(300)
                     ->placeholder('One or two lines shown below the title in gallery grid.')
+                    ->columnSpanFull(),
+
+                Forms\Components\Select::make('branch_id')
+                    ->label('Branch (optional)')
+                    ->helperText('Tag this post to a branch to show it on that branch\'s public page too. Leave blank for a company-wide post.')
+                    ->options(fn () => Branch::pluck('name', 'id'))
+                    ->searchable()
                     ->columnSpanFull(),
             ])->columns(2),
 
@@ -142,6 +150,12 @@ class GalleryItemResource extends Resource
                     ->searchable()
                     ->weight('bold')
                     ->description(fn (GalleryItem $r) => $r->description ? \Str::limit($r->description, 60) : null),
+
+                Tables\Columns\TextColumn::make('branch.name')
+                    ->label('Branch')
+                    ->badge()
+                    ->color('gray')
+                    ->placeholder('— company-wide —'),
 
                 Tables\Columns\TextColumn::make('category')
                     ->badge()

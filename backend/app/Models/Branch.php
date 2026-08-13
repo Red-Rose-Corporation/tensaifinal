@@ -34,9 +34,12 @@ class Branch extends Model
         return $this->hasMany(BranchTeamMember::class)->orderBy('sort_order');
     }
 
+    /** Unified gallery — same GalleryItem table the main site's gallery uses,
+     *  scoped to this branch. BranchGalleryItem is deprecated (kept only for
+     *  historical data / rollback; see 2026_08_13_000001_unify_gallery_items_with_branches). */
     public function galleryItems()
     {
-        return $this->hasMany(BranchGalleryItem::class)->orderBy('sort_order');
+        return $this->hasMany(GalleryItem::class)->orderBy('sort_order');
     }
 
     public function services()

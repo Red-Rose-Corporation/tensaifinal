@@ -11,7 +11,7 @@ class GalleryItem extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'description', 'content',
+        'branch_id', 'title', 'description', 'content',
         'image_url', 'image_path', 'extra_images',
         'category', 'is_featured', 'is_active', 'sort_order',
     ];
@@ -23,6 +23,11 @@ class GalleryItem extends Model
     ];
 
     protected $appends = ['display_image_url', 'extra_image_urls'];
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 
     public function getDisplayImageUrlAttribute(): string
     {

@@ -13,28 +13,40 @@ class GalleryController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = GalleryItem::active()->orderBy('sort_order')->orderByDesc('created_at');
+        $query = GalleryItem::active()->with('branch:id,name,slug')->orderBy('sort_order')->orderByDesc('created_at');
 
         if ($request->category && $request->category !== 'all') {
             $query->where('category', $request->category);
         }
 
+        if ($request->branch && $request->branch !== 'all') {
+            $query->whereHas('branch', fn ($q) => $q->where('slug', $request->branch));
+        }
+
         return response()->json(
-            $query->get(['id', 'title', 'description', 'content', 'image_url', 'image_path', 'extra_images', 'category', 'is_featured'])
-                ->map(fn ($item) => array_merge($item->toArray(), ['image_url' => $item->display_image_url, 'extra_image_urls' => $item->extra_image_urls]))
+            $query->get(['id', 'branch_id', 'title', 'description', 'content', 'image_url', 'image_path', 'extra_images', 'category', 'is_featured'])
+                ->map(fn ($item) => $this->withBranchBadge($item))
         );
     }
 
     public function featured(): JsonResponse
     {
-        $items = GalleryItem::active()->featured()
+        $items = GalleryItem::active()->featured()->with('branch:id,name,slug')
             ->orderBy('sort_order')
             ->limit(6)
-            ->get(['id', 'title', 'description', 'image_url', 'image_path', 'extra_images', 'category']);
+            ->get(['id', 'branch_id', 'title', 'description', 'image_url', 'image_path', 'extra_images', 'category']);
 
-        return response()->json(
-            $items->map(fn ($item) => array_merge($item->toArray(), ['image_url' => $item->display_image_url, 'extra_image_urls' => $item->extra_image_urls]))
-        );
+        return response()->json($items->map(fn ($item) => $this->withBranchBadge($item)));
+    }
+
+    /** Shared response shaping: resolved image URLs + a lightweight branch identity for the UI badge. */
+    private function withBranchBadge(GalleryItem $item): array
+    {
+        return array_merge($item->toArray(), [
+            'image_url'         => $item->display_image_url,
+            'extra_image_urls'  => $item->extra_image_urls,
+            'branch'            => $item->branch ? ['name' => $item->branch->name, 'slug' => $item->branch->slug] : null,
+        ]);
     }
 
     /**
@@ -72,8 +84,11 @@ class GalleryController extends Controller
     public function serveImagePath(Request $request): Response
     {
         $path = (string) $request->query('path', '');
-        // Only ever serve files inside the gallery upload directory — never arbitrary paths.
-        if ($path === '' || !str_starts_with($path, 'gallery/')) {
+        // Only ever serve files inside a known gallery upload directory — never arbitrary paths.
+        // 'branch-gallery/' is the legacy prefix used before branch photos were unified into
+        // this same gallery_items table; existing rows still point at files stored there.
+        $allowedPrefixes = ['gallery/', 'branch-gallery/'];
+        if ($path === '' || !collect($allowedPrefixes)->contains(fn ($p) => str_starts_with($path, $p))) {
             abort(404);
         }
 
