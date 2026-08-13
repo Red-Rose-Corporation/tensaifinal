@@ -41,33 +41,59 @@ class BranchGalleryResource extends Resource
     {
         $user = auth()->user();
         return $form->schema([
-            Forms\Components\Select::make('branch_id')
-                ->label('Branch')
-                ->options(fn () => $user?->hasRole(['branch_admin', 'branch_manager'])
-                    ? Branch::where('id', $user->branch_id)->pluck('name', 'id')
-                    : Branch::pluck('name', 'id'))
-                ->required()
-                ->default(fn () => $user?->branch_id),
 
-            Forms\Components\TextInput::make('title')->maxLength(255)->columnSpanFull(),
-            Forms\Components\Textarea::make('description')->rows(2)->columnSpanFull(),
+            Forms\Components\Section::make('Basic Info')
+                ->description('The title (optional) is what visitors see below this photo in the gallery grid.')
+                ->icon('heroicon-o-identification')
+                ->schema([
+                    Forms\Components\Select::make('branch_id')
+                        ->label('Branch')
+                        ->options(fn () => $user?->hasRole(['branch_admin', 'branch_manager'])
+                            ? Branch::where('id', $user->branch_id)->pluck('name', 'id')
+                            : Branch::pluck('name', 'id'))
+                        ->required()
+                        ->default(fn () => $user?->branch_id)
+                        ->columnSpanFull(),
 
-            Forms\Components\FileUpload::make('image_path')
-                ->label('Image')
-                ->image()
-                ->disk(app()->environment('production') ? 'r2' : 'public')
-                ->directory('gallery')
-                ->visibility('public')
-                ->maxSize(8192)
-                ->columnSpanFull(),
+                    Forms\Components\TextInput::make('title')->maxLength(255)->columnSpanFull(),
+                    Forms\Components\Textarea::make('description')->rows(2)->columnSpanFull(),
+                ]),
 
-            Forms\Components\TextInput::make('image_url')
-                ->label('Or paste image URL')
-                ->url()
-                ->columnSpanFull(),
+            Forms\Components\Section::make('Image')
+                ->description('Upload a photo from your computer, OR paste an external URL below. Upload takes priority.')
+                ->icon('heroicon-o-photo')
+                ->schema([
+                    Forms\Components\FileUpload::make('image_path')
+                        ->label('Image')
+                        ->image()
+                        ->disk(app()->environment('production') ? 'r2' : 'public')
+                        ->directory('gallery')
+                        ->visibility('public')
+                        ->maxSize(8192)
+                        ->helperText('JPG, PNG, WebP — max 8 MB. If the preview below sits on "Loading" for a while, that\'s just the browser fetching the thumbnail — the image itself has already uploaded fine.')
+                        ->columnSpanFull(),
 
-            Forms\Components\TextInput::make('sort_order')->numeric()->default(0),
-            Forms\Components\Toggle::make('is_active')->default(true),
+                    Forms\Components\TextInput::make('image_url')
+                        ->label('Or paste image URL')
+                        ->url()
+                        ->columnSpanFull(),
+                ]),
+
+            Forms\Components\Section::make('Visibility & Order')
+                ->description('Control whether this photo is public, and where it appears relative to others.')
+                ->icon('heroicon-o-eye')
+                ->schema([
+                    Forms\Components\Toggle::make('is_active')
+                        ->label('Active (visible to public)')
+                        ->default(true),
+
+                    Forms\Components\TextInput::make('sort_order')
+                        ->label('Sort Order')
+                        ->numeric()
+                        ->default(0)
+                        ->helperText('Lower number appears first'),
+                ])->columns(2),
+
         ]);
     }
 
