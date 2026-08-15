@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 interface BranchSettings {
   address: string | null;
   phone: string | null;
+  phone_2: string | null;
   email: string | null;
   whatsapp: string | null;
   google_maps_url: string | null;
@@ -30,7 +31,7 @@ export default function BranchSettingsPage() {
     if (user && !isBranchAdmin) router.replace(`/dashboard/${user.gateway_type ?? ''}`);
   }, [user, isBranchAdmin, router]);
 
-  const [form, setForm] = useState({ address: '', phone: '', email: '', whatsapp: '', google_maps_url: '' });
+  const [form, setForm] = useState({ address: '', phone: '', phone_2: '', email: '', whatsapp: '', google_maps_url: '' });
   const [workingHours, setWorkingHours] = useState<Record<string, string>>({});
   const [socialLinks, setSocialLinks]   = useState<Record<string, string>>({});
   const [logoFile, setLogoFile]     = useState<File | null>(null);
@@ -53,6 +54,7 @@ export default function BranchSettingsPage() {
       setForm({
         address:         settings.address         ?? '',
         phone:           settings.phone           ?? '',
+        phone_2:         settings.phone_2         ?? '',
         email:           settings.email           ?? '',
         whatsapp:        settings.whatsapp        ?? '',
         google_maps_url: settings.google_maps_url ?? '',
@@ -213,12 +215,19 @@ export default function BranchSettingsPage() {
                   value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
                   placeholder="Branch office address" />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 mb-1.5">Phone</label>
                   <input className={inp} placeholder="+880 1XXX XXXXXX"
                     value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
                 </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1.5">Phone 2 <span className="text-slate-400 font-normal">optional</span></label>
+                  <input className={inp} placeholder="+880 1XXX XXXXXX"
+                    value={form.phone_2} onChange={e => setForm(f => ({ ...f, phone_2: e.target.value }))} />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 mb-1.5">Email</label>
                   <input className={inp} type="email" placeholder="branch@tensai.com"

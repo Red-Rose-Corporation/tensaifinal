@@ -12,7 +12,7 @@ class Branch extends Model
 
     protected $fillable = [
         'name', 'slug', 'tagline', 'description',
-        'city', 'country', 'address', 'phone', 'email', 'whatsapp',
+        'city', 'country', 'address', 'phone', 'phone_2', 'email', 'whatsapp',
         'google_maps_url', 'logo', 'cover_image',
         'working_hours', 'social_links', 'stats',
         'is_active', 'sort_order',

@@ -17,7 +17,7 @@ interface Service { id: number; title: string; description: string | null; icon:
 interface Branch {
   id: number; name: string; slug: string; tagline: string | null;
   description: string | null; city: string; country: string;
-  address: string | null; phone: string | null; email: string | null;
+  address: string | null; phone: string | null; phone_2: string | null; email: string | null;
   whatsapp: string | null; google_maps_url: string | null;
   logo_url: string | null; cover_image_url: string | null;
   working_hours: Record<string, string> | null;
@@ -337,16 +337,26 @@ export default function BranchPage() {
           {(branch.phone || branch.whatsapp || branch.email) && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
               {branch.phone && (
-                <a href={`tel:${branch.phone.replace(/[^\d+]/g, '')}`}
-                  className="border border-white/[0.08] bg-white/[0.03] rounded-2xl p-6 flex flex-col items-center text-center gap-3 hover:border-green-500/35 transition-all">
+                <div className="border border-white/[0.08] bg-white/[0.03] rounded-2xl p-6 flex flex-col items-center text-center gap-3 hover:border-green-500/35 transition-all">
                   <div className="w-12 h-12 rounded-full bg-white/[0.06] flex items-center justify-center text-white/70">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                   </div>
                   <div className="text-xs font-semibold uppercase tracking-wider text-white/40">{ja ? '電話' : bn ? 'ফোন' : 'Phone'}</div>
-                  <div className="text-white font-semibold text-sm" dir="ltr">{branch.phone}</div>
-                </a>
+                  <div className="flex flex-col gap-0.5">
+                    <a href={`tel:${branch.phone.replace(/[^\d+]/g, '')}`}
+                      className="text-white font-semibold text-sm hover:text-green-400 transition-colors" dir="ltr">
+                      {branch.phone}
+                    </a>
+                    {branch.phone_2 && (
+                      <a href={`tel:${branch.phone_2.replace(/[^\d+]/g, '')}`}
+                        className="text-white/60 font-medium text-sm hover:text-green-400 transition-colors" dir="ltr">
+                        {branch.phone_2}
+                      </a>
+                    )}
+                  </div>
+                </div>
               )}
               {branch.whatsapp && (
                 <a href={`https://wa.me/${branch.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer"

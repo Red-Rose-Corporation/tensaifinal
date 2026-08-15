@@ -33,7 +33,7 @@ class BranchAdminController extends Controller
         $b = $this->branch($request);
         return response()->json($b->only([
             'id', 'name', 'slug', 'tagline', 'description',
-            'city', 'country', 'address', 'phone', 'email', 'whatsapp',
+            'city', 'country', 'address', 'phone', 'phone_2', 'email', 'whatsapp',
             'google_maps_url', 'working_hours', 'social_links', 'stats',
             'logo_url', 'cover_image_url', 'is_active',
         ]));
@@ -46,6 +46,7 @@ class BranchAdminController extends Controller
             'description'     => 'nullable|string',
             'address'         => 'nullable|string|max:500',
             'phone'           => 'nullable|string|max:30',
+            'phone_2'         => 'nullable|string|max:30',
             'email'           => 'nullable|email|max:100',
             'whatsapp'        => 'nullable|string|max:30',
             'google_maps_url' => 'nullable|url|max:500',
