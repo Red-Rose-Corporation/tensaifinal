@@ -289,12 +289,12 @@ export default function BranchSettingsPage() {
               </button>
             </div>
             <div className="space-y-2">
-              {Object.entries(socialLinks).map(([platform, url]) => {
+              {Object.entries(socialLinks).map(([platform, url], idx) => {
                 const platformLooksLikeUrl = /^https?:\/\//i.test(platform.trim());
                 return (
-                  <div key={platform}>
+                  <div key={idx}>
                     <div className="flex gap-2 items-center">
-                      <input className={`${inp} w-32 shrink-0 ${platformLooksLikeUrl ? 'border-red-300 focus:ring-red-400' : ''}`}
+                      <input className={`${inp} !w-32 shrink-0 ${platformLooksLikeUrl ? 'border-red-300 focus:ring-red-400' : ''}`}
                         value={platform} placeholder="e.g. facebook"
                         onChange={e => updateSocialKey(platform, e.target.value)} />
                       <input className={`${inp} flex-1`} value={url} placeholder="https://facebook.com/…"
