@@ -76,8 +76,10 @@ class PostResource extends Resource
                         ->rows(3)
                         ->maxLength(500),
 
-                    Forms\Components\Section::make('Full Content (optional)')
-                        ->description('Extra write-up shown below the video/excerpt. Skip it for a plain video post.')
+                    Forms\Components\Section::make('Full Content')
+                        ->description(fn (Get $get) => $get('type') === 'video'
+                            ? 'Optional extra write-up shown below the video. Skip it for a plain video post.'
+                            : 'The article body — this is the main content readers see.')
                         ->collapsed(fn (Get $get) => $get('type') === 'video' && blank($get('body')))
                         ->schema([
                             Forms\Components\RichEditor::make('body')
@@ -87,7 +89,8 @@ class PostResource extends Resource
                                     'bulletList', 'orderedList', 'link', 'blockquote', 'h2', 'h3',
                                 ])
                                 ->helperText('Tip: use the " (Quote) button to insert a highlighted info box — it renders as a green callout with an info icon on the site.')
-                                ->nullable(),
+                                ->required(fn (Get $get) => in_array($get('type'), ['article', 'text']))
+                                ->nullable(fn (Get $get) => $get('type') === 'video'),
                         ])
                         ->columns(1),
 
