@@ -93,6 +93,7 @@ class PostResource extends Resource
 
                     Forms\Components\Section::make('Comparison Table (optional)')
                         ->description('Build a comparison table like "Staying home vs. Going abroad" — appears below the article body on the site.')
+                        ->visible(fn (Get $get) => $get('type') !== 'video' || filled($get('comparison_table.headers')))
                         ->collapsed(fn (Get $get) => blank($get('comparison_table.headers')))
                         ->schema([
                             Forms\Components\TextInput::make('comparison_table.title')
@@ -138,6 +139,7 @@ class PostResource extends Resource
 
                     Forms\Components\Section::make('Box (optional)')
                         ->description('A simple highlighted box shown below the article body — for a quick note, list, or a table pasted from Word/Excel/Sheets. Leave empty to skip it entirely.')
+                        ->visible(fn (Get $get) => $get('type') !== 'video' || filled($get('content_box.content')))
                         ->collapsed(fn (Get $get) => blank($get('content_box.content')))
                         ->schema([
                             Forms\Components\TextInput::make('content_box.title')
