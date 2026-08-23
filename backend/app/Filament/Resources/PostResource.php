@@ -76,14 +76,20 @@ class PostResource extends Resource
                         ->rows(3)
                         ->maxLength(500),
 
-                    Forms\Components\RichEditor::make('body')
-                        ->label('Full Content')
-                        ->toolbarButtons([
-                            'bold', 'italic', 'underline', 'strike',
-                            'bulletList', 'orderedList', 'link', 'blockquote', 'h2', 'h3',
+                    Forms\Components\Section::make('Full Content (optional)')
+                        ->description('Extra write-up shown below the video/excerpt. Skip it for a plain video post.')
+                        ->collapsed(fn (Get $get) => $get('type') === 'video' && blank($get('body')))
+                        ->schema([
+                            Forms\Components\RichEditor::make('body')
+                                ->label('Full Content')
+                                ->toolbarButtons([
+                                    'bold', 'italic', 'underline', 'strike',
+                                    'bulletList', 'orderedList', 'link', 'blockquote', 'h2', 'h3',
+                                ])
+                                ->helperText('Tip: use the " (Quote) button to insert a highlighted info box — it renders as a green callout with an info icon on the site.')
+                                ->nullable(),
                         ])
-                        ->helperText('Tip: use the " (Quote) button to insert a highlighted info box — it renders as a green callout with an info icon on the site.')
-                        ->nullable(),
+                        ->columns(1),
 
                     Forms\Components\Section::make('Comparison Table (optional)')
                         ->description('Build a comparison table like "Staying home vs. Going abroad" — appears below the article body on the site.')
@@ -146,6 +152,12 @@ class PostResource extends Resource
                         ->columns(1),
 
                     Forms\Components\Section::make('Feature Image')
+                        ->description('Optional for video posts — the YouTube thumbnail is used automatically if you skip this.')
+                        ->visible(fn (Get $get, $record) =>
+                            $get('type') !== 'video'
+                            || filled($record?->thumbnail_file)
+                            || filled($get('thumbnail_url'))
+                        )
                         ->schema([
                             Forms\Components\Placeholder::make('thumbnail_preview')
                                 ->label('Current image')
