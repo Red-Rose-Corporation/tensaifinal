@@ -31,6 +31,30 @@ class PostResource extends Resource
         return auth()->user()?->hasRole(['super_admin', 'admin']);
     }
 
+    /**
+     * The comparison-table repeater fields aren't required (a blank row shouldn't
+     * block saving a video/article post) — so strip any half-filled rows/columns
+     * the admin left behind instead of persisting empty-string junk.
+     */
+    public static function cleanFormData(array $data): array
+    {
+        if (!empty($data['comparison_table'])) {
+            $data['comparison_table']['headers'] = array_values(array_filter(
+                $data['comparison_table']['headers'] ?? [],
+                fn ($v) => filled($v)
+            ));
+            $data['comparison_table']['rows'] = array_values(array_filter(
+                array_map(function ($row) {
+                    $row['values'] = array_values(array_filter($row['values'] ?? [], fn ($v) => filled($v)));
+                    return $row;
+                }, $data['comparison_table']['rows'] ?? []),
+                fn ($row) => filled($row['label'] ?? null)
+            ));
+        }
+
+        return $data;
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -69,18 +93,28 @@ class PostResource extends Resource
                         ->required(fn (Get $get) => $get('type') === 'video')
                         ->visible(fn (Get $get) => $get('type') === 'video'),
 
+                    Forms\Components\TextInput::make('link_url')
+                        ->label('Article / Post Link')
+                        ->url()
+                        ->placeholder('https://example.com/the-original-article')
+                        ->helperText('Readers get a "Visit original" button pointing here — no need to re-write the article on this site.')
+                        ->required(fn (Get $get) => $get('type') === 'article')
+                        ->visible(fn (Get $get) => $get('type') === 'article'),
+
                     Forms\Components\Textarea::make('excerpt')
                         ->label('Preview Text')
-                        ->helperText('Shown to guests. Keep it short and compelling.')
-                        ->required()
+                        ->helperText(fn (Get $get) => in_array($get('type'), ['video', 'article'])
+                            ? 'Shown to guests. Optional for a quick share — leave blank if the title says it all.'
+                            : 'Shown to guests. Keep it short and compelling.')
+                        ->required(fn (Get $get) => $get('type') === 'text')
                         ->rows(3)
                         ->maxLength(500),
 
                     Forms\Components\Section::make('Full Content')
-                        ->description(fn (Get $get) => $get('type') === 'video'
-                            ? 'Optional extra write-up shown below the video. Skip it for a plain video post.'
+                        ->description(fn (Get $get) => in_array($get('type'), ['video', 'article'])
+                            ? 'Optional extra write-up shown below the video/link. Skip it for a plain share — title + link + preview text is enough.'
                             : 'The article body — this is the main content readers see.')
-                        ->collapsed(fn (Get $get) => $get('type') === 'video' && blank($get('body')))
+                        ->collapsed(fn (Get $get) => in_array($get('type'), ['video', 'article']) && blank($get('body')))
                         ->schema([
                             Forms\Components\RichEditor::make('body')
                                 ->label('Full Content')
@@ -89,14 +123,14 @@ class PostResource extends Resource
                                     'bulletList', 'orderedList', 'link', 'blockquote', 'h2', 'h3',
                                 ])
                                 ->helperText('Tip: use the " (Quote) button to insert a highlighted info box — it renders as a green callout with an info icon on the site.')
-                                ->required(fn (Get $get) => in_array($get('type'), ['article', 'text']))
-                                ->nullable(fn (Get $get) => $get('type') === 'video'),
+                                ->required(fn (Get $get) => $get('type') === 'text')
+                                ->nullable(fn (Get $get) => in_array($get('type'), ['video', 'article'])),
                         ])
                         ->columns(1),
 
                     Forms\Components\Section::make('Comparison Table (optional)')
                         ->description('Build a comparison table like "Staying home vs. Going abroad" — appears below the article body on the site.')
-                        ->visible(fn (Get $get) => $get('type') !== 'video' || filled($get('comparison_table.headers')))
+                        ->visible(fn (Get $get) => !in_array($get('type'), ['video', 'article']) || filled($get('comparison_table.headers')))
                         ->collapsed(fn (Get $get) => blank($get('comparison_table.headers')))
                         ->schema([
                             Forms\Components\TextInput::make('comparison_table.title')
@@ -108,7 +142,6 @@ class PostResource extends Resource
                                 ->label('Columns (first column is the row-label column, e.g. "বিষয়")')
                                 ->simple(
                                     Forms\Components\TextInput::make('label')
-                                        ->required()
                                         ->placeholder('e.g. জাপান (SSW Kaigo)')
                                 )
                                 ->addActionLabel('Add column')
@@ -121,13 +154,11 @@ class PostResource extends Resource
                                 ->schema([
                                     Forms\Components\TextInput::make('label')
                                         ->label('Row label')
-                                        ->required()
                                         ->placeholder('e.g. মাসিক আয় (প্রায়)'),
                                     Forms\Components\Repeater::make('values')
                                         ->label('Values (one per column, in the same order as the columns above)')
                                         ->simple(
                                             Forms\Components\TextInput::make('value')
-                                                ->required()
                                                 ->placeholder('e.g. ১,২০,০০০–১,৭০,০০০ টাকা')
                                         )
                                         ->addActionLabel('Add value')
@@ -142,7 +173,7 @@ class PostResource extends Resource
 
                     Forms\Components\Section::make('Box (optional)')
                         ->description('A simple highlighted box shown below the article body — for a quick note, list, or a table pasted from Word/Excel/Sheets. Leave empty to skip it entirely.')
-                        ->visible(fn (Get $get) => $get('type') !== 'video' || filled($get('content_box.content')))
+                        ->visible(fn (Get $get) => !in_array($get('type'), ['video', 'article']) || filled($get('content_box.content')))
                         ->collapsed(fn (Get $get) => blank($get('content_box.content')))
                         ->schema([
                             Forms\Components\TextInput::make('content_box.title')

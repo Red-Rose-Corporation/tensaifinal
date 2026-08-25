@@ -25,7 +25,7 @@ function isNew(published_at: string) {
 }
 
 function readTime(type: string, excerpt: string) {
-  if (type === 'video') return null;
+  if (type === 'video' || type === 'article' || !excerpt) return null;
   const words = excerpt.split(' ').length;
   const mins = Math.max(3, Math.round(words / 40));
   return `${mins} min read`;
@@ -453,9 +453,11 @@ function FeaturedCard({ post, user, t }: {
         </h2>
 
         {/* Excerpt */}
-        <p className="text-white/65 text-sm sm:text-[0.9rem] leading-relaxed line-clamp-2 max-w-2xl mb-4 hidden sm:block">
-          {post.excerpt}
-        </p>
+        {post.excerpt && (
+          <p className="text-white/65 text-sm sm:text-[0.9rem] leading-relaxed line-clamp-2 max-w-2xl mb-4 hidden sm:block">
+            {post.excerpt}
+          </p>
+        )}
 
         {/* Footer row */}
         <div className="flex items-center gap-3">

@@ -9,7 +9,7 @@ class Post extends Model
 {
     protected $fillable = [
         'title', 'slug', 'excerpt', 'body', 'comparison_table', 'content_box', 'type',
-        'video_url', 'thumbnail_url', 'thumbnail_file', 'status', 'is_premium', 'published_at', 'created_by',
+        'video_url', 'link_url', 'thumbnail_url', 'thumbnail_file', 'status', 'is_premium', 'published_at', 'created_by',
     ];
 
     protected $casts = [

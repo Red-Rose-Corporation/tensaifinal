@@ -73,8 +73,22 @@ interface Post {
   excerpt: string; body?: string; thumbnail: string | null;
   youtube_id: string | null; published_at: string; categories: Category[];
   locked: boolean; is_premium: boolean;
+  link_url?: string | null;
   comparison_table?: ComparisonTable | null;
   content_box?: ContentBox | null;
+}
+
+/* ── "Visit original" CTA for link-share (article) posts ────── */
+function VisitOriginalButton({ url, t }: { url: string; t: (en: string, ja: string, bn: string) => string }) {
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer"
+      className="mt-4 inline-flex items-center gap-2 h-11 px-5 bg-green-600 hover:bg-green-700 text-white text-sm font-black rounded-xl transition-colors">
+      {t('Visit Original Article', '元の記事を見る', 'মূল আর্টিকেল দেখুন')}
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+      </svg>
+    </a>
+  );
 }
 
 /* ── Comparison table ────────────────────────────────────────── */
@@ -576,10 +590,16 @@ function PostInner() {
               </div>
             )}
 
-            {/* Excerpt — highlighted lead-in, after the feature image */}
-            <p className="text-[0.95rem] sm:text-base text-slate-700 font-semibold leading-[1.65] mt-6 bg-green-50 border-l-[3px] border-green-500 rounded-r-xl px-4 py-3">
-              {post.excerpt.slice(0, 180)}{post.excerpt.length > 180 ? '…' : ''}
-            </p>
+            {/* Excerpt — highlighted lead-in, after the feature image (optional for link-share posts) */}
+            {post.excerpt && (
+              <p className="text-[0.95rem] sm:text-base text-slate-700 font-semibold leading-[1.65] mt-6 bg-green-50 border-l-[3px] border-green-500 rounded-r-xl px-4 py-3">
+                {post.excerpt.slice(0, 180)}{post.excerpt.length > 180 ? '…' : ''}
+              </p>
+            )}
+
+            {post.type === 'article' && post.link_url && (
+              <VisitOriginalButton url={post.link_url} t={t} />
+            )}
           </div>
         )}
 
@@ -654,8 +674,8 @@ function PostInner() {
         )}
 
 
-        {/* ── CONTENT ─────────────────────────────────────── */}
-        {!isLocked ? (
+        {/* ── CONTENT — skipped entirely for a bare video/article share (no body, no excerpt) ── */}
+        {!isLocked && (post.body || post.excerpt) ? (
           <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_1px_4px_rgba(15,23,42,0.06)] overflow-hidden">
             <div className="h-[3px] bg-gradient-to-r from-green-600 via-green-500 to-emerald-400" />
             <div className="p-5 sm:p-10">
